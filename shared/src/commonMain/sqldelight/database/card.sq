@@ -1,0 +1,50 @@
+-- Table for card
+CREATE TABLE cardEntity (
+--     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    appId TEXT NOT NULL PRIMARY KEY,
+    issuerName TEXT NOT NULL,
+    cardHolderName TEXT NOT NULL,
+    cardType TEXT NOT NULL,
+    cardNumber TEXT NOT NULL,
+    issueDate TEXT NOT NULL,
+    expiryDate TEXT NOT NULL,
+    pin TEXT NOT NULL,
+    cvv TEXT NOT NULL,
+    creationTime INTEGER NOT NULL,
+    isSynced INTEGER NOT NULL
+);
+
+getAllCards:
+SELECT *
+FROM cardEntity
+ORDER BY creationTime DESC;
+
+
+insertCard:
+INSERT OR REPLACE
+INTO cardEntity(
+--     id,
+    appId,
+    issuerName,
+    cardHolderName,
+    cardType,
+    cardNumber,
+    issueDate,
+    expiryDate,
+    pin,
+    cvv,
+    creationTime,
+    isSynced
+) VALUES (?,?,?,?,?,?,?,?,?,?,?);
+
+
+deleteCardById:
+DELETE FROM cardEntity
+WHERE appId=:appId;
+
+
+getCardById:
+SELECT *
+FROM cardEntity
+-- WHERE id=:id;
+WHERE appId=:appId;

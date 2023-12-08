@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "800563228065",
+    "project_id": "passwordmanager-b1d01",
+    "storage_bucket": "passwordmanager-b1d01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800563228065:android:c09147a277115644c1efe0",
+        "android_client_info": {
+          "package_name": "com.sandeep03edu.passwordmanager.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGqXr6OWF3MRWT67yi2w9_bbEsuoJ05AY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
