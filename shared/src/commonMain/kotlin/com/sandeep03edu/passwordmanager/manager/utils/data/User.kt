@@ -4,6 +4,9 @@ import com.russhwolf.settings.Settings
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 
 fun getLoggedInUser() : UserState?{
+
+    return UserState("Sandeep", "Mishra", "+918178538456","1234", "123456")
+
     val settings = Settings()
 
     if(settings.hasKey("UserState")){

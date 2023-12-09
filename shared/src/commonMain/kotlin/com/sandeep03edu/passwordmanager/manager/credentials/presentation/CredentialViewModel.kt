@@ -3,6 +3,8 @@ package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.CardValidator
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.CredentialDataSource
@@ -27,7 +29,7 @@ import kotlinx.coroutines.launch
 val TAG = "CredentialViewModelTag"
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CredentialViewModel(private val credentialDataSource: CredentialDataSource) : ViewModel() {
+class CredentialViewModel(private val credentialDataSource: CredentialDataSource) : ScreenModel {
 
     private val _state = MutableStateFlow(CredentialState())
 
@@ -44,7 +46,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
         println("$TAG Inside FilterPass: $tag ->> ${pass}")
         pass
     }.stateIn(
-        viewModelScope,
+        screenModelScope,
         SharingStarted.WhileSubscribed(5000L),
         emptyList()
     )
@@ -75,7 +77,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
         )
 
     }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), CredentialState())
+        .stateIn(screenModelScope, SharingStarted.WhileSubscribed(5000L), CredentialState())
 
 
     var newCard: Card? by mutableStateOf(null)
@@ -87,7 +89,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
     fun onEvent(event: CredentialEvent) {
         when (event) {
             is CredentialEvent.OnCardPasswordOptionSelected -> {
-                viewModelScope.launch {
+                screenModelScope.launch {
                     val value = event.value
                     if (value == "Card") {
                         newPassword = null
@@ -121,7 +123,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
             }
 
             is CredentialEvent.OnDismissAddNewDataClick -> {
-                viewModelScope.launch {
+                screenModelScope.launch {
                     _state.update {
                         it.copy(
                             isAddNewCredentialSheetOpen = false
@@ -131,7 +133,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
             }
 
             is CredentialEvent.OnDisplayAddNewDataClick -> {
-                viewModelScope.launch {
+                screenModelScope.launch {
                     _state.update {
                         it.copy(
                             isAddNewCredentialSheetOpen = true
@@ -292,7 +294,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
 
                         println("$TAG Saving Card : $card")
 
-                        viewModelScope.launch {
+                        screenModelScope.launch {
                             credentialDataSource.addCard(card)
                             delay(300L)
                             newCard = null
@@ -351,7 +353,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
 
                         println("$TAG Saving Password : $password")
 
-                        viewModelScope.launch {
+                        screenModelScope.launch {
                             credentialDataSource.addPassword(password)
                             delay(300L)
                             newCard = null
@@ -373,7 +375,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
             }
 
             is CredentialEvent.OnFilterChange -> {
-                viewModelScope.launch {
+                screenModelScope.launch {
                     _filterTag.value = event.value
 
                     println("$TAG FilterTag Updated to ${_filterTag.value}")

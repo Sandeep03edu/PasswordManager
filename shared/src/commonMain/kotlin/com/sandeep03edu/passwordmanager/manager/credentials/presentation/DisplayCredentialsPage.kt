@@ -16,24 +16,42 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key.Companion.Calendar
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.screen.Screen
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.PasswordSecureHalfDisplay
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.PasswordTagCard
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.SecureHalfCardDisplay
+import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTagsWithIcons
-import com.sandeep03edu.passwordmanager.manager.utils.presentation.MonthPicker
 import com.sandeep03edu.passwordmanager.space
 
+
+data class DisplayPageDisplayClass(
+    val appModule: AppModule
+) : Screen{
+
+    @Composable
+    override fun Content() {
+        val viewModel = rememberScreenModel { CredentialViewModel(appModule.credentialDataSource) }
+        val state1 by viewModel.state.collectAsState()
+        val onEvent1 = viewModel::onEvent
+
+        println("$TAG Class State Cards: ${state1.cards}")
+        DisplayPageDisplay(state1, onEvent1, viewModel.newCard, viewModel.newPassword, viewModel, {})
+    }
+
+}
 
 @Composable
 fun DisplayPageDisplay(
@@ -42,7 +60,9 @@ fun DisplayPageDisplay(
     newCard: Card?,
     newPassword: Password?,
     viewModel: CredentialViewModel,
+    onPasswordItemClicked : (Password) -> Unit
 ) {
+
     Scaffold(
         floatingActionButton = {
             if (!state.isAddNewCredentialSheetOpen) {
@@ -171,7 +191,7 @@ fun DisplayPageDisplay(
                 list = state.filteredPasswords
             }
 
-            
+
 
             items(list) {
                 // Password -> it

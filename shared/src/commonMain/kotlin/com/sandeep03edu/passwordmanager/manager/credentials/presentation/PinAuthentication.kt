@@ -1,8 +1,23 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
 import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.core.screen.Screen
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.PinAuthentication
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
+
+data class PinAuthenticationDisplayClass(
+    var usr: UserState,
+    var label: String,
+) : Screen {
+
+    @Composable
+    override fun Content() {
+        PinAuthenticationDisplay(
+            usr, label
+        )
+    }
+
+}
 
 @Composable
 fun PinAuthenticationDisplay(
@@ -10,10 +25,9 @@ fun PinAuthenticationDisplay(
     label: String,
 ) {
     var pinLength = 0;
-    if(label=="Login pin"){
+    if (label == "Login pin") {
         pinLength = 4
-    }
-    else if(label=="App Pin"){
+    } else if (label == "App Pin") {
         pinLength = 6
     }
 
