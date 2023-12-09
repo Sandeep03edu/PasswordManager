@@ -2,6 +2,7 @@ package com.sandeep03edu.passwordmanager.manager.credentials.data
 
 import app.cash.sqldelight.Query
 import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.sandeep03edu.passwordmanager.database.CredentialDatabase
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.CredentialDataSource
@@ -88,13 +89,30 @@ class SqlDelightCredentialDataSource(
             }
     }
 
-    override suspend fun getFilterPass(filterTag: String): List<Password> {
-//        return supervisorScope {
-//            val ls = getFilteredPasswords(filterTag)
-//            ls.toList()[0]
-//        }
-        return emptyList()
+    override fun getPasswordById(appId: String): Flow<Password> {
+        return passwordQueries
+            .getPasswordById(appId)
+            .asFlow()
+            .map {
+                supervisorScope {
+                    it.executeAsOne()
+                        .toPassword()
+                }
+            }
     }
+
+    override fun getCardById(appId: String): Flow<Card> {
+        return cardQueries
+            .getCardById(appId)
+            .asFlow()
+            .map {
+                supervisorScope {
+                    it.executeAsOne()
+                        .toCard()
+                }
+            }
+    }
+
 
     override suspend fun addCard(card: Card) {
         cardQueries.insertCard(
@@ -127,10 +145,6 @@ class SqlDelightCredentialDataSource(
         )
     }
 }
-
-@OptIn(ExperimentalCoroutinesApi::class)
-suspend fun <T> Flow<List<T>>.flattenToList() =
-    flatMapConcat { it.asFlow() }.toList()
 
 @JvmOverloads
 fun <T : Any> Flow<Query<T>>.mapToList(

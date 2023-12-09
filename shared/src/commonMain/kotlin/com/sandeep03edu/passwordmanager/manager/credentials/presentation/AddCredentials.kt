@@ -1,10 +1,13 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -74,45 +80,63 @@ fun AddDataSheet(
                 val dropDownItems = listOf("Card", "Password")
                 var selectedDropDownItem by remember { mutableStateOf("") }
 
-                Text(
-                    buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.ExtraBold,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 40.sp
-                            )
-                        ) {
-                            append("A")
-                        }
-                        withStyle(
-                            style = SpanStyle(
-                                fontSize = 36.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        ) {
-                            append("dd ")
-                        }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickable {
+                                onEvent(CredentialEvent.OnDismissAddNewDataClick)
+                            }
+                    )
 
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.ExtraBold,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 40.sp
-                            )
-                        ) {
-                            append("C")
+                    space(width = 16)
+
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontSize = 40.sp
+                                )
+                            ) {
+                                append("A")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    fontSize = 36.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            ) {
+                                append("dd ")
+                            }
+
+                            withStyle(
+                                style = SpanStyle(
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontSize = 40.sp
+                                )
+                            ) {
+                                append("C")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    fontSize = 36.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            ) {
+                                append("redentials")
+                            }
                         }
-                        withStyle(
-                            style = SpanStyle(
-                                fontSize = 36.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        ) {
-                            append("redentials")
-                        }
-                    }
-                )
+                    )
+
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -325,10 +349,9 @@ fun DisplayAddCardForm(
         currentYear = 2023,
         confirmButtonCLicked = { month_, year_ ->
             val dateStr = "$month_/$year_"
-            if(selectedMonthDialog=="IssueDate"){
+            if (selectedMonthDialog == "IssueDate") {
                 onEvent(CredentialEvent.OnCardIssueDateChanged(dateStr))
-            }
-            else if(selectedMonthDialog=="ExpiryDate"){
+            } else if (selectedMonthDialog == "ExpiryDate") {
                 onEvent(CredentialEvent.OnCardExpiryDateChanged(dateStr))
             }
             selectedMonthDialog = null

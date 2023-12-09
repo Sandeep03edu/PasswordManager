@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -26,6 +27,8 @@ import com.sandeep03edu.passwordmanager.manager.credentials.presentation.Credent
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DisplayPageDisplay
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DisplayPageDisplayClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.PinAuthenticationDisplayClass
+import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.DetailedPasswordDisplayPage
+import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.DetailedPasswordDisplayPageClass
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
@@ -44,7 +47,12 @@ fun App(
     dynamicColor: Boolean,
     appModule: AppModule,
 ) {
-    Navigator(AppHomeLayout(darkTheme, dynamicColor, appModule))
+    Navigator(AppHomeLayout(darkTheme, dynamicColor, appModule),
+//        onBackPressed = { currentScreen ->
+//            false // won't pop the current screen
+//            // true will pop, default behavior
+//        }
+    )
 }
 
 data class AppHomeLayout(
@@ -56,8 +64,9 @@ data class AppHomeLayout(
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+
 //        var viewModel = navigator.rememberNavigatorScreenModel { CredentialViewModel(appModule.credentialDataSource) }
-        val viewModel = rememberScreenModel { CredentialViewModel(appModule.credentialDataSource) }
+//        val viewModel = rememberScreenModel { CredentialViewModel(appModule.credentialDataSource) }
 
         AppTheme(
             darkTheme = darkTheme, dynamicColor = dynamicColor
@@ -75,7 +84,46 @@ data class AppHomeLayout(
                     // TODO : Remove
                     navigator.push(
                         DisplayPageDisplayClass(
-                            appModule
+                            appModule,
+                            onPasswordItemClicked = { selectedPassword ->
+                                val user = getLoggedInUser()
+                                if (user != null) {
+                                    navigator.push(
+                                        PinAuthenticationDisplayClass(
+                                            user,
+                                            "App Pin",
+                                            onComplete = { result ->
+                                                navigator.pop()
+                                                // TODO : Remove comment
+//                                                if (result) {
+                                                    // Move to Detailed password page if login passes
+                                                    navigator.push(
+                                                        DetailedPasswordDisplayPageClass(
+                                                            appModule,
+                                                            selectedPassword
+                                                        )
+                                                    )
+//                                                }
+                                            })
+                                    )
+                                }
+                            },
+                            onCardItemClicked = { selectedCard ->
+                                val user = getLoggedInUser()
+                                if (user != null) {
+                                    navigator.push(
+                                        PinAuthenticationDisplayClass(
+                                            user,
+                                            "App Pin",
+                                            onComplete = { result ->
+                                                navigator.pop()
+                                                if (result) {
+                                                    // TODO : Move to Detailed card page
+                                                }
+                                            })
+                                    )
+                                }
+                            }
                         )
                     )
 

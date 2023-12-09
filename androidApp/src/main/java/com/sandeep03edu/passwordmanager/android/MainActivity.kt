@@ -2,6 +2,7 @@ package com.sandeep03edu.passwordmanager.android
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.platform.LocalContext
@@ -15,7 +16,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         Firebase.initialize(this)
-
         setContent {
             App(
                 darkTheme = isSystemInDarkTheme(),

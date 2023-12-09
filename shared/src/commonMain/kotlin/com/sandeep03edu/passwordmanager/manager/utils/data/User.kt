@@ -5,6 +5,7 @@ import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 
 fun getLoggedInUser() : UserState?{
 
+    // TODO : Remove this
     return UserState("Sandeep", "Mishra", "+918178538456","1234", "123456")
 
     val settings = Settings()

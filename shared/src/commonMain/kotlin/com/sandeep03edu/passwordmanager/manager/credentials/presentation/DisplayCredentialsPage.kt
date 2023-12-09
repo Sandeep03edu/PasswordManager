@@ -38,17 +38,20 @@ import com.sandeep03edu.passwordmanager.space
 
 
 data class DisplayPageDisplayClass(
-    val appModule: AppModule
+    val appModule: AppModule,
+    val onPasswordItemClicked: (Password) -> Unit,
+    val onCardItemClicked: (Card) -> Unit
 ) : Screen{
 
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { CredentialViewModel(appModule.credentialDataSource) }
-        val state1 by viewModel.state.collectAsState()
-        val onEvent1 = viewModel::onEvent
+        val state by viewModel.state.collectAsState()
+        val onEvent = viewModel::onEvent
 
-        println("$TAG Class State Cards: ${state1.cards}")
-        DisplayPageDisplay(state1, onEvent1, viewModel.newCard, viewModel.newPassword, viewModel, {})
+        println("$TAG Class State Cards: ${state.cards}")
+
+        DisplayPageDisplay(state, onEvent, viewModel.newCard, viewModel.newPassword, viewModel, onPasswordItemClicked, onCardItemClicked)
     }
 
 }
@@ -60,7 +63,8 @@ fun DisplayPageDisplay(
     newCard: Card?,
     newPassword: Password?,
     viewModel: CredentialViewModel,
-    onPasswordItemClicked : (Password) -> Unit
+    onPasswordItemClicked : (Password) -> Unit,
+    onCardItemClicked: (Card) -> Unit
 ) {
 
     Scaffold(
@@ -118,7 +122,9 @@ fun DisplayPageDisplay(
                             modifier = Modifier
                                 .fillParentMaxWidth(0.7f)
                         ) {
-                            SecureHalfCardDisplay(it)
+                            SecureHalfCardDisplay(it, onCardItemClicked = {card->
+                                onCardItemClicked(card)
+                            })
                         }
                     }
                 }
@@ -198,6 +204,7 @@ fun DisplayPageDisplay(
                 PasswordSecureHalfDisplay(password = it){
                     // onClick
                     println("$TAG Clicked $it")
+                    onPasswordItemClicked(it)
                 }
             }
 
