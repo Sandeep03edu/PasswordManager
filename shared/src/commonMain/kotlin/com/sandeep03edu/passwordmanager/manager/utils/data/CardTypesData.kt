@@ -3,7 +3,7 @@ package com.sandeep03edu.passwordmanager.manager.utils.data
 import com.sandeep03edu.passwordmanager.SharedRes
 import dev.icerock.moko.resources.ImageResource
 
-fun getCardIssuersList(): List<String> {
+fun getCardTypesList(): List<String> {
     val list = mutableListOf<String>()
 
     list.add("Alipay")
@@ -24,7 +24,7 @@ fun getCardIssuersList(): List<String> {
     return list
 }
 
-fun getCardLogo(
+fun getCardTypeLogo(
     cardName: String,
 ): ImageResource {
     if (cardName.equals("Alipay", true)) {

@@ -10,18 +10,16 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.CardValidator
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.CredentialDataSource
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.PasswordValidator
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -97,32 +95,37 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
                         newCard = null
                     }
 
-                    /*
-                                        _state.update {
-                                            it.copy(
-                                                isAddNewCredentialSheetOpen = false,
 
-                                                // Reset all password error
-                                                passwordTitleError = null,
-                                                passwordUrlError = null,
-                                                passwordSecurityKeyError = null,
-                                                passwordUserDetailError = null,
-                                                passwordTagsError = null,
-
-                                                // Reset all card error
-                                                cardNumberError = null,
-                                                cardTypeError = null,
-                                                cardHolderNameError = null,
-                                                cardDateError = null,
-                                                cardBankNameError = null,
-                                                cardSecurityKeyError = null
-                                            )
-                                        }
-                    */
                 }
             }
 
-            is CredentialEvent.OnDismissAddNewDataClick -> {
+            is CredentialEvent.OnDisplayAddEditNewDataClick -> {
+                screenModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isAddNewCredentialSheetOpen = true
+                        )
+                    }
+                }
+
+                screenModelScope.launch {
+                    var card = event.card
+                    var password = event.password
+
+//                    if (card != null) {
+//                        card = credentialDataSource.getCardById(card.appId).firstOrNull()
+//                    }
+//                    if(password!=null){
+//                        password = credentialDataSource.getPasswordById(password.appId).firstOrNull()
+//                    }
+
+                    newCard = card
+                    newPassword = password
+                }
+            }
+
+
+            is CredentialEvent.OnDismissAddEditNewDataClick -> {
                 screenModelScope.launch {
                     _state.update {
                         it.copy(
@@ -130,20 +133,11 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
                         )
                     }
                 }
+
+                newCard = null
+                newPassword = null
             }
 
-            is CredentialEvent.OnDisplayAddNewDataClick -> {
-                screenModelScope.launch {
-                    _state.update {
-                        it.copy(
-                            isAddNewCredentialSheetOpen = true
-                        )
-                    }
-
-                    newCard = Card()
-                    newPassword = Password()
-                }
-            }
 
             is CredentialEvent.OnCardIssuerNameChanged -> {
                 println("$TAG OnCardIssuerNameChanged Started!!")
@@ -394,6 +388,8 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
 
 
             }
+
+
         }
     }
 }

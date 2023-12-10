@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.MaterialTheme
@@ -43,7 +41,7 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.BottomSheetDemo
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.TagCard
-import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuersList
+import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypesList
 import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTags
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CardButton
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
@@ -90,7 +88,7 @@ fun AddDataSheet(
                         contentDescription = null,
                         modifier = Modifier
                             .clickable {
-                                onEvent(CredentialEvent.OnDismissAddNewDataClick)
+                                onEvent(CredentialEvent.OnDismissAddEditNewDataClick)
                             }
                     )
 
@@ -142,22 +140,28 @@ fun AddDataSheet(
 
                 // TODO : Change with app logo
                 CircularImage(
-                    painter = `paintResource`(SharedRes.images.avatar),
+                    painter = paintResource(SharedRes.images.avatar),
                     modifier = Modifier.size(100.dp),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                IconDropDownField(
-                    imageVector = Icons.Rounded.Person,
-                    label = "Select Type",
-                    text = selectedDropDownItem,
-                    dropDownItems = dropDownItems,
-                    onSelectedItem = {
-                        selectedDropDownItem = it
-                        isCardUpdate = selectedDropDownItem == "Card"
-                    },
-                )
+                if ((newCard == null && newPassword == null) || (newCard != null && newPassword != null)) {
+                    // Add new data will display drop down
+                    IconDropDownField(
+                        imageVector = Icons.Rounded.Person,
+                        label = "Select Type",
+                        text = selectedDropDownItem,
+                        dropDownItems = dropDownItems,
+                        onSelectedItem = {
+                            selectedDropDownItem = it
+                            isCardUpdate = selectedDropDownItem == "Card"
+                        },
+                    )
+                } else {
+                    // Edit data will display drop down
+                    isCardUpdate = newCard != null
+                }
 
                 LazyColumn(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -230,7 +234,7 @@ fun DisplayAddCardForm(
         imageVector = Icons.Rounded.Person,
         label = "Issuer Name",
         text = newCard?.issuerName ?: "",
-        dropDownItems = getCardIssuersList(),
+        dropDownItems = getCardTypesList(),
         onSelectedItem = {
             onEvent(CredentialEvent.OnCardIssuerNameChanged(it))
         },

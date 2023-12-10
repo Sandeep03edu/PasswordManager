@@ -8,36 +8,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.screenModel.rememberNavigatorScreenModel
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
-import com.sandeep03edu.passwordmanager.manager.authentication.presentation.PinAuthentication
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserAuthentication
-import com.sandeep03edu.passwordmanager.manager.credentials.presentation.CredentialViewModel
-import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DisplayPageDisplay
+import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedCardDisplayPageClass
+import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedPasswordDisplayPageClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DisplayPageDisplayClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.PinAuthenticationDisplayClass
-import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.DetailedPasswordDisplayPage
-import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.DetailedPasswordDisplayPageClass
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
-import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
-import dev.icerock.moko.mvvm.compose.getViewModel
-import dev.icerock.moko.mvvm.compose.viewModelFactory
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 val TAG = "AppTag"
 
@@ -47,6 +33,7 @@ fun App(
     dynamicColor: Boolean,
     appModule: AppModule,
 ) {
+
     Navigator(AppHomeLayout(darkTheme, dynamicColor, appModule),
 //        onBackPressed = { currentScreen ->
 //            false // won't pop the current screen
@@ -60,7 +47,6 @@ data class AppHomeLayout(
     val dynamicColor: Boolean,
     val appModule: AppModule,
 ) : Screen {
-    @OptIn(ExperimentalVoyagerApi::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -71,8 +57,6 @@ data class AppHomeLayout(
         AppTheme(
             darkTheme = darkTheme, dynamicColor = dynamicColor
         ) {
-
-
             Box(
                 modifier = Modifier.fillMaxSize()
                     .background(color = MaterialTheme.colorScheme.background)
@@ -97,12 +81,12 @@ data class AppHomeLayout(
                                                 // TODO : Remove comment
 //                                                if (result) {
                                                     // Move to Detailed password page if login passes
-                                                    navigator.push(
-                                                        DetailedPasswordDisplayPageClass(
-                                                            appModule,
-                                                            selectedPassword
+                                                        navigator.push(
+                                                            DetailedPasswordDisplayPageClass(
+                                                                appModule,
+                                                                selectedPassword
+                                                            )
                                                         )
-                                                    )
 //                                                }
                                             })
                                     )
@@ -117,9 +101,17 @@ data class AppHomeLayout(
                                             "App Pin",
                                             onComplete = { result ->
                                                 navigator.pop()
-                                                if (result) {
+//                                                if (result) {
                                                     // TODO : Move to Detailed card page
-                                                }
+
+                                                        // Navigate to Detailed card page if login passes
+                                                        navigator.push(
+                                                            DetailedCardDisplayPageClass(
+                                                                appModule,
+                                                                selectedCard
+                                                            )
+                                                        )
+//                                                }
                                             })
                                     )
                                 }

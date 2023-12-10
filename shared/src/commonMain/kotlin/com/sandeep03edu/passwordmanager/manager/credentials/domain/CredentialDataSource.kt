@@ -9,6 +9,6 @@ interface CredentialDataSource {
     fun getPasswordById(appId : String): Flow<Password>
     fun getCardById(appId : String): Flow<Card>
 
-    suspend fun addCard(card: Card)
-    suspend fun addPassword(password: Password)
+    fun addCard(card: Card)
+    fun addPassword(password: Password)
 }

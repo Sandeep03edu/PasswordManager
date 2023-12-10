@@ -40,8 +40,8 @@ import com.sandeep03edu.passwordmanager.space
 data class DisplayPageDisplayClass(
     val appModule: AppModule,
     val onPasswordItemClicked: (Password) -> Unit,
-    val onCardItemClicked: (Card) -> Unit
-) : Screen{
+    val onCardItemClicked: (Card) -> Unit,
+) : Screen {
 
     @Composable
     override fun Content() {
@@ -51,7 +51,15 @@ data class DisplayPageDisplayClass(
 
         println("$TAG Class State Cards: ${state.cards}")
 
-        DisplayPageDisplay(state, onEvent, viewModel.newCard, viewModel.newPassword, viewModel, onPasswordItemClicked, onCardItemClicked)
+        DisplayPageDisplay(
+            state,
+            onEvent,
+            viewModel.newCard,
+            viewModel.newPassword,
+            viewModel,
+            onPasswordItemClicked,
+            onCardItemClicked
+        )
     }
 
 }
@@ -63,8 +71,8 @@ fun DisplayPageDisplay(
     newCard: Card?,
     newPassword: Password?,
     viewModel: CredentialViewModel,
-    onPasswordItemClicked : (Password) -> Unit,
-    onCardItemClicked: (Card) -> Unit
+    onPasswordItemClicked: (Password) -> Unit,
+    onCardItemClicked: (Card) -> Unit,
 ) {
 
     Scaffold(
@@ -72,7 +80,7 @@ fun DisplayPageDisplay(
             if (!state.isAddNewCredentialSheetOpen) {
                 FloatingActionButton(
                     onClick = {
-                        onEvent(CredentialEvent.OnDisplayAddNewDataClick)
+                        onEvent(CredentialEvent.OnDisplayAddEditNewDataClick(Password(), Card()))
                     },
                     shape = RoundedCornerShape(20.dp),
                 ) {
@@ -122,7 +130,7 @@ fun DisplayPageDisplay(
                             modifier = Modifier
                                 .fillParentMaxWidth(0.7f)
                         ) {
-                            SecureHalfCardDisplay(it, onCardItemClicked = {card->
+                            SecureHalfCardDisplay(it, onCardItemClicked = { card ->
                                 onCardItemClicked(card)
                             })
                         }
@@ -201,7 +209,7 @@ fun DisplayPageDisplay(
 
             items(list) {
                 // Password -> it
-                PasswordSecureHalfDisplay(password = it){
+                PasswordSecureHalfDisplay(password = it) {
                     // onClick
                     println("$TAG Clicked $it")
                     onPasswordItemClicked(it)

@@ -114,7 +114,7 @@ class SqlDelightCredentialDataSource(
     }
 
 
-    override suspend fun addCard(card: Card) {
+    override fun addCard(card: Card) {
         cardQueries.insertCard(
             appId = card.appId,
             issuerName = card.issuerName,
@@ -130,7 +130,7 @@ class SqlDelightCredentialDataSource(
         )
     }
 
-    override suspend fun addPassword(password: Password) {
+    override fun addPassword(password: Password) {
         passwordQueries.insertPassword(
             appId = password.appId,
             title = password.title,

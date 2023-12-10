@@ -1,7 +1,6 @@
-package com.sandeep03edu.passwordmanager.manager.credentials.presentation.components
+package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.FloatingActionButton
@@ -20,10 +17,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
@@ -36,20 +32,16 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
-import com.sandeep03edu.passwordmanager.manager.credentials.presentation.CredentialEvent
-import com.sandeep03edu.passwordmanager.manager.credentials.presentation.CredentialState
-import com.sandeep03edu.passwordmanager.manager.credentials.presentation.CredentialViewModel
+import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.TagCard
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
-import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTags
-import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconLabeledTextField
-import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconLabeledTextField
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconLabeledTextField
 import com.sandeep03edu.passwordmanager.space
+import kotlinx.coroutines.flow.first
 
 
 data class DetailedPasswordDisplayPageClass(
     val appModule: AppModule,
-    val password: Password
+    var password: Password
 ) : Screen{
 
     @Composable
@@ -57,7 +49,11 @@ data class DetailedPasswordDisplayPageClass(
         val viewModel = rememberScreenModel { CredentialViewModel(appModule.credentialDataSource) }
         val state by viewModel.state.collectAsState()
         val onEvent = viewModel::onEvent
-        DetailedPasswordDisplayPage(viewModel, state, onEvent,password)
+
+        LaunchedEffect(state.isAddNewCredentialSheetOpen){
+            password = appModule.credentialDataSource.getPasswordById(password.appId).first()
+        }
+        DetailedPasswordDisplayPage(viewModel, state, onEvent, password)
     }
 
 }
@@ -76,18 +72,19 @@ fun DetailedPasswordDisplayPage(
             if (!state.isAddNewCredentialSheetOpen) {
                 FloatingActionButton(
                     onClick = {
-                        onEvent(CredentialEvent.OnDisplayAddNewDataClick)
+                        onEvent(CredentialEvent.OnDisplayAddEditNewDataClick(password, null))
                     },
                     shape = RoundedCornerShape(20.dp),
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Edit,
-                        contentDescription = "Add contact",
+                        contentDescription = "Edit Password",
                     )
                 }
             }
         }
     ){
+
         LazyColumn(
             modifier = Modifier.fillMaxSize()
                 .padding(10.dp),
@@ -214,14 +211,17 @@ fun DetailedPasswordDisplayPage(
                    }
                }
 
-
-
-
                space(4)
 
            }
-
         }
     }
+
+    AddDataSheet(
+        state = state,
+        onEvent = onEvent,
+        newCard = viewModel.newCard,
+        newPassword = viewModel.newPassword
+    )
 
 }
