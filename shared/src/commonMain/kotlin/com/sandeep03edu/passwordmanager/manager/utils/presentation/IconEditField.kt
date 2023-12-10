@@ -258,10 +258,6 @@ fun IconDropDownField(
                     },
                     modifier = Modifier
                         .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
-
-
-//                        .background(MaterialTheme.colorScheme.background)
-//                        .padding(horizontal = 20.dp)
                 ) {
                     dropDownItems.forEachIndexed { idx, item ->
                         DropdownMenuItem(

@@ -109,7 +109,7 @@ fun getCardIssuerNameList(): MutableList<String> {
 
     val list: MutableList<String> = mutableListOf()
     pairList.forEach {
-        list.add(it.first)
+        list.add(it.first + " Bank")
     }
 
     return list

@@ -21,6 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -28,10 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
+import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypeLogo
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
+import dev.icerock.moko.resources.ImageResource
 
 @Composable
 fun SecureHalfCardDisplay(
@@ -136,15 +142,22 @@ fun SecureHalfCardDisplay(
 @Composable
 fun UpperHalfCardDisplay(
     card: Card,
+    background: ImageResource,
+    textColor: Color = Color.White,
+    textHeaderColor: Color = Color.Yellow,
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth(1f)
-            .aspectRatio(2f)
+            .aspectRatio(1.5f)
             .padding(vertical = 5.dp, horizontal = 10.dp)
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .paint(
+                paintResource(background),
+                contentScale = ContentScale.Fit
+            )
+//            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(vertical = 15.dp, horizontal = 15.dp)
     ) {
         Column(
@@ -161,7 +174,7 @@ fun UpperHalfCardDisplay(
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = textHeaderColor,
                             fontSize = 24.sp
                         )
                     ) {
@@ -176,6 +189,7 @@ fun UpperHalfCardDisplay(
                         style = SpanStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
+                            color = textColor
                         )
                     ) {
                         append(
@@ -190,7 +204,7 @@ fun UpperHalfCardDisplay(
                 }
             )
 
-            space(8)
+            space(16)
 
             val cardNumber = card.cardNumber
             Row(
@@ -202,7 +216,8 @@ fun UpperHalfCardDisplay(
                         text = "****",
                         style = TextStyle(
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
+                            color = textColor
                         )
                     )
 
@@ -220,13 +235,14 @@ fun UpperHalfCardDisplay(
                     text = securedCardNumber,
                     style = TextStyle(
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+                        color = textColor
                     )
                 )
 
             }
 
-            space(4)
+            space(16)
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -234,20 +250,28 @@ fun UpperHalfCardDisplay(
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-                Text(
-                    text = card.cardType.toString(),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
+//                Text(
+//                    text = card.cardType.toString(),
+//                    style = TextStyle(
+//                        fontSize = 15.sp,
+//                        fontWeight = FontWeight.SemiBold
+//                    )
+//                )
+
+                Image(
+                    painter = paintResource(getCardIssuerLogo(card.issuerName)),
+                    null,
+                    modifier = Modifier.width(100.dp),
+                    alignment = Alignment.CenterStart,
+//                    contentScale = ContentScale.Fit
                 )
 
                 Image(
-                    painter = paintResource(getCardTypeLogo(card.issuerName)),
+                    painter = paintResource(getCardTypeLogo(card.cardType!!)),
                     null,
-                    modifier = Modifier.width(100.dp)
-                        .height(40.dp),
-                    alignment = Alignment.CenterEnd
+                    modifier = Modifier.width(100.dp),
+                    alignment = Alignment.CenterEnd,
+//                    contentScale = ContentScale.FillWidth
                 )
             }
 
@@ -259,6 +283,9 @@ fun UpperHalfCardDisplay(
 @Composable
 fun BottomHalfCardDisplay(
     card: Card,
+    background: ImageResource,
+    textColor: Color = Color.White,
+    textHeaderColor: Color = Color.Green,
 ) {
     Box(
         modifier = Modifier
@@ -266,19 +293,27 @@ fun BottomHalfCardDisplay(
             .padding(vertical = 5.dp, horizontal = 10.dp)
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .paint(
+                paintResource(background),
+                contentScale = ContentScale.Fit
+            )
+//            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(vertical = 15.dp, horizontal = 15.dp)
     ) {
-        Column(horizontalAlignment = Alignment.Start) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             space(4)
 
             Text(
-                buildAnnotatedString
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                text = buildAnnotatedString
                 {
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = textHeaderColor,
                             fontSize = 24.sp
                         )
                     ) {
@@ -293,6 +328,7 @@ fun BottomHalfCardDisplay(
                         style = SpanStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
+                            color = textColor
                         )
                     ) {
                         append(
@@ -314,12 +350,14 @@ fun BottomHalfCardDisplay(
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
                         text = "Issue",
                         style = TextStyle(
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
                         )
                     )
 
@@ -329,7 +367,8 @@ fun BottomHalfCardDisplay(
                         text = card.issueDate.toString(),
                         style = TextStyle(
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
                         )
                     )
 
@@ -340,7 +379,8 @@ fun BottomHalfCardDisplay(
                         text = "Expiry",
                         style = TextStyle(
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
                         )
                     )
 
@@ -350,7 +390,8 @@ fun BottomHalfCardDisplay(
                         text = card.expiryDate.toString(),
                         style = TextStyle(
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
                         )
                     )
 
@@ -360,12 +401,14 @@ fun BottomHalfCardDisplay(
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
                         text = "CVV",
                         style = TextStyle(
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
                         )
                     )
 
@@ -375,7 +418,9 @@ fun BottomHalfCardDisplay(
                         text = card.cvv,
                         style = TextStyle(
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
+
                         )
                     )
 
@@ -385,7 +430,9 @@ fun BottomHalfCardDisplay(
                         text = "Pin",
                         style = TextStyle(
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
+
                         )
                     )
 
@@ -395,7 +442,9 @@ fun BottomHalfCardDisplay(
                         text = card.pin,
                         style = TextStyle(
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
+
                         )
                     )
                 }

@@ -2,11 +2,15 @@ package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -31,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.BottomHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.UpperHalfCardDisplay
@@ -112,21 +117,38 @@ fun DetailedCardDisplayPage(
 
 
             Column(
-                verticalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
-                    .fillMaxHeight(0.6f)
-                    .background(Color.Red)
+                    .fillMaxHeight(1f)
             ) {
-                UpperHalfCardDisplay(card)
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    UpperHalfCardDisplay(
+                        card,
+                        SharedRes.images.card_back1
+                    )
+                }
 
                 space(8)
 
-                BottomHalfCardDisplay(card)
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    BottomHalfCardDisplay(
+                        card,
+                        SharedRes.images.card_back1
+                    )
+                }
             }
 
             space(16)
 
         }
     }
+
+    AddDataSheet(
+        state = state,
+        onEvent = onEvent,
+        newCard = viewModel.newCard,
+        newPassword = viewModel.newPassword
+    )
+
 }
