@@ -107,7 +107,7 @@ fun getCardIssuerNameLogoPair(): MutableList<Pair<String, ImageResource>> {
 fun getCardIssuerNameList(): MutableList<String> {
     val pairList = getCardIssuerNameLogoPair()
 
-    val list : MutableList<String> = mutableListOf()
+    val list: MutableList<String> = mutableListOf()
     pairList.forEach {
         list.add(it.first)
     }
@@ -115,11 +115,21 @@ fun getCardIssuerNameList(): MutableList<String> {
     return list
 }
 
-fun getCardIssuerLogo(name: String) : ImageResource{
+fun getCardIssuerLogoList(): MutableList<ImageResource> {
+    val list: MutableList<ImageResource> = mutableListOf()
+
+    val pairList = getCardIssuerNameLogoPair()
+    pairList.forEach {
+        list.add(it.second)
+    }
+    return list
+}
+
+fun getCardIssuerLogo(name: String): ImageResource {
     val pairList = getCardIssuerNameLogoPair()
 
     pairList.forEach {
-        if(it.first==name){
+        if (it.first == name) {
             return it.second
         }
     }

@@ -41,6 +41,8 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.BottomSheetDemo
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.TagCard
+import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerLogoList
+import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerNameList
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypesList
 import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTags
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CardButton
@@ -234,7 +236,8 @@ fun DisplayAddCardForm(
         imageVector = Icons.Rounded.Person,
         label = "Issuer Name",
         text = newCard?.issuerName ?: "",
-        dropDownItems = getCardTypesList(),
+        dropDownItems = getCardIssuerNameList(),
+        dropDownItemIcons = getCardIssuerLogoList(),
         onSelectedItem = {
             onEvent(CredentialEvent.OnCardIssuerNameChanged(it))
         },
@@ -256,15 +259,17 @@ fun DisplayAddCardForm(
 
     space(4)
 
-    IconEditTextField(
-        leadingIcon = Icons.Rounded.Person,
+    IconDropDownField(
+        imageVector = Icons.Rounded.Person,
         label = "Card type",
         text = newCard?.cardType ?: "",
-        onTextChange = {
+        dropDownItems = getCardTypesList(),
+        onSelectedItem = {
             onEvent(CredentialEvent.OnCardTypeChanged(it))
         },
         errorMessage = state.cardTypeError
     )
+
 
     space(16)
 

@@ -1,11 +1,15 @@
 package com.sandeep03edu.passwordmanager.manager.utils.presentation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.onFocusChanged
@@ -39,6 +44,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import com.sandeep03edu.passwordmanager.SharedRes
+import com.sandeep03edu.passwordmanager.paintResource
+import com.sandeep03edu.passwordmanager.space
+import dev.icerock.moko.resources.ImageResource
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun IconEditTextField(
@@ -156,6 +166,7 @@ fun IconDropDownField(
     text: String,
     errorMessage: String? = null,
     dropDownItems: List<String> = emptyList(),
+    dropDownItemIcons: List<ImageResource>? = null,
     modifier: Modifier = Modifier,
     onSelectedItem: (String) -> Unit,
 ) {
@@ -252,14 +263,27 @@ fun IconDropDownField(
 //                        .background(MaterialTheme.colorScheme.background)
 //                        .padding(horizontal = 20.dp)
                 ) {
-                    dropDownItems.forEach { item ->
+                    dropDownItems.forEachIndexed { idx, item ->
                         DropdownMenuItem(
                             onClick = {
                                 onSelectedItem(item)
                                 isDropDownOpen = false
                             },
                             text = {
-                                Text(text = item)
+                                Row(
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (dropDownItemIcons != null) {
+                                        Image(
+                                            painter = paintResource(dropDownItemIcons[idx]),
+                                            "",
+                                            modifier = Modifier.size(40.dp)
+                                        )
+                                        space(width = 12)
+                                    }
+                                    Text(text = item)
+                                }
                             },
                         )
                     }
