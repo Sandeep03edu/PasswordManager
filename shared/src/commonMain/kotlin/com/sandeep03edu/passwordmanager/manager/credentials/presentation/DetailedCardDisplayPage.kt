@@ -1,17 +1,12 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
@@ -24,9 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -35,11 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
-import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.BottomHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.UpperHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
+import com.sandeep03edu.passwordmanager.manager.utils.data.getRandomDarkCardBackground
 import com.sandeep03edu.passwordmanager.space
 import kotlinx.coroutines.flow.first
 
@@ -122,10 +117,12 @@ fun DetailedCardDisplayPage(
                 modifier = Modifier.fillMaxWidth()
                     .fillMaxHeight(1f)
             ) {
+                val cardBackground = remember { getRandomDarkCardBackground() }
+                
                 Box(modifier = Modifier.fillMaxWidth()) {
                     UpperHalfCardDisplay(
                         card,
-                        SharedRes.images.card_back1
+                        cardBackground
                     )
                 }
 
@@ -134,7 +131,7 @@ fun DetailedCardDisplayPage(
                 Box(modifier = Modifier.fillMaxWidth()) {
                     BottomHalfCardDisplay(
                         card,
-                        SharedRes.images.card_back1
+                        cardBackground
                     )
                 }
             }

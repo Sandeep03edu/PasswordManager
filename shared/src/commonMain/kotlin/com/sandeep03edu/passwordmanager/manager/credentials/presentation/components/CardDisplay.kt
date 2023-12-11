@@ -31,13 +31,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypeLogo
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
 import dev.icerock.moko.resources.ImageResource
+import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.min
 
 @Composable
 fun SecureHalfCardDisplay(
@@ -151,8 +153,8 @@ fun UpperHalfCardDisplay(
             .fillMaxWidth(1f)
             .aspectRatio(1.5f)
             .padding(vertical = 5.dp, horizontal = 10.dp)
-            .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
-            .clip(RoundedCornerShape(10.dp))
+            .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(20.dp))
             .paint(
                 paintResource(background),
                 contentScale = ContentScale.Fit
@@ -207,40 +209,8 @@ fun UpperHalfCardDisplay(
             space(16)
 
             val cardNumber = card.cardNumber
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                repeat(3) {
-                    Text(
-                        text = "****",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = textColor
-                        )
-                    )
 
-                    space(width = 15)
-                }
-
-                val securedCardNumber = cardNumber.substring(
-                    range = IntRange(
-                        cardNumber.length - 4,
-                        cardNumber.length - 1
-                    )
-                )
-
-                Text(
-                    text = securedCardNumber,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = textColor
-                    )
-                )
-
-            }
+            DisplayCardNumber(cardNumber, textColor)
 
             space(16)
 
@@ -281,6 +251,35 @@ fun UpperHalfCardDisplay(
 }
 
 @Composable
+fun DisplayCardNumber(
+    cardNumber: String,
+    textColor: Color,
+) {
+    val length = cardNumber.length
+    Row(
+        horizontalArrangement = Arrangement.SpaceAround,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+
+        var start = 0;
+        // Divide card number in max 4 parts
+        val division = ceil((length / 4f)).toInt()
+        val repeater = min(division, 4)
+        repeat(repeater) {
+            Text(
+                text = cardNumber.subSequence(start, min(start + max(4, division), length)).toString(),
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = textColor
+                )
+            )
+            start +=  max(4, division)
+        }
+    }
+}
+
+@Composable
 fun BottomHalfCardDisplay(
     card: Card,
     background: ImageResource,
@@ -290,9 +289,10 @@ fun BottomHalfCardDisplay(
     Box(
         modifier = Modifier
             .fillMaxWidth(1f)
+            .aspectRatio(1.5f)
             .padding(vertical = 5.dp, horizontal = 10.dp)
-            .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
-            .clip(RoundedCornerShape(10.dp))
+            .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(20.dp))
             .paint(
                 paintResource(background),
                 contentScale = ContentScale.Fit
@@ -301,7 +301,8 @@ fun BottomHalfCardDisplay(
             .padding(vertical = 15.dp, horizontal = 15.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxSize()
         ) {
             space(4)
 
@@ -345,7 +346,7 @@ fun BottomHalfCardDisplay(
 
             space(8)
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
@@ -450,6 +451,8 @@ fun BottomHalfCardDisplay(
                 }
 
             }
+
+            space(8)
         }
 
     }
