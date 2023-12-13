@@ -98,7 +98,8 @@ kotlin {
                 // Transitions
                 implementation("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
 
-
+                // Hashing
+                implementation("com.appmattus.crypto:cryptohash:0.10.1")
             }
         }
         val commonTest by getting {

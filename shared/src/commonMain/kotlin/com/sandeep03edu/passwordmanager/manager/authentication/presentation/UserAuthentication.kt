@@ -1,10 +1,7 @@
 package com.sandeep03edu.passwordmanager.manager.authentication.presentation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,11 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,30 +19,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.appmattus.crypto.Algorithm
 import com.sandeep03edu.passwordmanager.SharedRes
-import com.sandeep03edu.passwordmanager.User
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CardButton
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CountryCodePicker
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.OtpTextField
 import com.sandeep03edu.passwordmanager.paintResource
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.AuthCredential
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.PhoneAuthProvider
-import dev.gitlive.firebase.auth.PhoneVerificationProvider
 import dev.gitlive.firebase.auth.auth
-import dev.gitlive.firebase.firestore.firestore
+import io.ktor.utils.io.charsets.Charsets
+import io.ktor.utils.io.core.toByteArray
 
 @Composable
 fun UserAuthentication() {
@@ -70,7 +56,7 @@ fun UserAuthentication() {
         CircularImage(
             painter = paintResource(SharedRes.images.avatar),
 
-        )
+            )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -99,8 +85,8 @@ fun UserAuthentication() {
                     println("Helllo Value changed to $code - $phone And $valid")
                 },
                 isPhoneNumberValid = isPhoneNumberValid,
-                onSendCode = {
-
+                sendCode = {
+                    // TODO: Send OTP
                 }
             )
         } else {
@@ -150,7 +136,7 @@ suspend fun FirebaseAuthProcess() {
 fun EnterOtpField(
     onOtpTextChange: (String, Boolean) -> Unit,
     otpValue: String,
-    isOtpValid: Boolean
+    isOtpValid: Boolean,
 ) {
     OtpTextField(
         otpText = otpValue,
@@ -196,25 +182,13 @@ fun EnterOtpField(
     }
 }
 
-suspend fun getUsers(): List<User> {
-    val firebaseFirestore = Firebase.firestore
-    try {
-        val userResponse =
-            firebaseFirestore.collection("USERS").get()
-        return userResponse.documents.map {
-            it.data()
-        }
-    } catch (e: Exception) {
-        throw e
-    }
-}
 
 
 @Composable
 fun EnterPhoneNumberView(
     onValueChange: (String, String, Boolean) -> Unit,
     isPhoneNumberValid: Boolean,
-    onSendCode: () -> Unit
+    sendCode: () -> Unit,
 ) {
     CountryCodePicker(onValueChange = { code, phone, valid ->
         onValueChange(code, phone, valid)
@@ -231,29 +205,8 @@ fun EnterPhoneNumberView(
         text = "Send Code",
         clickEnabled = isPhoneNumberValid,
         onClick = {
-            onSendCode()
+            sendCode()
         },
         backgroundColor = backgroundColor
     )
-//    Card(
-//        modifier = Modifier.fillMaxWidth().clipToBounds().padding(horizontal = 10.dp)
-//            .clickable(
-//                enabled = isPhoneNumberValid,
-//                onClick = { onSendCode() }
-//            ),
-//        shape = RoundedCornerShape(8.dp),
-//    ) {
-//        Text(
-//            text = "Send Code",
-//            style = TextStyle(
-//                fontSize = 16.sp, color = MaterialTheme.colorScheme.background
-//            ),
-//            modifier = Modifier.fillMaxWidth()
-//                .background(backgroundColor)
-//                .padding(horizontal = 16.dp, vertical = 8.dp),
-//            textAlign = TextAlign.Center
-//        )
-//    }
 }
-
-

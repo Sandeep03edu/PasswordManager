@@ -16,6 +16,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserAuthentication
+import com.sandeep03edu.passwordmanager.manager.authentication.presentation.hashingAlgorithm
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedCardDisplayPageClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedPasswordDisplayPageClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DisplayPageDisplayClass
@@ -62,7 +63,8 @@ data class AppHomeLayout(
                     .background(color = MaterialTheme.colorScheme.background)
             ) {
                 val currUser = Firebase.auth.currentUser
-                if (currUser != null) {
+                if (currUser == null) {
+                    TestHashFunction()
                     UserAuthentication()
                 } else {
                     // TODO : Remove
@@ -119,20 +121,6 @@ data class AppHomeLayout(
                         )
                     )
 
-//                    DisplayPageDisplay(
-//                        state,
-//                        onEvent,
-//                        viewModel.newCard,
-//                        viewModel.newPassword,
-//                        viewModel,
-//                        onPasswordItemClicked = {
-//                            val usr = getLoggedInUser()
-//                            println("$TAG Userrr: $usr")
-//                            if(usr!=null) {
-//                                navigator.push(PinAuthenticationDisplayClass(usr, "App Pin"))
-//                            }
-//                        }
-//                    )
 
 // TODO : Uncomment
                     /*
@@ -158,6 +146,13 @@ data class AppHomeLayout(
                 }
             }
         }
+    }
+
+    private fun TestHashFunction() {
+        println("$TAG Hash of Sandeep is ${hashingAlgorithm("Sandeep")}")
+        println("$TAG Hash of Ravi Teja is ${hashingAlgorithm("Ravi Teja")}")
+        println("$TAG Hash of Kaveri is ${hashingAlgorithm("Kaveri")}")
+        println("$TAG Hash of alakh Mishra Pandey is ${hashingAlgorithm("alakh Mishra Pandey")}")
     }
 
 }

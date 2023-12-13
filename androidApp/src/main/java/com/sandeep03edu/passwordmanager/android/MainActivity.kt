@@ -17,6 +17,8 @@ class MainActivity : ComponentActivity() {
 
         Firebase.initialize(this)
         setContent {
+
+
             App(
                 darkTheme = isSystemInDarkTheme(),
                 dynamicColor = false,
