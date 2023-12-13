@@ -8,3 +8,19 @@ captures
 .cxx
 local.properties
 xcuserdata
+
+
+
+# dependencies
+/Backend/node_modules
+/Backend/.pnp
+/Backend/.pnp.js
+
+# testing
+/Backend/frontend/coverage
+
+# production
+
+# dotenv file
+/Backend/.env
+
