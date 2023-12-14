@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
-const User = require("../models/UserModel");
+
 const generateJWT = require("../config/generateJWT");
+const { encryptyString } = require("../config/encryptionAlgorithm");
+const User = require("../models/user");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { email, firstName, lastName, loginPin, appPin } = req.body;
@@ -26,25 +28,28 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   }
 
-  if (!appPin || appPin.length != 4) {
+  if (!appPin || appPin.length != 6) {
     return res.status(400).json({
       success: false,
-      error: "App pin should contain 4 digits",
+      error: "App pin should contain 6 digits",
     });
   }
 
   // Check whether user exist or not
-  const userExist = await User.findone({ email });
+  const userExist = await User.findOne({ email });
 
   if (!userExist) {
     // Register the user
+
+    const hashedAppPin = encryptyString(appPin);
+    const hashedLoginPin = encryptyString(loginPin);
 
     const newUser = await User.create({
       email,
       firstName,
       lastName,
-      loginPin,
-      appPin,
+      loginPin: hashedLoginPin,
+      appPin: hashedAppPin,
     });
 
     if (newUser) {
@@ -66,6 +71,11 @@ const registerUser = asyncHandler(async (req, res) => {
         error: "An internal error occurred!!",
       });
     }
+  } else {
+    return res.status(400).json({
+      success: false,
+      error: "User already registered!!",
+    });
   }
 });
 
@@ -87,18 +97,49 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   }
 
-  if (!appPin || appPin.length != 4) {
+  if (!appPin || appPin.length != 6) {
     return res.status(400).json({
       success: false,
-      error: "App pin should contain 4 digits",
+      error: "App pin should contain 6 digits",
     });
   }
 
   // Check whether user exist or not
-  const userExist = await User.findone({ email });
+  const userExist = await User.findOne({ email });
 
   if (userExist) {
     // Login and Validate the user pins
-    // TODO : Compare the hashed login and appPin
+
+    // Comparing the hashed login and appPin
+    const hashedAppPin = encryptyString(appPin);
+    const hashedLoginPin = encryptyString(loginPin);
+
+    if (
+      userExist.loginPin === hashedLoginPin &&
+      userExist.appPin === hashedAppPin
+    ) {
+      return res.status(201).json({
+        success: true,
+        _id: userExist._id,
+        email: userExist.email,
+        firstName: userExist.firstName,
+        lastName: userExist.lastName,
+        loginPin: userExist.loginPin,
+        appPin: userExist.appPin,
+        token: generateJWT(userExist._id),
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid Credentials!!",
+      });
+    }
+  } else {
+    return res.status(400).json({
+      success: false,
+      error: "No user found!!",
+    });
   }
 });
+
+module.exports = { registerUser, loginUser };

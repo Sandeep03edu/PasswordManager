@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDb = require("./config/db");
 const dotenv = require("dotenv");
 const { encryptyString } = require("./config/encryptionAlgorithm");
+const userAuthRoutes = require("./routes/userAuthRoutes.js");
 
 // Configuring dotenv
 dotenv.config();
@@ -23,5 +24,5 @@ app.use(express.json());
 // Connect to PORT
 const server = app.listen(PORT, console.log(`Server Started on port ${PORT}`));
 
-// Dummy Crypto Test
-console.log(encryptyString("Sandeep"));
+// Authentication API
+app.use("/api/auth", userAuthRoutes);
