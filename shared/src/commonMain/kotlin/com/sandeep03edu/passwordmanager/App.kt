@@ -70,9 +70,6 @@ data class AppHomeLayout(
     @Composable
     override fun Content() {
 
-        // Function to test API Call
-        apiCallingTest();
-
         val navigator = LocalNavigator.currentOrThrow
 
 //        var viewModel = navigator.rememberNavigatorScreenModel { CredentialViewModel(appModule.credentialDataSource) }
@@ -87,7 +84,6 @@ data class AppHomeLayout(
             ) {
                 val currUser = Firebase.auth.currentUser
                 if (currUser == null) {
-                    testHashFunction()
                     UserAuthentication()
                 } else {
                     // TODO : Remove

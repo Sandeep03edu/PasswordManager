@@ -91,7 +91,6 @@ fun IconEditTextField(
                             } else {
                                 borderColor = Color.LightGray
                             }
-
                         },
                     prefix = {
                         Text(text = prefix)
