@@ -6,7 +6,7 @@ import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 fun getLoggedInUser() : UserState?{
 
     // TODO : Remove this
-    return UserState("Sandeep", "Mishra", "+918178538456","1234", "123456")
+//    return UserState("Sandeep", "Mishra", "+918178538456","1234", "123456")
 
     val settings = Settings()
 
@@ -25,4 +25,11 @@ fun getLoggedInUser() : UserState?{
     }
     println("getUser No Key found!!")
     return null
+}
+
+
+fun saveLoggedInUser(userState: UserState){
+    // TODO : Uncomment
+//    val settings = Settings()
+//    settings.putString("UserState", userState.toJson())
 }

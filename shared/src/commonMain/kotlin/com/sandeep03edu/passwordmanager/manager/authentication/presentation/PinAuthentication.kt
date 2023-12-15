@@ -55,16 +55,15 @@ fun PinAuthentication(
     onComplete: (String) -> Unit
 ) {
 
-    var pin by remember { mutableStateOf("") }
     var currentIndex by remember { mutableStateOf(0) }
 
-    val values = remember { mutableStateListOf<Int>() }
+    var values = remember { mutableStateListOf<Int>() }
     repeat(pinLength) {
         values.add(-1)
     }
 
     var list: MutableList<Int> = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
-    list = list.shuffled().toMutableList()
+//    list = list.shuffled().toMutableList()
 
     val lastElem = list.get(9)
     list[9] = -2
@@ -152,7 +151,12 @@ fun PinAuthentication(
                                     i++;
                                 }
 
+                                values.clear()
+
+                                currentIndex = 0
+
                                 onComplete(ans)
+
                             }
                         })
                     }

@@ -23,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,10 +43,12 @@ import com.sandeep03edu.passwordmanager.space
 @Composable
 fun UserAuthentication(
     onResponse: (AuthResponse) -> Unit,
+    loading: Boolean = false,
 ) {
     var emailId: String by rememberSaveable { mutableStateOf("") }
-    var isEmailIdValid: Boolean by remember { mutableStateOf(false) }
-    var isLoading: Boolean by remember { mutableStateOf(false) }
+    var isEmailIdValid: Boolean by remember { mutableStateOf(isValidEmail(emailId)) }
+    var isLoading by remember { mutableStateOf(loading) }
+
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),

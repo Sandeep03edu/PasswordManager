@@ -6,12 +6,13 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 data class UserState(
+    var _id: String="",
     var firstName: String="",
     var lastName: String="",
     var email: String="",
-    var phoneNumber: String="",
     var loginPin: String="",
-    var appPin: String=""
+    var appPin: String="",
+    var token: String="",
 ) {
     fun toJson() = run { Json.encodeToString(serializer(), this) }
 

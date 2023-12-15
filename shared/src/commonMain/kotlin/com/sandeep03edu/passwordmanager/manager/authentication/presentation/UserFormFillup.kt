@@ -1,5 +1,6 @@
 package com.sandeep03edu.passwordmanager.manager.authentication.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.screen.Screen
 import com.sandeep03edu.passwordmanager.SharedRes
+import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
+import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CardButton
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
@@ -32,17 +37,31 @@ import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditNumbe
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditTextField
 import com.sandeep03edu.passwordmanager.paintResource
 
+data class UserFormFillUpClass(
+    var email: String,
+    var onRegister: (AuthResponse) -> Unit,
+) : Screen {
+    @Composable
+    override fun Content() {
+        UserFormFillUp(email,onRegister)
+    }
+
+}
+
 @Composable
 fun UserFormFillUp(
-    phoneNumber: String
+    email: String,
+    onRegister: (AuthResponse) -> Unit,
 ) {
     val TAG = "UserFormFillUp";
-    var user by remember { mutableStateOf(UserState()) }
+    var user by remember { mutableStateOf(UserState(email = email)) }
+    var isLoading by remember { mutableStateOf(false) }
 
     var validator by remember { mutableStateOf(UserValidation()) }
 
     Box(
         modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(8.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -114,9 +133,12 @@ fun UserFormFillUp(
                     label = "First Name",
                     text = user.firstName,
                     onTextChange = {
-                        user.firstName = it
+                        user = user.copy(
+                            firstName = it
+                        )
                     },
-                    errorMessage = validator.firstNameError
+                    errorMessage = validator.firstNameError,
+                    enabled = !isLoading
                 )
             }
 
@@ -130,9 +152,12 @@ fun UserFormFillUp(
                     label = "Last Name",
                     text = user.lastName,
                     onTextChange = {
-                        user.lastName = it
+                        user = user.copy(
+                            lastName = it
+                        )
                     },
-                    errorMessage = validator.lastNameError
+                    errorMessage = validator.lastNameError,
+                    enabled = !isLoading
                 )
             }
 
@@ -146,10 +171,13 @@ fun UserFormFillUp(
                     label = "Login Pin",
                     text = user.loginPin,
                     onTextChange = {
-                        user.loginPin = it
+                        user = user.copy(
+                            loginPin = it
+                        )
                     },
                     maxLength = 4,
-                    errorMessage = validator.loginPinError
+                    errorMessage = validator.loginPinError,
+                    enabled = !isLoading
                 )
             }
 
@@ -163,10 +191,13 @@ fun UserFormFillUp(
                     label = "App Pin",
                     text = user.appPin,
                     onTextChange = {
-                        user.appPin = it
+                        user = user.copy(
+                            appPin = it
+                        )
                     },
                     maxLength = 6,
-                    errorMessage = validator.appPinError
+                    errorMessage = validator.appPinError,
+                    enabled = !isLoading
                 )
             }
 
@@ -178,6 +209,7 @@ fun UserFormFillUp(
                 CardButton(
                     backgroundColor = MaterialTheme.colorScheme.primary,
                     text = "Create Account",
+                    clickEnabled = !isLoading,
                     onClick = {
                         // Check All fields
                         validator = validateFields(
@@ -196,11 +228,33 @@ fun UserFormFillUp(
 
                         if (allError.isEmpty()) {
                             println("$TAG No error found!!")
+                            isLoading = true
+
+                            getAuthResult(
+                                url = "/api/auth/register",
+                                result = {
+                                    if (it != null) {
+                                        println("$TAG Auth From Register:: $it")
+                                        if (it.success) {
+                                            // Registered Successfully!!
+                                            onRegister(it)
+                                        } else {
+                                            // Registration failed!!
+                                            // TODO : Display Error Message
+                                        }
+                                    }
+                                },
+                                userState = user
+                            )
                         }
 
                     }
                 )
             }
+        }
+
+        if (isLoading) {
+            CircularProgressIndicator()
         }
     }
 }
@@ -234,5 +288,5 @@ data class UserValidation(
     var firstNameError: String? = null,
     var lastNameError: String? = null,
     var loginPinError: String? = null,
-    var appPinError: String? = null
+    var appPinError: String? = null,
 )

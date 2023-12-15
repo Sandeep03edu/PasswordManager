@@ -8,45 +8,31 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.sandeep03edu.passwordmanager.core.data.Background
-import com.sandeep03edu.passwordmanager.core.data.Main
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserAuthentication
+import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserFormFillUpClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedCardDisplayPageClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedPasswordDisplayPageClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DisplayPageDisplayClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.PinAuthenticationDisplayClass
+import com.sandeep03edu.passwordmanager.manager.credentials.presentation.checkAppPin
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
+import com.sandeep03edu.passwordmanager.manager.profile.domain.toUserState
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
-import com.sandeep03edu.passwordmanager.manager.utils.domain.hashingAlgorithm
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
-import io.ktor.client.utils.EmptyContent.contentType
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonBuilder
-import kotlinx.serialization.json.JsonObject
+import com.sandeep03edu.passwordmanager.manager.utils.data.saveLoggedInUser
 
 val TAG = "AppTag"
 
@@ -72,9 +58,6 @@ data class AppHomeLayout(
 
         val navigator = LocalNavigator.currentOrThrow
 
-//        var viewModel = navigator.rememberNavigatorScreenModel { CredentialViewModel(appModule.credentialDataSource) }
-//        val viewModel = rememberScreenModel { CredentialViewModel(appModule.credentialDataSource) }
-
         AppTheme(
             darkTheme = darkTheme, dynamicColor = dynamicColor
         ) {
@@ -82,112 +65,157 @@ data class AppHomeLayout(
                 modifier = Modifier.fillMaxSize()
                     .background(color = MaterialTheme.colorScheme.background)
             ) {
-                val currUser = Firebase.auth.currentUser
+
+                val currUser: UserState? = getLoggedInUser()
+
                 if (currUser == null) {
-                    UserAuthentication(onResponse = {
+                    // User is not logged in
+                    var userAuth: AuthResponse? by remember { mutableStateOf(null) }
 
-                    })
+                    UserAuthentication(
+                        onResponse = {
+                            userAuth = it
+                        })
+
+                    if (userAuth != null) {
+                        if (userAuth!!.userExist) {
+                            // User Alr exist
+                            // Move to loginPin and appPin authentication
+                            val checkUser: UserState by remember { mutableStateOf(UserState()) }
+                            checkUser.email = userAuth!!.email
+
+                            validateUser(checkUser, navigator, appModule)
+                        } else {
+                            // User DNE
+                            // Move to registration page
+                            navigator.replace(
+                                UserFormFillUpClass(userAuth!!.email){
+                                    // Convert to User state
+                                    val user = it.toUserState()
+
+                                    // Save the logged in user
+                                    saveLoggedInUser(user)
+
+                                    // Move to Display Page
+                                    navigator.replace(
+                                        launchLoggedUserDisplayPage(navigator, appModule)
+                                    )
+                                }
+                            )
+                        }
+                    }
                 } else {
-                    // TODO : Remove
+                    // Move to display page for logged in user
                     navigator.push(
-                        DisplayPageDisplayClass(
-                            appModule,
-                            onPasswordItemClicked = { selectedPassword ->
-                                val user = getLoggedInUser()
-                                if (user != null) {
-                                    navigator.push(
-                                        PinAuthenticationDisplayClass(
-                                            user,
-                                            "App Pin",
-                                            onComplete = { result ->
-                                                navigator.pop()
-                                                // TODO : Remove comment
-//                                                if (result) {
-                                                // Move to Detailed password page if login passes
-                                                navigator.push(
-                                                    DetailedPasswordDisplayPageClass(
-                                                        appModule,
-                                                        selectedPassword
-                                                    )
-                                                )
-//                                                }
-                                            })
-                                    )
-                                }
-                            },
-                            onCardItemClicked = { selectedCard ->
-                                val user = getLoggedInUser()
-                                if (user != null) {
-                                    navigator.push(
-                                        PinAuthenticationDisplayClass(
-                                            user,
-                                            "App Pin",
-                                            onComplete = { result ->
-                                                navigator.pop()
-//                                                if (result) {
-                                                // TODO : Move to Detailed card page
-
-                                                // Navigate to Detailed card page if login passes
-                                                navigator.push(
-                                                    DetailedCardDisplayPageClass(
-                                                        appModule,
-                                                        selectedCard
-                                                    )
-                                                )
-//                                                }
-                                            })
-                                    )
-                                }
-                            }
-                        )
+                        launchLoggedUserDisplayPage(navigator, appModule)
                     )
-
-
-// TODO : Uncomment
-                    /*
-                                    val usr = getLoggedInUser()
-                                    if (usr == null) {
-                    //                    val phoneNum = currUser?.phoneNumber
-                                        val phoneNum = "+918178538456"
-
-                                        UserFormFillUp(phoneNum)
-                                    } else {
-                                        // Display Page
-                                        DisplayPageDisplay(state, onEvent, viewModel.newCard, viewModel.newPassword)
-
-                                        // Pin Authentication
-                                        */
-                    /*
-                                                            PinAuthenticationDisplay(usr);
-                                        *//*
-
-
-                }
-*/
                 }
             }
         }
     }
 
-    private fun apiCallingTest(
-    ) {
-       getAuthResult(
-           url = "/api/auth/emailExist"
-       ){
-           println("$TAG Auth Respo:: $it")
-       }
-
-    }
-
-    private fun testHashFunction() {
-        println("$TAG Hash of Sandeep is ${hashingAlgorithm("Sandeep")}")
-        println("$TAG Hash of Ravi Teja is ${hashingAlgorithm("Ravi Teja")}")
-        println("$TAG Hash of Kaveri is ${hashingAlgorithm("Kaveri")}")
-        println("$TAG Hash of alakh Mishra Pandey is ${hashingAlgorithm("alakh Mishra Pandey")}")
-    }
-
 }
 
+fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Screen {
+    return DisplayPageDisplayClass(
+        appModule,
+        onPasswordItemClicked = { selectedPassword ->
+            val user = getLoggedInUser()
+            if (user != null) {
+                navigator.push(
+                    PinAuthenticationDisplayClass(
+                        pinLength = 6,
+                        label = "App Pin",
+                        onComplete = { appPin ->
+                            navigator.pop()
+                            if (checkAppPin(appPin)) {
+                                // Move to Detailed password page if login passes
+                                navigator.push(
+                                    DetailedPasswordDisplayPageClass(
+                                        appModule,
+                                        selectedPassword
+                                    )
+                                )
+                            }
+                        })
+                )
+            }
+        },
+        onCardItemClicked = { selectedCard ->
+            val user = getLoggedInUser()
+            if (user != null) {
+                navigator.push(
+                    PinAuthenticationDisplayClass(
+                        pinLength = 6,
+                        label = "App Pin",
+                        onComplete = { appPin ->
+                            navigator.pop()
+                            if (checkAppPin(appPin)) {
+                                navigator.push(
+                                    // Move to Detailed card page if login passes
+                                    DetailedCardDisplayPageClass(
+                                        appModule,
+                                        selectedCard
+                                    )
+                                )
+                            }
+                        })
+                )
+            }
+        }
+    )
+}
+
+fun validateUser(checkUser: UserState, navigator: Navigator, appModule: AppModule) {
+    navigator.push(
+        PinAuthenticationDisplayClass(
+            label = "Login pin",
+            pinLength = 4,
+            onComplete = {
+                checkUser.loginPin = it
+                navigator.pop()
+
+                navigator.push(
+                    PinAuthenticationDisplayClass(
+                        label = "App pin",
+                        pinLength = 6,
+                        onComplete = {
+                            checkUser.appPin = it
+
+                            println("$TAG CheckUser: $checkUser")
+                            navigator.pop()
+
+                            getAuthResult(
+                                url = "/api/auth/login",
+                                userState = checkUser,
+                                result = { authResponse ->
+                                    if (authResponse != null) {
+                                        println("$TAG Login Response : $authResponse")
+                                        if (authResponse.success) {
+                                            // Credentials Matched!!
+                                            val userState = authResponse.toUserState()
+
+                                            // Save logged in User
+                                            saveLoggedInUser(userState)
+
+                                            navigator.replace(
+                                                launchLoggedUserDisplayPage(navigator, appModule)
+                                            )
+                                        } else {
+                                            // Credentials not matched!!
+                                            // TODO : Show error message
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    )
+                )
+
+            }
+        )
+    )
+}
 
 @Composable
 fun space(height: Int = 0, width: Int = 0) {

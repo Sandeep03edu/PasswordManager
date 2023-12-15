@@ -23,7 +23,7 @@ fun CardButton(
     text: String,
     clickEnabled: Boolean = true,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier

@@ -26,7 +26,6 @@ fun getAuthResult(
 
     scope.launch {
         try {
-
             val response = client.post(urlString = "${BASE_URL}${url}")
             {
                 contentType(ContentType.Application.Json)

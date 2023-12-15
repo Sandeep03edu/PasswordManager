@@ -311,6 +311,7 @@ fun IconEditNumberField(
     maxLength: Int = 1000,
     modifier: Modifier = Modifier,
     onTextChange: (String) -> Unit,
+    enabled: Boolean = true,
 ) {
     var borderColor by remember { mutableStateOf(Color.LightGray) }
 
@@ -343,6 +344,7 @@ fun IconEditNumberField(
                             onTextChange(it)
                         }
                     },
+                    enabled = enabled,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.NumberPassword,
                         imeAction = ImeAction.Next
