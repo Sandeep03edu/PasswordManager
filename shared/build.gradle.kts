@@ -87,7 +87,13 @@ kotlin {
 
                 // Loading image/Media from url
                 implementation("media.kamel:kamel-image:0.8.3")
-                implementation("io.ktor:ktor-client-core:2.2.1")
+
+                // Network Calling
+//                implementation kotlin('stdlib-common')
+//                implementation("io.ktor:ktor-client-core:2.2.1")
+                implementation(libs.ktor.client.core)
+                implementation(libs.kotlinx.coroutines.core)
+
 
                 // Multiplatform Navigation
                 val voyagerVersion = "1.0.0-rc10"
@@ -117,8 +123,10 @@ kotlin {
                 implementation(libs.androidx.appcompat)
                 implementation(libs.androidx.activity.compose)
 
-                // Loading image/Media from url
-                implementation("io.ktor:ktor-client-okhttp:2.2.1")
+                // Network Calling
+//                implementation("io.ktor:ktor-client-okhttp:2.2.1")
+                implementation(libs.ktor.client.okhttp)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")
             }
         }
 
@@ -126,9 +134,10 @@ kotlin {
             dependencies {
                 implementation("app.cash.sqldelight:native-driver:2.0.0")
 
-                // Loading image/Media from url
-                implementation("io.ktor:ktor-client-darwin:2.2.1")
-
+                // Network Calling
+//                implementation("io.ktor:ktor-client-darwin:2.2.1")
+                implementation(libs.ktor.client.darwin)
+//                implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.8.0-RC")
             }
             dependsOn(commonMain)
         }

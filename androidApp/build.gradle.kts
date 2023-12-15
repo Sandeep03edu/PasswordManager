@@ -51,4 +51,7 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
 
     implementation("com.google.firebase:firebase-common-ktx:20.3.3")
+
+    // Kotlin couroutine
+    implementation(libs.kotlinx.coroutines.android)
 }

@@ -8,6 +8,7 @@ import kotlinx.serialization.json.Json
 data class UserState(
     var firstName: String="",
     var lastName: String="",
+    var email: String="",
     var phoneNumber: String="",
     var loginPin: String="",
     var appPin: String=""

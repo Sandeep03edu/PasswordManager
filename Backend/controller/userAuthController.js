@@ -143,6 +143,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const userEmailExist = asyncHandler(async (req, res) => {
+  console.log(`Request Body:: ${req.body.email}`);
   const { email } = req.body;
 
   // Handling Errors
