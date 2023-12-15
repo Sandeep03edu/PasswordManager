@@ -84,7 +84,9 @@ data class AppHomeLayout(
             ) {
                 val currUser = Firebase.auth.currentUser
                 if (currUser == null) {
-                    UserAuthentication()
+                    UserAuthentication(onResponse = {
+
+                    })
                 } else {
                     // TODO : Remove
                     navigator.push(

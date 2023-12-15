@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,12 +23,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.SharedRes
+import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
+import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
+import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CardButton
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CountryCodePicker
@@ -37,18 +42,28 @@ import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
 
 @Composable
-fun UserAuthentication() {
+fun UserAuthentication(
+    onResponse: (AuthResponse) -> Unit,
+) {
     var emailId: String by rememberSaveable { mutableStateOf("") }
     var isEmailIdValid: Boolean by remember { mutableStateOf(false) }
+    var isLoading: Boolean by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+        horizontalAlignment = Alignment.CenterHorizontally,
+
+        ) {
         CircularImage(
             painter = paintResource(SharedRes.images.avatar),
         )
+
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier,
+            )
+        }
 
         space(16)
 
@@ -81,17 +96,27 @@ fun UserAuthentication() {
             onTextChange = {
                 emailId = it
                 isEmailIdValid = isValidEmail(it)
-
             },
+            enabled = !isLoading
         )
 
         space(8)
 
         CardButton(
             text = "Proceed",
-            clickEnabled = isEmailIdValid,
+            clickEnabled = !isLoading && isEmailIdValid,
             onClick = {
-
+                isLoading = true
+                getAuthResult(
+                    "/api/auth/emailExist",
+                    userState = UserState(email = emailId)
+                ) {
+                    println("$TAG Auth from email:: $it")
+                    isLoading = false
+                    if (it != null) {
+                        onResponse(it)
+                    }
+                }
             },
             backgroundColor = if (isEmailIdValid) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
         )

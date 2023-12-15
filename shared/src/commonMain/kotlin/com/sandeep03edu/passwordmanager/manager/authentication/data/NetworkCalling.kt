@@ -13,24 +13,32 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
+val TAG = "NetworkCallingTag"
 val BASE_URL = "http://192.168.1.3:5000"
 
 fun getAuthResult(
     url: String,
-    result : (AuthResponse) -> Unit
-){
+    userState: UserState = UserState(),
+    result: (AuthResponse?) -> Unit,
+) {
     val client = HttpClient()
     val scope = CoroutineScope(Background)
 
     scope.launch {
-        val response = client.post(urlString = "${BASE_URL}${url}")
-        {
-            contentType(ContentType.Application.Json)
-            setBody( UserState(email = "Test1@gmail.com").toJson())
-        }
+        try {
 
-        val bodyText : String = response.bodyAsText()
-        val jsonResp : AuthResponse = Json.decodeFromString(bodyText)
-        result(jsonResp)
+            val response = client.post(urlString = "${BASE_URL}${url}")
+            {
+                contentType(ContentType.Application.Json)
+                setBody(userState.toJson())
+            }
+
+            val bodyText: String = response.bodyAsText()
+            val jsonResp: AuthResponse = Json.decodeFromString(bodyText)
+            result(jsonResp)
+        } catch (err : Exception) {
+            result(null)
+            println("$TAG Exception : $err")
+        }
     }
 }
