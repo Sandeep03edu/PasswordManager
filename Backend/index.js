@@ -5,6 +5,7 @@ const connectDb = require("./config/db");
 const dotenv = require("dotenv");
 const { encryptyString } = require("./config/encryptionAlgorithm");
 const userAuthRoutes = require("./routes/userAuthRoutes.js");
+const credentialRoutes = require("./routes/credentialRoutes,js");
 
 // Configuring dotenv
 dotenv.config();
@@ -26,3 +27,6 @@ const server = app.listen(PORT, console.log(`Server Started on port ${PORT}`));
 
 // Authentication API
 app.use("/api/auth", userAuthRoutes);
+
+// Credentials API
+app.use("/api/credentials", credentialRoutes);
