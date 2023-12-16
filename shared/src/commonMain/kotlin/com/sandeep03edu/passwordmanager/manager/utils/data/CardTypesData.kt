@@ -21,6 +21,10 @@ fun getCardTypesList(): List<String> {
     list.add("Union Pay")
     list.add("Visa")
 
+    list.forEachIndexed(){index, s ->
+        list[index] = s.uppercase()
+    }
+
     return list
 }
 

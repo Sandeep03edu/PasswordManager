@@ -1,5 +1,6 @@
 package com.sandeep03edu.passwordmanager.manager.utils.data
 
+import androidx.compose.ui.text.toUpperCase
 import com.sandeep03edu.passwordmanager.SharedRes
 import dev.icerock.moko.resources.ImageResource
 
@@ -16,7 +17,7 @@ fun getCardIssuerNameLogoPair(): MutableList<Pair<String, ImageResource>> {
     list.add(Pair("axis", SharedRes.images.axis))
     list.add(Pair("Bahrain", SharedRes.images.Bahrain))
     list.add(Pair("bandhan", SharedRes.images.bandhan))
-    list.add(Pair("Bank_of_Ceylon", SharedRes.images.Bank_of_Ceylon))
+    list.add(Pair("Bank of Ceylon", SharedRes.images.Bank_of_Ceylon))
     list.add(Pair("Barclays", SharedRes.images.Barclays))
     list.add(Pair("Baroda", SharedRes.images.Baroda))
     list.add(Pair("BNP", SharedRes.images.BNP))
@@ -28,7 +29,7 @@ fun getCardIssuerNameLogoPair(): MutableList<Pair<String, ImageResource>> {
     list.add(Pair("Citibank", SharedRes.images.Citibank))
     list.add(Pair("CityUnion", SharedRes.images.CityUnion))
     list.add(Pair("Corporation", SharedRes.images.Corporation))
-    list.add(Pair("Credit_Suisse", SharedRes.images.Credit_Suisse))
+    list.add(Pair("Credit Suisse", SharedRes.images.Credit_Suisse))
     list.add(Pair("CSB", SharedRes.images.CSB))
     list.add(Pair("CTBC", SharedRes.images.CTBC))
     list.add(Pair("DBS", SharedRes.images.DBS))
@@ -37,8 +38,8 @@ fun getCardIssuerNameLogoPair(): MutableList<Pair<String, ImageResource>> {
     list.add(Pair("Deutsche", SharedRes.images.Deutsche))
     list.add(Pair("Dhanlaxmi", SharedRes.images.Dhanlaxmi))
     list.add(Pair("Doha", SharedRes.images.Doha))
-    list.add(Pair("Emirates_NBD", SharedRes.images.Emirates_NBD))
-    list.add(Pair("FADB_PJSC", SharedRes.images.FADB_PJSC))
+    list.add(Pair("Emirates NBD", SharedRes.images.Emirates_NBD))
+    list.add(Pair("FADB PJSC", SharedRes.images.FADB_PJSC))
     list.add(Pair("Federal", SharedRes.images.Federal))
     list.add(Pair("FINO", SharedRes.images.FINO))
     list.add(Pair("FIrstRand", SharedRes.images.FIrstRand))
@@ -54,13 +55,13 @@ fun getCardIssuerNameLogoPair(): MutableList<Pair<String, ImageResource>> {
     list.add(Pair("IPPB", SharedRes.images.IPPB))
     list.add(Pair("Jio", SharedRes.images.Jio))
     list.add(Pair("JK", SharedRes.images.JK))
-    list.add(Pair("JP_Morgan", SharedRes.images.JP_Morgan))
+    list.add(Pair("JP Morgan", SharedRes.images.JP_Morgan))
     list.add(Pair("JSC", SharedRes.images.JSC))
     list.add(Pair("Karnataka", SharedRes.images.Karnataka))
     list.add(Pair("Karur", SharedRes.images.Karur))
-    list.add(Pair("KEB_Hana", SharedRes.images.KEB_Hana))
+    list.add(Pair("KEB Hana", SharedRes.images.KEB_Hana))
     list.add(Pair("kotak", SharedRes.images.kotak))
-    list.add(Pair("Krung_Thai", SharedRes.images.Krung_Thai))
+    list.add(Pair("Krung Thai", SharedRes.images.Krung_Thai))
     list.add(Pair("Lakshmi", SharedRes.images.Lakshmi))
     list.add(Pair("Maharashtra", SharedRes.images.Maharashtra))
     list.add(Pair("Mashreq", SharedRes.images.Mashreq))
@@ -86,8 +87,8 @@ fun getCardIssuerNameLogoPair(): MutableList<Pair<String, ImageResource>> {
     list.add(Pair("SMBC", SharedRes.images.SMBC))
     list.add(Pair("SocieteG", SharedRes.images.SocieteG))
     list.add(Pair("Sonali", SharedRes.images.Sonali))
-    list.add(Pair("South_Indian", SharedRes.images.South_Indian))
-    list.add(Pair("Standard_Chatered", SharedRes.images.Standard_Chatered))
+    list.add(Pair("South Indian", SharedRes.images.South_Indian))
+    list.add(Pair("Standard Chatered", SharedRes.images.Standard_Chatered))
     list.add(Pair("Syndicate", SharedRes.images.Syndicate))
     list.add(Pair("Tamilnad", SharedRes.images.Tamilnad))
     list.add(Pair("UBI", SharedRes.images.UBI))
@@ -109,7 +110,11 @@ fun getCardIssuerNameList(): MutableList<String> {
 
     val list: MutableList<String> = mutableListOf()
     pairList.forEach {
-        list.add(it.first + " Bank")
+        list.add(
+            (it.first + " Bank")
+                .split(' ')
+                .joinToString(" ") { it.replaceFirstChar(Char::uppercaseChar) }
+        )
     }
 
     return list

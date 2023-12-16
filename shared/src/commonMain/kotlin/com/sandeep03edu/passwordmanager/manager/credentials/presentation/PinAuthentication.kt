@@ -4,18 +4,19 @@ import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.PinAuthentication
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
+import com.sandeep03edu.passwordmanager.manager.utils.domain.encryptString
 
 data class PinAuthenticationDisplayClass(
     var pinLength: Int = 0,
     var label: String,
-    val onComplete : (String)-> Unit
+    val onComplete: (String) -> Unit,
 
-) : Screen {
+    ) : Screen {
 
     @Composable
     override fun Content() {
         PinAuthenticationDisplay(
-             pinLength, label, onComplete
+            pinLength, label, onComplete
         )
     }
 
@@ -25,7 +26,7 @@ data class PinAuthenticationDisplayClass(
 fun PinAuthenticationDisplay(
     pinLength: Int = 0,
     label: String,
-    onComplete : (String)-> Unit
+    onComplete: (String) -> Unit,
 ) {
 
     PinAuthentication(
@@ -34,29 +35,28 @@ fun PinAuthenticationDisplay(
     ) { inputPin ->
         println("$TAG Auth Pin: $inputPin")
 
-        if(inputPin.length==pinLength) {
+        if (inputPin.length == pinLength) {
             onComplete(inputPin)
         }
     }
 }
 
 fun checkLoginPin(
-    loginPin : String
-) : Boolean{
+    loginPin: String,
+): Boolean {
     val usr = getLoggedInUser()
-    if(usr!=null){
-        // TODO: Convert User's pin into hash before comparing
-        return usr.loginPin==loginPin
+    if (usr != null) {
+        return usr.loginPin == encryptString(loginPin)
     }
     return false
 }
+
 fun checkAppPin(
-    appPin : String
-) : Boolean{
+    appPin: String,
+): Boolean {
     val usr = getLoggedInUser()
-    if(usr!=null){
-        // TODO: Convert User's pin into hash before comparing
-        return usr.appPin==appPin
+    if (usr != null) {
+        return usr.appPin == encryptString(appPin)
     }
     return false
 }

@@ -12,11 +12,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +39,7 @@ import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditNumberField
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditTextField
 import com.sandeep03edu.passwordmanager.paintResource
+import kotlinx.coroutines.launch
 
 data class UserFormFillUpClass(
     var email: String,
@@ -247,7 +251,6 @@ fun UserFormFillUp(
                                 userState = user
                             )
                         }
-
                     }
                 )
             }
@@ -256,6 +259,7 @@ fun UserFormFillUp(
         if (isLoading) {
             CircularProgressIndicator()
         }
+
     }
 }
 

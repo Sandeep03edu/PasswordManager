@@ -4,6 +4,8 @@ import kotlinx.datetime.Clock
 
 data class Password(
     var appId : String = Clock.System.now().epochSeconds.toString(),
+    var _id : String ="",
+    var createdBy : String ="",
     var title:String = "",
     var url : String = "",
     var username : String = "",

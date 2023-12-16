@@ -4,7 +4,7 @@ import com.appmattus.crypto.Algorithm
 import io.ktor.utils.io.core.toByteArray
 
 @OptIn(ExperimentalStdlibApi::class)
-fun hashingAlgorithm(input: String): String {
+fun encryptString(input: String): String {
     val salt = "ABCDEFGHIJKLMNOP"
     val digest = Algorithm.Blake2b.Keyed(
         key = salt.toByteArray()
