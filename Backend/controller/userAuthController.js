@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 
 const generateJWT = require("../config/generateJWT");
-const { encryptyString } = require("../config/encryptionAlgorithm");
+const { hashString } = require("../config/encryptionAlgorithm");
 const User = require("../models/user");
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -41,8 +41,8 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!userExist) {
     // Register the user
 
-    const hashedAppPin = encryptyString(appPin);
-    const hashedLoginPin = encryptyString(loginPin);
+    const hashedAppPin = hashString(appPin);
+    const hashedLoginPin = hashString(loginPin);
 
     const newUser = await User.create({
       email,
@@ -111,8 +111,8 @@ const loginUser = asyncHandler(async (req, res) => {
     // Login and Validate the user pins
 
     // Comparing the hashed login and appPin
-    const hashedAppPin = encryptyString(appPin);
-    const hashedLoginPin = encryptyString(loginPin);
+    const hashedAppPin = hashString(appPin);
+    const hashedLoginPin = hashString(loginPin);
 
     if (
       userExist.loginPin === hashedLoginPin &&

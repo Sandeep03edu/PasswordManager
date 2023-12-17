@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const connectDb = require("./config/db");
 const dotenv = require("dotenv");
-const { encryptyString } = require("./config/encryptionAlgorithm");
+const { hashString, encryptString } = require("./config/encryptionAlgorithm");
 const userAuthRoutes = require("./routes/userAuthRoutes.js");
 const credentialRoutes = require("./routes/credentialRoutes,js");
 
@@ -30,3 +30,6 @@ app.use("/api/auth", userAuthRoutes);
 
 // Credentials API
 app.use("/api/credentials", credentialRoutes);
+
+// Test Encryption
+console.log(encryptString("Sandeep", "Hello", "Bye"));

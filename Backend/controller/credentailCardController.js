@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 
 const generateJWT = require("../config/generateJWT");
-const { encryptyString } = require("../config/encryptionAlgorithm");
+const { hashString } = require("../config/encryptionAlgorithm");
 
 const Card = require("../models/card");
 
@@ -51,7 +51,10 @@ const saveCard = asyncHandler(async (req, res) => {
     });
   }
 
-  const cardExit = await Card.findOne({ createdBy: createdBy, appId: appId });
+  const cardExit = await Card.findOne({
+    createdBy: createdBy,
+    appId: appId,
+  }).select("-__v -createdAt -updatedAt");
 
   if (!cardExit) {
     const card = await Card.create({
@@ -59,12 +62,12 @@ const saveCard = asyncHandler(async (req, res) => {
       createdBy: createdBy,
       issuerName: issuerName,
       cardHolderName: cardHolderName,
-      cardType: encryptyString(cardType),
-      cardNumber: encryptyString(cardNumber),
-      cvv: encryptyString(cvv),
-      pin: encryptyString(pin),
-      issueDate: encryptyString(issueDate),
-      expiryDate: encryptyString(expiryDate),
+      cardType: hashString(cardType),
+      cardNumber: hashString(cardNumber),
+      cvv: hashString(cvv),
+      pin: hashString(pin),
+      issueDate: hashString(issueDate),
+      expiryDate: hashString(expiryDate),
       isSynced: true,
       creationTime: creationTime,
     });
@@ -73,19 +76,7 @@ const saveCard = asyncHandler(async (req, res) => {
       // Card Created Successfully!!
       return res.status(200).json({
         success: true,
-        _id: card._id,
-        appId: card.appId,
-        createdBy: card.createdBy,
-        issuerName: card.issuerName,
-        cardHolderName: card.cardHolderName,
-        cardType: card.cardType,
-        cardNumber: card.cardNumber,
-        cvv: card.cvv,
-        pin: card.pin,
-        issueDate: card.issueDate,
-        expiryDate: card.expiryDate,
-        isSynced: card.isSynced,
-        creationTime: card.creationTime,
+        cards: [card],
       });
     } else {
       return res.status(400).json({
@@ -96,19 +87,7 @@ const saveCard = asyncHandler(async (req, res) => {
   } else {
     return res.status(200).json({
       success: true,
-      _id: cardExit._id,
-      appId: cardExit.appId,
-      createdBy: cardExit.createdBy,
-      issuerName: cardExit.issuerName,
-      cardHolderName: cardExit.cardHolderName,
-      cardType: cardExit.cardType,
-      cardNumber: cardExit.cardNumber,
-      cvv: cardExit.cvv,
-      pin: cardExit.pin,
-      issueDate: cardExit.issueDate,
-      expiryDate: cardExit.expiryDate,
-      isSynced: cardExit.isSynced,
-      creationTime: cardExit.creationTime,
+      cards: [cardExit],
     });
   }
 });
@@ -123,15 +102,51 @@ const getAllCards = asyncHandler(async (req, res) => {
     });
   }
 
-  const userCards = await Card.find({ createdBy: loggedUser._id });
+  const userCards = await Card.find({ createdBy: loggedUser._id }).select(
+    "-__v -createdAt -updatedAt"
+  );
 
   return res.status(200).json({
     success: true,
-    allCards: userCards,
+    cards: userCards,
   });
 });
 
-const getCardDetails = asyncHandler(async (req, res) => {});
+const getCardDetails = asyncHandler(async (req, res) => {
+  const loggedUser = req.user;
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      success: false,
+      error: "User not authenticated!!",
+    });
+  }
+
+  const { appId } = req.body;
+  if (!appId) {
+    return res.status(400).json({
+      success: false,
+      error: "AppId Missing",
+    });
+  }
+
+  const userCard = await Card.find({
+    createdBy: loggedUser._id,
+    appId: appId,
+  }).select("-__v -createdAt -updatedAt");
+
+  if (userCard) {
+    return res.status(200).json({
+      success: true,
+      cards: userCard,
+    });
+  } else {
+    res.status(400).json({
+      success: false,
+      error: "Card does not exist!!",
+    });
+  }
+});
 
 const cardValidator = (
   appId,
