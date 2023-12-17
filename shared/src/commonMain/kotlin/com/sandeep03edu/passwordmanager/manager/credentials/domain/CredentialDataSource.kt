@@ -11,4 +11,6 @@ interface CredentialDataSource {
 
     fun addCard(card: Card)
     fun addPassword(password: Password)
+
+    fun deleteAllCards()
 }

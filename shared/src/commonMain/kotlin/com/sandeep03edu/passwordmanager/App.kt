@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,21 +19,27 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.appmattus.crypto.Algorithm
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
+import com.sandeep03edu.passwordmanager.manager.authentication.data.getCardCredentialResult
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserAuthentication
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserFormFillUpClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedCardDisplayPageClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedPasswordDisplayPageClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DisplayPageDisplayClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.PinAuthenticationDisplayClass
-import com.sandeep03edu.passwordmanager.manager.credentials.presentation.checkAppPin
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.profile.domain.toUserState
+import com.sandeep03edu.passwordmanager.manager.utils.data.checkAppPin
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.saveLoggedInUser
+import com.sandeep03edu.passwordmanager.manager.utils.domain.encryptString
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 val TAG = "AppTag"
 
@@ -57,6 +64,10 @@ data class AppHomeLayout(
     override fun Content() {
 
         val navigator = LocalNavigator.currentOrThrow
+
+//        testCardApi()
+
+        testEncryption()
 
         AppTheme(
             darkTheme = darkTheme, dynamicColor = dynamicColor
@@ -89,7 +100,7 @@ data class AppHomeLayout(
                             // User DNE
                             // Move to registration page
                             navigator.replace(
-                                UserFormFillUpClass(userAuth!!.email){
+                                UserFormFillUpClass(userAuth!!.email) {
                                     // Convert to User state
                                     val user = it.toUserState()
 
@@ -112,6 +123,31 @@ data class AppHomeLayout(
                 }
             }
         }
+    }
+
+    private fun testEncryption() {
+        encryptString("Sandeep")
+    }
+
+    private fun testCardApi() {
+
+        getCardCredentialResult("/api/credentials/fetchAllCards",
+            result = {
+                println("$TAG Cred Resp:: ${it!!.cards}")
+                MainScope().launch {
+                    appModule.credentialDataSource.deleteAllCards()
+
+                    it.let {
+                        it.cards.let {cards->
+                            cards.forEach {card->
+                                appModule.credentialDataSource.addCard(card)
+                            }
+                        }
+                    }
+
+                }
+
+            })
     }
 
 }

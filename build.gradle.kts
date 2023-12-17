@@ -16,6 +16,7 @@ buildscript {
         classpath ("dev.icerock.moko:resources-generator:0.23.0")
         classpath(libs.sqldelight.gradle.plugin)
 //        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath("org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.17.3")
     }
     repositories {
         mavenCentral()
@@ -23,4 +24,8 @@ buildscript {
             url = uri("https://repo.repsy.io/mvn/chrynan/public")
         }
     }
+}
+
+allprojects {
+    apply(plugin = "kotlinx-atomicfu")
 }

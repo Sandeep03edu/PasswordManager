@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.PinAuthentication
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
-import com.sandeep03edu.passwordmanager.manager.utils.domain.encryptString
+import com.sandeep03edu.passwordmanager.manager.utils.domain.hashString
 
 data class PinAuthenticationDisplayClass(
     var pinLength: Int = 0,
@@ -41,22 +41,3 @@ fun PinAuthenticationDisplay(
     }
 }
 
-fun checkLoginPin(
-    loginPin: String,
-): Boolean {
-    val usr = getLoggedInUser()
-    if (usr != null) {
-        return usr.loginPin == encryptString(loginPin)
-    }
-    return false
-}
-
-fun checkAppPin(
-    appPin: String,
-): Boolean {
-    val usr = getLoggedInUser()
-    if (usr != null) {
-        return usr.appPin == encryptString(appPin)
-    }
-    return false
-}

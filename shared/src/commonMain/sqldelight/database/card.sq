@@ -38,13 +38,14 @@ INTO cardEntity(
 ) VALUES (?,?,?,?,?,?,?,?,?,?,?);
 
 
+getCardById:
+SELECT *
+FROM cardEntity
+WHERE appId=:appId;
+
 deleteCardById:
 DELETE FROM cardEntity
 WHERE appId=:appId;
 
-
-getCardById:
-SELECT *
-FROM cardEntity
--- WHERE id=:id;
-WHERE appId=:appId;
+deleteAllCards:
+DELETE FROM cardEntity;

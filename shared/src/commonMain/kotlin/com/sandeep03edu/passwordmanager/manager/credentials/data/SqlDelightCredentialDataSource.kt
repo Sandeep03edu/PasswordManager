@@ -144,6 +144,10 @@ class SqlDelightCredentialDataSource(
             isSynced = if (password.isSynced) 1 else 0
         )
     }
+
+    override fun deleteAllCards() {
+        cardQueries.deleteAllCards()
+    }
 }
 
 @JvmOverloads

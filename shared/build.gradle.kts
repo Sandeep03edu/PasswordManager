@@ -106,6 +106,12 @@ kotlin {
 
                 // Hashing
                 implementation("com.appmattus.crypto:cryptohash:0.10.1")
+
+                implementation("org.jetbrains.kotlinx:atomicfu:0.20.2")
+
+                // Cryptographic Library
+                implementation("io.github.abhriyaroy:KCrypt:0.0.8")
+
             }
         }
         val commonTest by getting {
