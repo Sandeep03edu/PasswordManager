@@ -36,6 +36,7 @@ import com.sandeep03edu.passwordmanager.manager.profile.domain.toUserState
 import com.sandeep03edu.passwordmanager.manager.utils.data.checkAppPin
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.saveLoggedInUser
+import com.sandeep03edu.passwordmanager.manager.utils.domain.decryptString
 import com.sandeep03edu.passwordmanager.manager.utils.domain.encryptString
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
@@ -126,7 +127,9 @@ data class AppHomeLayout(
     }
 
     private fun testEncryption() {
-        encryptString("Sandeep")
+        val encrypted = encryptString("Sandeep", "Hello")
+        println("$TAG Encrypted:: $encrypted")
+        println("$TAG Decrypted:: ${decryptString( encrypted, "Hello")}")
     }
 
     private fun testCardApi() {

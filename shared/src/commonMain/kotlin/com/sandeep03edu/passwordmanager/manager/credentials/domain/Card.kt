@@ -1,6 +1,7 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.domain
 
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
+import com.sandeep03edu.passwordmanager.manager.utils.domain.encryptString
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -8,23 +9,38 @@ import kotlinx.serialization.json.Json
 @Serializable
 data class Card(
     var appId: String = Clock.System.now().epochSeconds.toString(),
-    var _id : String ="",
-    var createdBy : String ="",
+    var _id: String = "",
+    var createdBy: String = "",
     var issuerName: String = "",
     var cardHolderName: String = "",
-    var cardType: String? = null,
+    var cardType: String = "",
     var cardNumber: String = "",
     var cvv: String = "",
     var pin: String = "",
-    var issueDate: String? = null,
-    var expiryDate: String? = null,
+    var issueDate: String = "",
+    var expiryDate: String = "",
     var isSynced: Boolean = false,
     var creationTime: Long = Clock.System.now().epochSeconds,
-)
-{
+) {
     fun toJson() = run { Json.encodeToString(serializer(), this) }
 
     companion object {
         fun fromJson(json: String) = run { Json.decodeFromString<UserState>(json) }
     }
+}
+
+fun Card.toEncryptedCard(): Card {
+    return Card(
+        appId,
+        _id,
+        createdBy,
+        issuerName,
+        cardHolderName,
+        cardType,
+        cardNumber,
+        encryptString(cvv, appId),
+        encryptString(pin, appId),
+        encryptString(issueDate, appId),
+        encryptString(expiryDate, appId)
+    )
 }

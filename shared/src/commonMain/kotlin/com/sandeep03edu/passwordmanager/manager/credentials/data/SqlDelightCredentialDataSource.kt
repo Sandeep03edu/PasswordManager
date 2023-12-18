@@ -115,14 +115,15 @@ class SqlDelightCredentialDataSource(
 
 
     override fun addCard(card: Card) {
+
         cardQueries.insertCard(
             appId = card.appId,
             issuerName = card.issuerName,
             cardHolderName = card.cardHolderName,
-            cardType = if (card.cardType == null) "" else card.cardType!!,
+            cardType = card.cardType!!,
             cardNumber = card.cardNumber,
-            issueDate = if (card.issueDate == null) "" else card.issueDate!!,
-            expiryDate = if (card.expiryDate == null) "" else card.expiryDate!!,
+            issueDate = card.issueDate!!,
+            expiryDate = card.expiryDate!!,
             pin = card.pin,
             cvv = card.cvv,
             creationTime = card.creationTime,

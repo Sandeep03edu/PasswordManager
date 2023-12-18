@@ -1,7 +1,5 @@
 package com.sandeep03edu.passwordmanager.core.data.crypto
 
-import kotlin.jvm.JvmStatic
-
 class AES(val keyWords: IntArray) : Cipher {
     override val blockSize: Int get() = BLOCK_SIZE
 

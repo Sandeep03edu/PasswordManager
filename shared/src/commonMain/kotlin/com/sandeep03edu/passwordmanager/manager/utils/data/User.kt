@@ -24,6 +24,10 @@ fun getLoggedInUserToken(): String {
     return user.token
 }
 
+fun getLoggedInUserId(): String {
+    val user = getLoggedInUser() ?: return ""
+    return user._id
+}
 
 fun saveLoggedInUser(userState: UserState) {
     val settings = Settings()
