@@ -1,9 +1,13 @@
 const asyncHandler = require("express-async-handler");
 
 const generateJWT = require("../config/generateJWT");
-const { hashString } = require("../config/encryptionAlgorithm");
 
 const Card = require("../models/card");
+const {
+  encryptString,
+  decryptString,
+  decryptCard,
+} = require("../config/encryptionAlgorithm");
 
 const saveCard = asyncHandler(async (req, res) => {
   const loggedUser = req.user;
@@ -62,12 +66,12 @@ const saveCard = asyncHandler(async (req, res) => {
       createdBy: createdBy,
       issuerName: issuerName,
       cardHolderName: cardHolderName,
-      cardType: hashString(cardType),
-      cardNumber: hashString(cardNumber),
-      cvv: hashString(cvv),
-      pin: hashString(pin),
-      issueDate: hashString(issueDate),
-      expiryDate: hashString(expiryDate),
+      cardType: cardType,
+      cardNumber: encryptString(cardNumber, createdBy, appId),
+      cvv: encryptString(cvv, createdBy, appId),
+      pin: encryptString(pin, createdBy, appId),
+      issueDate: encryptString(issueDate, createdBy, appId),
+      expiryDate: encryptString(expiryDate, createdBy, appId),
       isSynced: true,
       creationTime: creationTime,
     });
@@ -76,7 +80,7 @@ const saveCard = asyncHandler(async (req, res) => {
       // Card Created Successfully!!
       return res.status(200).json({
         success: true,
-        cards: [card],
+        cards: [decryptCard(card, card.createdBy, card.appId)],
       });
     } else {
       return res.status(400).json({
@@ -87,7 +91,7 @@ const saveCard = asyncHandler(async (req, res) => {
   } else {
     return res.status(200).json({
       success: true,
-      cards: [cardExit],
+      cards: [decryptCard(cardExit, cardExit.createdBy, cardExit.appId)],
     });
   }
 });
@@ -105,6 +109,11 @@ const getAllCards = asyncHandler(async (req, res) => {
   const userCards = await Card.find({ createdBy: loggedUser._id }).select(
     "-__v -createdAt -updatedAt"
   );
+
+  for (let i = 0; i < userCards.length; ++i) {
+    var currCard = userCards[i];
+    userCards[i] = decryptCard(currCard, currCard.createdBy, currCard.appId);
+  }
 
   return res.status(200).json({
     success: true,
@@ -134,6 +143,11 @@ const getCardDetails = asyncHandler(async (req, res) => {
     createdBy: loggedUser._id,
     appId: appId,
   }).select("-__v -createdAt -updatedAt");
+
+  for (let i = 0; i < userCard.length; ++i) {
+    var currCard = userCard[i];
+    userCard[i] = decryptCard(currCard, currCard.createdBy, currCard.appId);
+  }
 
   if (userCard) {
     return res.status(200).json({

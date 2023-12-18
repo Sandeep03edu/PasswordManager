@@ -11,8 +11,15 @@ const hashString = (input) => {
 };
 
 const encryptString = (text, userId, appId) => {
-  const encryption_key = "byz9VFNtbRQM0yBODcCb1lrUtVVH3D3x"; // Must be 32 characters
-  const initialization_vector = "X05IGQ5qdBnIqAWD"; // Must be 16 characters
+  var salt = process.env.AES_SALT;
+  var merger = salt + appId + userId;
+
+  while (merger.length < 33) {
+    merger += appId + userId;
+  }
+
+  const encryption_key = merger.substring(0, 32);
+  const initialization_vector = merger.substring(0, 16);
 
   const cipher = crypto.createCipheriv(
     "aes-256-cbc",
@@ -24,4 +31,34 @@ const encryptString = (text, userId, appId) => {
   return crypted;
 };
 
-module.exports = { hashString, encryptString };
+const decryptString = (text, userId, appId) => {
+  var salt = process.env.AES_SALT;
+  var merger = salt + appId + userId;
+
+  while (merger.length < 33) {
+    merger += appId + userId;
+  }
+  const encryption_key = merger.substring(0, 32);
+  const initialization_vector = merger.substring(0, 16);
+
+  const decipher = crypto.createDecipheriv(
+    "aes-256-cbc",
+    Buffer.from(encryption_key),
+    Buffer.from(initialization_vector)
+  );
+  let dec = decipher.update(text, "hex", "utf8");
+  dec += decipher.final("utf8");
+  return dec;
+};
+
+const decryptCard = (card, userId, appId) => {
+  card.cardNumber = decryptString(card.cardNumber, userId, appId);
+  card.pin = decryptString(card.pin, userId, appId);
+  card.cvv = decryptString(card.cvv, userId, appId);
+  card.issueDate = decryptString(card.issueDate, userId, appId);
+  card.expiryDate = decryptString(card.expiryDate, userId, appId);
+
+  return card;
+};
+
+module.exports = { hashString, encryptString, decryptString, decryptCard };
