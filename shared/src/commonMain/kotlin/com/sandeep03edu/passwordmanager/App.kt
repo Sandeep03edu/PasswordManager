@@ -66,7 +66,7 @@ data class AppHomeLayout(
 
         val navigator = LocalNavigator.currentOrThrow
 
-//        testCardApi()
+        testCardApi()
 
         testEncryption()
 

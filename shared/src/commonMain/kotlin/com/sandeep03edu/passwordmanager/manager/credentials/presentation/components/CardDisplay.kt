@@ -62,7 +62,7 @@ fun SecureHalfCardDisplay(
             space(4)
 
             Image(
-                painter = paintResource(getCardTypeLogo(card.issuerName)),
+                painter = paintResource(getCardTypeLogo(card.cardType)),
                 null,
                 modifier = Modifier.width(100.dp)
                     .height(55.dp)

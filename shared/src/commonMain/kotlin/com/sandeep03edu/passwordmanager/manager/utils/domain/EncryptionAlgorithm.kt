@@ -35,8 +35,6 @@ fun encryptString(inputText: String, appId: String): String {
 
     val res = AES.encryptAesCbc(inputText.toByteArray(), key.toByteArray(), iv.toByteArray(), CipherPadding.PKCS7Padding)
 
-    println("$TAG Res Hex:: ${res.toHexString()}")
-
     return res.toHexString()
 }
 

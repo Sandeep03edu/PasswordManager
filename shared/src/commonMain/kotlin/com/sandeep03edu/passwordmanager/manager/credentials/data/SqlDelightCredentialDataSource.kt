@@ -7,6 +7,8 @@ import com.sandeep03edu.passwordmanager.database.CredentialDatabase
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.CredentialDataSource
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
+import com.sandeep03edu.passwordmanager.manager.credentials.domain.toDecryptedCard
+import com.sandeep03edu.passwordmanager.manager.credentials.domain.toEncryptedCard
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.TAG
 import com.sandeep03edu.passwordmanager.manager.utils.data.tagsListToString
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +41,7 @@ class SqlDelightCredentialDataSource(
                     it
                         .map { cardEntity ->
                             async {
-                                cardEntity.toCard()
+                                cardEntity.toCard().toDecryptedCard()
                             }
                         }
                         .map {
@@ -109,25 +111,27 @@ class SqlDelightCredentialDataSource(
                 supervisorScope {
                     it.executeAsOne()
                         .toCard()
+                        .toDecryptedCard()
                 }
             }
     }
 
 
     override fun addCard(card: Card) {
+        val encryptedCard = card.toEncryptedCard()
 
         cardQueries.insertCard(
-            appId = card.appId,
-            issuerName = card.issuerName,
-            cardHolderName = card.cardHolderName,
-            cardType = card.cardType!!,
-            cardNumber = card.cardNumber,
-            issueDate = card.issueDate!!,
-            expiryDate = card.expiryDate!!,
-            pin = card.pin,
-            cvv = card.cvv,
-            creationTime = card.creationTime,
-            isSynced = if (card.isSynced) 1 else 0
+            appId = encryptedCard.appId,
+            issuerName = encryptedCard.issuerName,
+            cardHolderName = encryptedCard.cardHolderName,
+            cardType = encryptedCard.cardType,
+            cardNumber = encryptedCard.cardNumber,
+            issueDate = encryptedCard.issueDate,
+            expiryDate = encryptedCard.expiryDate,
+            pin = encryptedCard.pin,
+            cvv = encryptedCard.cvv,
+            creationTime = encryptedCard.creationTime,
+            isSynced = if (encryptedCard.isSynced) 1 else 0
         )
     }
 

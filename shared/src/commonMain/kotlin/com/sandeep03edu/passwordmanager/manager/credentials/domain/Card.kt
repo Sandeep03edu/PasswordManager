@@ -1,6 +1,7 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.domain
 
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
+import com.sandeep03edu.passwordmanager.manager.utils.domain.decryptString
 import com.sandeep03edu.passwordmanager.manager.utils.domain.encryptString
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
@@ -37,10 +38,25 @@ fun Card.toEncryptedCard(): Card {
         issuerName,
         cardHolderName,
         cardType,
-        cardNumber,
+        encryptString(cardNumber, appId),
         encryptString(cvv, appId),
         encryptString(pin, appId),
         encryptString(issueDate, appId),
         encryptString(expiryDate, appId)
+    )
+}
+fun Card.toDecryptedCard(): Card {
+    return Card(
+        appId,
+        _id,
+        createdBy,
+        issuerName,
+        cardHolderName,
+        cardType,
+        decryptString(cardNumber, appId),
+        decryptString(cvv, appId),
+        decryptString(pin, appId),
+        decryptString(issueDate, appId),
+        decryptString(expiryDate, appId)
     )
 }
