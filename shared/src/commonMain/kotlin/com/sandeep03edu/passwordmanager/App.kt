@@ -61,6 +61,7 @@ data class AppHomeLayout(
     @Composable
     override fun Content() {
 
+
         val navigator = LocalNavigator.currentOrThrow
 
         AppTheme(

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.TAG
+import com.sandeep03edu.passwordmanager.manager.utils.data.getCredentialUploadImage
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
 import io.kamel.core.getOrNull
@@ -59,55 +60,64 @@ fun PasswordSecureHalfDisplay(
     ) {
 
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxSize()
                 .padding(10.dp)
         ) {
             val painter =
                 asyncPainterResource(data = "https://www.google.com/s2/favicons?sz=64&domain_url=${password.url}")
 
+            Row (verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start){
+                if (painter.getOrNull() != null && painter.getOrNull()?.intrinsicSize?.height?.toInt() == 64) {
+                    KamelImage(
+                        resource = painter,
+                        onLoading = { progress -> CircularProgressIndicator(progress) },
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp)
+                    )
+                } else {
+                    // TODO : Replace with app icon
+                    Image(
+                        painter = paintResource(SharedRes.images.avatar),
+                        modifier = Modifier.size(50.dp),
+                        contentDescription = null
+                    )
+                }
 
-            if (painter.getOrNull() != null && painter.getOrNull()?.intrinsicSize?.height?.toInt() == 64) {
-                KamelImage(
-                    resource = painter,
-                    onLoading = { progress -> CircularProgressIndicator(progress) },
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp)
-                )
-            } else {
-                // TODO : Replace with app icon
-                Image(
-                    painter = paintResource(SharedRes.images.avatar),
-                    modifier = Modifier.size(50.dp),
-                    contentDescription = null
-                )
+                space(width = 16)
+
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    Text(
+                        text = password.title,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+
+                    space(4)
+
+                    Text(
+                        text = if (password.email.isNotEmpty()) password.email else password.username,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
             }
 
-            space(width = 16)
-
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = password.title,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                )
-
-                space(4)
-
-                Text(
-                    text = if (password.email.isNotEmpty()) password.email else password.username,
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                )
-            }
+            Image(
+                painter = paintResource(getCredentialUploadImage(password.isSynced)),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                alignment = Alignment.BottomEnd
+            )
         }
 
     }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -32,8 +33,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
+import com.sandeep03edu.passwordmanager.manager.credentials.presentation.TAG
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypeLogo
+import com.sandeep03edu.passwordmanager.manager.utils.data.getCredentialUploadImage
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
 import dev.icerock.moko.resources.ImageResource
@@ -119,22 +122,14 @@ fun SecureHalfCardDisplay(
                     )
                 )
 
-                var date = ""
-                if (card.expiryDate != null && card.expiryDate!!.isNotEmpty()) {
-                    date = card.expiryDate!!
-                } else if (card.issueDate != null && card.issueDate!!.isNotEmpty()) {
-                    date = card.issueDate!!
-                }
-
-                space(width = 15)
-
-                Text(
-                    text = date,
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                println("$TAG Card:: $card")
+                Image(
+                    painter = paintResource(getCredentialUploadImage(card.isSynced)),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    alignment = Alignment.BottomEnd
                 )
+
             }
         }
 
