@@ -18,7 +18,7 @@ fun CardEntity.toCard(): Card {
         issueDate = issueDate,
         expiryDate = expiryDate,
         cvv = cvv,
-        isSynced = isSynced.toInt() == 1,
+        isSynced = isSynced,
         creationTime = creationTime
     )
 }
@@ -33,7 +33,7 @@ fun PasswordEntity.toPassword(): Password {
         password = password,
         pin = pin,
         tags = stringTagsToList(tags),
-        isSynced = isSynced.toInt() == 1,
+        isSynced = isSynced,
         creationTime = creationTime
     )
 }

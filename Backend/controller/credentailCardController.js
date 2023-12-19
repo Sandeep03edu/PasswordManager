@@ -72,7 +72,7 @@ const saveCard = asyncHandler(async (req, res) => {
       pin: encryptString(pin, createdBy, appId),
       issueDate: encryptString(issueDate, createdBy, appId),
       expiryDate: encryptString(expiryDate, createdBy, appId),
-      isSynced: true,
+      isSynced: 1,
       creationTime: creationTime,
     });
 

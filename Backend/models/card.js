@@ -37,7 +37,7 @@ const cardSchema = mongoose.Schema(
       type: String,
     },
     isSynced: {
-      type: Boolean,
+      type: Number,
     },
     creationTime: {
       type: Number,

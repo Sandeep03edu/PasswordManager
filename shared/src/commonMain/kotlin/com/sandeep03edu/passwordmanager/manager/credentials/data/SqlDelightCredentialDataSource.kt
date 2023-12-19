@@ -131,7 +131,7 @@ class SqlDelightCredentialDataSource(
             pin = encryptedCard.pin,
             cvv = encryptedCard.cvv,
             creationTime = encryptedCard.creationTime,
-            isSynced = if (encryptedCard.isSynced) 1 else 0
+            isSynced = encryptedCard.isSynced
         )
     }
 
@@ -146,7 +146,7 @@ class SqlDelightCredentialDataSource(
             pin = password.pin,
             tags = tagsListToString(password.tags),
             creationTime = password.creationTime,
-            isSynced = if (password.isSynced) 1 else 0
+            isSynced = password.isSynced
         )
     }
 

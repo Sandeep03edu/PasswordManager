@@ -67,7 +67,7 @@ const savePassword = asyncHandler(async (req, res) => {
       email: encryptString(email, createdBy, appId),
       password: encryptString(password, createdBy, appId),
       pin: encryptString(pin, createdBy, appId),
-      isSynced: true,
+      isSynced: 1,
       tags: tags,
       creationTime,
     });

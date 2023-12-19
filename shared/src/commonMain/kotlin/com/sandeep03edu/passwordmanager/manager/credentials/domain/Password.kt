@@ -17,7 +17,8 @@ data class Password(
     var password: String = "",
     var pin: String = "",
     var tags: MutableList<String> = mutableListOf<String>(),
-    var isSynced: Boolean = false,
+    // 0-> Not Synced , 1 -> Synced, 2-> Syncing
+    var isSynced: Long = 0,
     var creationTime: Long = Clock.System.now().epochSeconds,
 ) {
     fun toJson() = run { Json.encodeToString(serializer(), this) }

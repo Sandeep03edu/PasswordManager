@@ -34,7 +34,7 @@ const passwordSchema = mongoose.Schema(
       default: [],
     },
     isSynced: {
-      type: Boolean,
+      type: Number,
     },
     creationTime: {
       type: Number,

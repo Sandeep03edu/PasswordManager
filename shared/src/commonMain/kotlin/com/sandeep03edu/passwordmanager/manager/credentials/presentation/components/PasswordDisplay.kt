@@ -111,6 +111,5 @@ fun PasswordSecureHalfDisplay(
         }
 
     }
-
-
 }
+

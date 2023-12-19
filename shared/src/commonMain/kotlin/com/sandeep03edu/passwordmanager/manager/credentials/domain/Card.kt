@@ -20,7 +20,8 @@ data class Card(
     var pin: String = "",
     var issueDate: String = "",
     var expiryDate: String = "",
-    var isSynced: Boolean = false,
+    // 0-> Not Synced , 1 -> Synced, 2-> Syncing
+    var isSynced: Long = 0,
     var creationTime: Long = Clock.System.now().epochSeconds,
 ) {
     fun toJson() = run { Json.encodeToString(serializer(), this) }
