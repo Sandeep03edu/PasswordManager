@@ -24,7 +24,7 @@ val BASE_URL = "http://192.168.1.4:5000"
 fun getAuthResult(
     url: String,
     userState: UserState = UserState(),
-    result: (AuthResponse?) -> Unit,
+    result: (AuthResponse) -> Unit,
 ) {
     val client = HttpClient()
     val scope = CoroutineScope(Background)
@@ -50,7 +50,7 @@ fun getAuthResult(
 fun getCardCredentialResult(
     url: String,
     card: Card = Card(),
-    result: (CredentialResponse?) -> Unit,
+    result: (CredentialResponse) -> Unit,
 ) {
     val client = HttpClient()
     val scope = CoroutineScope(Background)

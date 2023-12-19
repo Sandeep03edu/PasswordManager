@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,7 +18,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.appmattus.crypto.Algorithm
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getCardCredentialResult
@@ -39,7 +37,6 @@ import com.sandeep03edu.passwordmanager.manager.utils.data.saveLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.domain.decryptString
 import com.sandeep03edu.passwordmanager.manager.utils.domain.encryptString
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 val TAG = "AppTag"
@@ -66,10 +63,6 @@ data class AppHomeLayout(
 
         val navigator = LocalNavigator.currentOrThrow
 
-        testCardApi()
-
-        testEncryption()
-
         AppTheme(
             darkTheme = darkTheme, dynamicColor = dynamicColor
         ) {
@@ -92,26 +85,31 @@ data class AppHomeLayout(
                     if (userAuth != null) {
                         if (userAuth!!.userExist) {
                             // User Alr exist
-                            // Move to loginPin and appPin authentication
                             val checkUser: UserState by remember { mutableStateOf(UserState()) }
                             checkUser.email = userAuth!!.email
 
+                            // Move to loginPin and appPin authentication
                             validateUser(checkUser, navigator, appModule)
                         } else {
                             // User DNE
                             // Move to registration page
                             navigator.replace(
                                 UserFormFillUpClass(userAuth!!.email) {
-                                    // Convert to User state
-                                    val user = it.toUserState()
+                                    if(it.success) {
+                                        // Convert to User state
+                                        val user = it.toUserState()
 
-                                    // Save the logged in user
-                                    saveLoggedInUser(user)
+                                        // Save the logged in user
+                                        saveLoggedInUser(user)
 
-                                    // Move to Display Page
-                                    navigator.replace(
-                                        launchLoggedUserDisplayPage(navigator, appModule)
-                                    )
+                                        // Move to Display Page
+                                        navigator.replace(
+                                            launchLoggedUserDisplayPage(navigator, appModule)
+                                        )
+                                    }
+                                    else{
+                                        // TODO : Display Error message
+                                    }
                                 }
                             )
                         }
@@ -129,28 +127,7 @@ data class AppHomeLayout(
     private fun testEncryption() {
         val encrypted = encryptString("Sandeep", "Hello")
         println("$TAG Encrypted:: $encrypted")
-        println("$TAG Decrypted:: ${decryptString( encrypted, "Hello")}")
-    }
-
-    private fun testCardApi() {
-
-        getCardCredentialResult("/api/credentials/fetchAllCards",
-            result = {
-                println("$TAG Cred Resp:: ${it!!.cards}")
-                MainScope().launch {
-                    appModule.credentialDataSource.deleteAllCards()
-
-                    it.let {
-                        it.cards.let {cards->
-                            cards.forEach {card->
-                                appModule.credentialDataSource.addCard(card)
-                            }
-                        }
-                    }
-
-                }
-
-            })
+        println("$TAG Decrypted:: ${decryptString(encrypted, "Hello")}")
     }
 
 }
@@ -228,22 +205,25 @@ fun validateUser(checkUser: UserState, navigator: Navigator, appModule: AppModul
                                 url = "/api/auth/login",
                                 userState = checkUser,
                                 result = { authResponse ->
-                                    if (authResponse != null) {
-                                        println("$TAG Login Response : $authResponse")
-                                        if (authResponse.success) {
-                                            // Credentials Matched!!
-                                            val userState = authResponse.toUserState()
+                                    println("$TAG Login Response : $authResponse")
+                                    if (authResponse.success) {
+                                        // Credentials Matched!!
+                                        val userState = authResponse.toUserState()
 
-                                            // Save logged in User
-                                            saveLoggedInUser(userState)
+                                        // Save logged in User
+                                        saveLoggedInUser(userState)
 
-                                            navigator.replace(
-                                                launchLoggedUserDisplayPage(navigator, appModule)
-                                            )
-                                        } else {
-                                            // Credentials not matched!!
-                                            // TODO : Show error message
-                                        }
+                                        // Fetch Already saved data from server
+                                        updateServerCards(appModule)
+
+                                        updateServerPasswords(appModule)
+
+                                        navigator.replace(
+                                            launchLoggedUserDisplayPage(navigator, appModule)
+                                        )
+                                    } else {
+                                        // Credentials not matched!!
+                                        // TODO : Show error message
                                     }
                                 }
                             )
@@ -254,6 +234,44 @@ fun validateUser(checkUser: UserState, navigator: Navigator, appModule: AppModul
             }
         )
     )
+}
+
+fun updateServerPasswords(appModule: AppModule) {
+    getCardCredentialResult("/api/credentials/fetchAllPasswords",
+        result = {
+            println("$TAG Cred Passwords Resp:: ${it.passwords}")
+            MainScope().launch {
+                appModule.credentialDataSource.deleteAllPasswords()
+
+                it.let {
+                    it.passwords.let {passwords ->
+                        passwords.forEach { password ->
+                            appModule.credentialDataSource.addPassword(password)
+                        }
+                    }
+                }
+            }
+        })
+}
+
+fun updateServerCards(appModule: AppModule) {
+    getCardCredentialResult("/api/credentials/fetchAllCards",
+        result = {
+            println("$TAG Cred Resp:: ${it.cards}")
+            MainScope().launch {
+                appModule.credentialDataSource.deleteAllCards()
+
+                it.let {
+                    it.cards.let { cards ->
+                        cards.forEach { card ->
+                            appModule.credentialDataSource.addCard(card)
+                        }
+                    }
+                }
+
+            }
+
+        })
 }
 
 @Composable

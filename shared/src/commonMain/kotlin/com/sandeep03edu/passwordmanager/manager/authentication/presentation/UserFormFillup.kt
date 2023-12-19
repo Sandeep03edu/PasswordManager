@@ -237,15 +237,14 @@ fun UserFormFillUp(
                             getAuthResult(
                                 url = "/api/auth/register",
                                 result = {
-                                    if (it != null) {
-                                        println("$TAG Auth From Register:: $it")
-                                        if (it.success) {
-                                            // Registered Successfully!!
-                                            onRegister(it)
-                                        } else {
-                                            // Registration failed!!
-                                            // TODO : Display Error Message
-                                        }
+                                    println("$TAG Auth From Register:: $it")
+                                    onRegister(it)
+                                    if (it.success) {
+                                        // Registered Successfully!!
+                                        onRegister(it)
+                                    } else {
+                                        // Registration failed!!
+                                        // TODO : Display Error Message
                                     }
                                 },
                                 userState = user
