@@ -61,4 +61,19 @@ const decryptCard = (card, userId, appId) => {
   return card;
 };
 
-module.exports = { hashString, encryptString, decryptString, decryptCard };
+const decryptPassword = (password, userId, appId) => {
+  password.username = decryptString(password.username, userId, appId);
+  password.email = decryptString(password.email, userId, appId);
+  password.password = decryptString(password.password, userId, appId);
+  password.pin = decryptString(password.pin, userId, appId);
+
+  return password;
+};
+
+module.exports = {
+  hashString,
+  encryptString,
+  decryptString,
+  decryptCard,
+  decryptPassword,
+};

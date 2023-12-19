@@ -181,7 +181,7 @@ const cardValidator = (
   }
 
   if (!createdBy) {
-    return "CreatedBy Missing";
+    return "Created By Missing";
   }
 
   if (!issuerName) {

@@ -30,7 +30,8 @@ const passwordSchema = mongoose.Schema(
       type: String,
     },
     tags: {
-      type: String,
+      type: Array,
+      default: [],
     },
     isSynced: {
       type: Boolean,
@@ -44,6 +45,6 @@ const passwordSchema = mongoose.Schema(
   }
 );
 
-const password = mongoose.model("Password", passwordSchema);
+const Password = mongoose.model("Password", passwordSchema);
 
-module.exports = password;
+module.exports = Password;
