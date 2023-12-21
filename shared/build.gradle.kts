@@ -112,6 +112,8 @@ kotlin {
                 // Cryptographic Library
                 implementation("io.github.abhriyaroy:KCrypt:0.0.8")
 
+                // ModalBottomSheet
+                implementation("com.github.skydoves:flexible-bottomsheet-material3:0.1.1")
             }
         }
         val commonTest by getting {

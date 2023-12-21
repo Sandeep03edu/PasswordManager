@@ -1,9 +1,11 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,10 +46,12 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SecureHalfCardDisplay(
     card: Card,
     onCardItemClicked: (Card) -> Unit,
+    onCardItemLongClicked: (Card) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -56,9 +60,16 @@ fun SecureHalfCardDisplay(
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
-            .clickable {
-                onCardItemClicked(card)
-            }
+//            .clickable {
+//            }
+            .combinedClickable(
+                onClick = {
+                    onCardItemClicked(card)
+                },
+                onLongClick = {
+                    onCardItemLongClicked(card)
+                },
+            )
             .padding(10.dp)
     ) {
         Column(horizontalAlignment = Alignment.Start) {

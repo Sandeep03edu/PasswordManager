@@ -11,15 +11,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircle
+
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -35,6 +39,10 @@ import com.sandeep03edu.passwordmanager.manager.credentials.presentation.compone
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTagsWithIcons
 import com.sandeep03edu.passwordmanager.space
+import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
+import com.skydoves.flexible.core.FlexibleSheetSize
+import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
+import kotlinx.coroutines.launch
 
 
 data class DisplayPageDisplayClass(
@@ -64,6 +72,7 @@ data class DisplayPageDisplayClass(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DisplayPageDisplay(
     state: CredentialState,
@@ -74,13 +83,21 @@ fun DisplayPageDisplay(
     onPasswordItemClicked: (Password) -> Unit,
     onCardItemClicked: (Card) -> Unit,
 ) {
+    val scaffoldState = rememberBottomSheetScaffoldState()
+    val scope = rememberCoroutineScope()
+
 
     Scaffold(
         floatingActionButton = {
             if (!state.isAddNewCredentialSheetOpen) {
                 FloatingActionButton(
                     onClick = {
-                        onEvent(CredentialEvent.OnDisplayAddEditNewDataClick(Password(), Card()))
+                        onEvent(
+                            CredentialEvent.OnDisplayAddEditNewDataClick(
+                                Password(),
+                                Card()
+                            )
+                        )
                     },
                     shape = RoundedCornerShape(20.dp),
                 ) {
@@ -92,9 +109,55 @@ fun DisplayPageDisplay(
             }
         }
     ) {
-        println("$TAG State Cards: ${state.cards}")
-        println("$TAG State Password: ${state.passwords}")
-        println("$TAG State Filter Password: ${state.filteredPasswords}")
+
+/*
+        var isModal: Boolean by remember { mutableStateOf(false) }
+        val sheetState = rememberFlexibleBottomSheetState(
+            flexibleSheetSize = FlexibleSheetSize(
+                fullyExpanded = 1.0f,
+                intermediatelyExpanded = 0.5f,
+                slightlyExpanded = 0.1f
+            ),
+            isModal = isModal,
+            skipSlightlyExpanded = false,
+        )
+
+        FlexibleBottomSheet(
+            onDismissRequest = {
+                println("$TAG Sheet Dismisssed!!")
+            },
+            sheetState = sheetState,
+            onTargetChanges = { sheetValue ->
+
+            },
+        ) {
+            Text(text = "Bottom Sheeeet!!!")
+        }
+*/
+
+        var selectedCard: Card? by remember { mutableStateOf(null) }
+        var selectedPassword: Password? by remember { mutableStateOf(null) }
+        var isBottomSheetVisible by remember { mutableStateOf(selectedCard != null || selectedPassword != null) }
+
+        if (isBottomSheetVisible) {
+            FlexibleBottomSheet(
+                onDismissRequest = {
+                    selectedCard = null
+                    selectedPassword = null
+                    isBottomSheetVisible = false
+                },
+                sheetState = rememberFlexibleBottomSheetState(isModal = true,
+                    flexibleSheetSize = FlexibleSheetSize(
+                        fullyExpanded = 0.5f,
+                        intermediatelyExpanded = 0.5f,
+                        slightlyExpanded = 0f
+                    ),
+                ),
+            ) {
+                Text(text = "Bottom Sheeeet!!!")
+            }
+        }
+
 
         var selectedPasswordTag: String? by remember {
             mutableStateOf(null)
@@ -130,9 +193,18 @@ fun DisplayPageDisplay(
                             modifier = Modifier
                                 .fillParentMaxWidth(0.7f)
                         ) {
-                            SecureHalfCardDisplay(it, onCardItemClicked = { card ->
-                                onCardItemClicked(card)
-                            })
+                            SecureHalfCardDisplay(it,
+                                onCardItemClicked = { card ->
+                                    onCardItemClicked(card)
+                                },
+                                onCardItemLongClicked = { card ->
+                                    scope.launch {
+//                                        scaffoldState.bottomSheetState.expand()
+//                                        sheetState.fullyExpand()
+                                        selectedCard = card
+                                        isBottomSheetVisible = true
+                                    }
+                                })
                         }
                     }
                 }
@@ -224,6 +296,8 @@ fun DisplayPageDisplay(
             newCard = newCard,
             newPassword = newPassword
         )
+
+
     }
 
 }
