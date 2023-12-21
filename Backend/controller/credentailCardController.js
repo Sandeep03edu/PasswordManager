@@ -183,6 +183,53 @@ const getCardDetails = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteCardById = asyncHandler(async (req, res) => {
+  const loggedUser = req.user;
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      success: false,
+      error: "User not authenticated!!",
+    });
+  }
+
+  const { appId } = req.body;
+  if (!appId) {
+    return res.status(400).json({
+      success: false,
+      error: "AppId Missing",
+    });
+  }
+
+  try {
+    const response = await Card.deleteOne({
+      appId: appId,
+      createdBy: loggedUser._id,
+    });
+    console.log(response);
+    const deletedCard = response.deletedCount;
+    if (deletedCard != 0) {
+      // Delete successful
+      res.status(200).json({
+        success: true,
+        appId: appId,
+      });
+    } else {
+      res.status(200).json({
+        success: false,
+        appId: appId,
+        error: "No Card found!!",
+      });
+    }
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      appId: appId,
+      error: error.message,
+    });
+  }
+});
+
 const cardValidator = (
   appId,
   createdBy,
@@ -248,4 +295,4 @@ const cardValidator = (
   return "";
 };
 
-module.exports = { addUpdateCard, getAllCards, getCardDetails };
+module.exports = { addUpdateCard, getAllCards, getCardDetails, deleteCardById };

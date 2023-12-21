@@ -197,6 +197,53 @@ const getPasswordDetails = asyncHandler(async (req, res) => {
   }
 });
 
+const deletePasswordById = asyncHandler(async (req, res) => {
+  const loggedUser = req.user;
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      success: false,
+      error: "User not authenticated!!",
+    });
+  }
+
+  const { appId } = req.body;
+  if (!appId) {
+    return res.status(400).json({
+      success: false,
+      error: "AppId Missing",
+    });
+  }
+
+  try {
+    const response = await Password.deleteOne({
+      appId: appId,
+      createdBy: loggedUser._id,
+    });
+    console.log(response);
+    const deletedPassword = response.deletedCount;
+    if (deletedPassword != 0) {
+      // Delete successful
+      res.status(200).json({
+        success: true,
+        appId: appId,
+      });
+    } else {
+      res.status(200).json({
+        success: false,
+        appId: appId,
+        error: "No Password found!!",
+      });
+    }
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      appId: appId,
+      error: error.message,
+    });
+  }
+});
+
 const passwordValidator = (
   appId,
   createdBy,
@@ -240,4 +287,9 @@ const passwordValidator = (
   return "";
 };
 
-module.exports = { addUpdatePassword, getAllPasswords, getPasswordDetails };
+module.exports = {
+  addUpdatePassword,
+  getAllPasswords,
+  getPasswordDetails,
+  deletePasswordById,
+};
