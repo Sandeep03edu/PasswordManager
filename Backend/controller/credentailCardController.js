@@ -58,7 +58,7 @@ const saveCard = asyncHandler(async (req, res) => {
   const cardExit = await Card.findOne({
     createdBy: createdBy,
     appId: appId,
-  }).select("-__v -createdAt -updatedAt");
+  }).select("-__v -createdAt ");
 
   if (!cardExit) {
     const card = await Card.create({
@@ -107,7 +107,7 @@ const getAllCards = asyncHandler(async (req, res) => {
   }
 
   const userCards = await Card.find({ createdBy: loggedUser._id }).select(
-    "-__v -createdAt -updatedAt"
+    "-__v -createdAt "
   );
 
   for (let i = 0; i < userCards.length; ++i) {
@@ -142,7 +142,7 @@ const getCardDetails = asyncHandler(async (req, res) => {
   const userCard = await Card.find({
     createdBy: loggedUser._id,
     appId: appId,
-  }).select("-__v -createdAt -updatedAt");
+  }).select("-__v -createdAt ");
 
   for (let i = 0; i < userCard.length; ++i) {
     var currCard = userCard[i];

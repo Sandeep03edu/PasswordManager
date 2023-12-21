@@ -23,6 +23,7 @@ data class Card(
     // 0-> Not Synced , 1 -> Synced, 2-> Syncing
     var isSynced: Long = 0,
     var creationTime: Long = Clock.System.now().epochSeconds,
+    var updatedAt: Long = 0,
 ) {
     fun toJson() = run { Json.encodeToString(serializer(), this) }
 

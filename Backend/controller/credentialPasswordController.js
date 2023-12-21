@@ -55,7 +55,7 @@ const savePassword = asyncHandler(async (req, res) => {
   const passwordExist = await Password.findOne({
     createdBy: createdBy,
     appId: appId,
-  }).select("-__v -createdAt -updatedAt");
+  }).select("-__v -createdAt ");
 
   if (!passwordExist) {
     const passwordAdd = await Password.create({
@@ -77,9 +77,9 @@ const savePassword = asyncHandler(async (req, res) => {
         success: true,
         passwords: [
           decryptPassword(
-            passwordAdd,
-            passwordAdd.createdBy,
-            passwordAdd.appId
+            updatePassword,
+            updatePassword.createdBy,
+            updatePassword.appId
           ),
         ],
       });
@@ -115,7 +115,7 @@ const getAllPasswords = asyncHandler(async (req, res) => {
 
   const userPasswords = await Password.find({
     createdBy: loggedUser._id,
-  }).select("-__v -createdAt -updatedAt");
+  }).select("-__v -createdAt ");
 
   for (let i = 0; i < userPasswords.length; ++i) {
     var currPass = userPasswords[i];
@@ -153,7 +153,7 @@ const getPasswordDetails = asyncHandler(async (req, res) => {
   const userPassword = await Password.find({
     createdBy: loggedUser._id,
     appId: appId,
-  }).select("-__v -createdAt -updatedAt");
+  }).select("-__v -createdAt ");
 
   for (let i = 0; i < userPassword.length; ++i) {
     var currPass = userPassword[i];
