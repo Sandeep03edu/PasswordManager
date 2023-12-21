@@ -9,7 +9,7 @@ const {
   decryptCard,
 } = require("../config/encryptionAlgorithm");
 
-const saveCard = asyncHandler(async (req, res) => {
+const addUpdateCard = asyncHandler(async (req, res) => {
   const loggedUser = req.user;
 
   if (!loggedUser) {
@@ -89,9 +89,30 @@ const saveCard = asyncHandler(async (req, res) => {
       });
     }
   } else {
+    // Update Card
+    const updateCard = await Card.findByIdAndUpdate(
+      cardExit._id,
+      {
+        appId: appId,
+        createdBy: createdBy,
+        issuerName: issuerName,
+        cardHolderName: cardHolderName,
+        cardType: cardType,
+        cardNumber: encryptString(cardNumber, createdBy, appId),
+        cvv: encryptString(cvv, createdBy, appId),
+        pin: encryptString(pin, createdBy, appId),
+        issueDate: encryptString(issueDate, createdBy, appId),
+        expiryDate: encryptString(expiryDate, createdBy, appId),
+        isSynced: 1,
+        creationTime: creationTime,
+      },
+      {
+        new: true,
+      }
+    );
     return res.status(200).json({
       success: true,
-      cards: [decryptCard(cardExit, cardExit.createdBy, cardExit.appId)],
+      cards: [decryptCard(updateCard, updateCard.createdBy, updateCard.appId)],
     });
   }
 });
@@ -227,4 +248,4 @@ const cardValidator = (
   return "";
 };
 
-module.exports = { saveCard, getAllCards, getCardDetails };
+module.exports = { addUpdateCard, getAllCards, getCardDetails };

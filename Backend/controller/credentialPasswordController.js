@@ -8,7 +8,7 @@ const {
 } = require("../config/encryptionAlgorithm");
 const Password = require("../models/password");
 
-const savePassword = asyncHandler(async (req, res) => {
+const addUpdatePassword = asyncHandler(async (req, res) => {
   const loggedUser = req.user;
 
   if (!loggedUser) {
@@ -90,13 +90,33 @@ const savePassword = asyncHandler(async (req, res) => {
       });
     }
   } else {
+    const updatePassword = await Password.findByIdAndUpdate(
+      passwordExist._id,
+      {
+        appId: appId,
+        createdBy: createdBy,
+        title: title,
+        url: url,
+        username: encryptString(username, createdBy, appId),
+        email: encryptString(email, createdBy, appId),
+        password: encryptString(password, createdBy, appId),
+        pin: encryptString(pin, createdBy, appId),
+        isSynced: 1,
+        tags: tags,
+        creationTime,
+      },
+      {
+        new: true,
+      }
+    );
+
     return res.status(200).json({
       success: true,
       passwords: [
         decryptPassword(
-          passwordExist,
-          passwordExist.createdBy,
-          passwordExist.appId
+          updatePassword,
+          updatePassword.createdBy,
+          updatePassword.appId
         ),
       ],
     });
@@ -220,4 +240,4 @@ const passwordValidator = (
   return "";
 };
 
-module.exports = { savePassword, getAllPasswords, getPasswordDetails };
+module.exports = { addUpdatePassword, getAllPasswords, getPasswordDetails };
