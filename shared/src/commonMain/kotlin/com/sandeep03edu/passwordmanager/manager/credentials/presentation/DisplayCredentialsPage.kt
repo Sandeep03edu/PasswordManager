@@ -362,7 +362,7 @@ fun DisplayPageDisplay(
                     list = state.filteredPasswords
                 }
 
-                if (!state.passwords.isNotEmpty()) {
+                if (state.passwords.isNotEmpty()) {
                     items(list) {
                         // Password -> it
                         PasswordSecureHalfDisplay(password = it,
