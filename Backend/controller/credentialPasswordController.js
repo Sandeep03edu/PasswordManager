@@ -226,8 +226,7 @@ const deletePasswordById = asyncHandler(async (req, res) => {
       createdBy: loggedUser._id,
     });
     console.log(response);
-    const deletedPassword = response.deletedCount;
-    if (deletedPassword != 0) {
+    if (response.acknowledged) {
       // Delete successful
       res.status(200).json({
         success: true,
@@ -237,7 +236,7 @@ const deletePasswordById = asyncHandler(async (req, res) => {
       res.status(200).json({
         success: false,
         passwords: [{ appId }],
-        error: "No Password found!!",
+        error: "An internal error occurred!!",
       });
     }
   } catch (error) {

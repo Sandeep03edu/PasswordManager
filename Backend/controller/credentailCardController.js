@@ -212,8 +212,7 @@ const deleteCardById = asyncHandler(async (req, res) => {
       createdBy: loggedUser._id,
     });
 
-    const deletedCard = response.deletedCount;
-    if (deletedCard != 0) {
+    if (response.acknowledged) {
       // Delete successful
       res.status(200).json({
         success: true,
@@ -223,7 +222,7 @@ const deleteCardById = asyncHandler(async (req, res) => {
       res.status(200).json({
         success: false,
         cards: [{ appId }],
-        error: "No Card found!!",
+        error: "An internal error occurred!!",
       });
     }
   } catch (error) {

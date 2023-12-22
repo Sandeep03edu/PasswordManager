@@ -169,6 +169,14 @@ class SqlDelightCredentialDataSource(
     override fun deleteAllPasswords() {
         passwordQueries.deleteAllPasswords()
     }
+
+    override fun deletePasswordById(appId: String) {
+        passwordQueries.deletePasswordById(appId)
+    }
+
+    override fun deleteCardById(appId: String) {
+        cardQueries.deleteCardById(appId)
+    }
 }
 
 @JvmOverloads

@@ -162,6 +162,9 @@ fun DisplayPageDisplay(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                         onLoading = {
                             loadingLabel = it
+                        },
+                        onComplete = {
+                            isBottomSheetVisible = false
                         }
                     )
 
@@ -350,6 +353,7 @@ fun BottomSheetMenu(
     password: Password?,
     modifier: Modifier = Modifier,
     onLoading: (String) -> Unit,
+    onComplete: () -> Unit,
 ) {
     var selectedCard = card
     var selectedPassword = password
@@ -366,7 +370,7 @@ fun BottomSheetMenu(
     }
 
     println("$TAG SyncStatus:: $syncStatus || Card:: $selectedCard || Password:: $selectedPassword")
-    var syncLabel: String= ""
+    var syncLabel: String = ""
     if (syncStatus == 0L) {
         // Not uploaded
         syncLabel = "Sync Now"
@@ -433,6 +437,8 @@ fun BottomSheetMenu(
                                         selectedPassword,
                                         1L
                                     )
+
+                                    onComplete()
                                 } else {
                                     syncStatus = 0
                                     // TODO : Toast Error
@@ -442,6 +448,8 @@ fun BottomSheetMenu(
                                         selectedPassword = selectedPassword,
                                         0L
                                     )
+
+                                    onComplete()
                                 }
                             })
                     }
@@ -483,6 +491,7 @@ fun BottomSheetMenu(
                                         selectedPassword = selectedPassword,
                                         0L
                                     )
+                                    onComplete()
                                 } else {
                                     syncStatus = 0
                                     // Un Sync failed!!
@@ -493,6 +502,7 @@ fun BottomSheetMenu(
                                         selectedPassword = selectedPassword,
                                         1L
                                     )
+                                    onComplete()
                                 }
                             }
                         )
@@ -507,7 +517,58 @@ fun BottomSheetMenu(
             label = "Delete",
             text = "",
             onClick = {
-                // Perform action
+                // Perform delete action
+                if (syncStatus == 0L) {
+                    // Not uploaded to server!!
+                    onLoading("Deleting credentials locally")
+
+                    if (selectedCard != null) {
+                        appModule.credentialDataSource.deleteCardById(selectedCard!!.appId)
+                    } else if (selectedPassword != null) {
+                        appModule.credentialDataSource.deletePasswordById(selectedPassword!!.appId)
+                    }
+
+                    onLoading("")
+
+                    onComplete()
+                } else {
+                    // Already uploaded to server
+                    onLoading("Deleting credentials from server")
+
+                    var url = ""
+                    if (selectedCard != null) {
+                        url = NetworkEndPoints.deleteCard
+                    } else if (selectedPassword != null) {
+                        url = NetworkEndPoints.deletePassword
+                    }
+
+                    getCredentialDeleteResponse(
+                        url = url,
+                        card = selectedCard,
+                        password = selectedPassword,
+                        result = {
+                            if (it.success) {
+                                // Deleted from server successful
+                                onLoading("Deleting credentials locally")
+
+                                if (selectedCard != null) {
+                                    appModule.credentialDataSource.deleteCardById(selectedCard!!.appId)
+                                } else if (selectedPassword != null) {
+                                    appModule.credentialDataSource.deletePasswordById(
+                                        selectedPassword!!.appId
+                                    )
+                                }
+
+                                onLoading("")
+
+                                onComplete()
+                            } else {
+                                // TODO : Toast error message
+                                onComplete()
+                            }
+                        }
+                    )
+                }
             }
         )
     }

@@ -14,4 +14,6 @@ interface CredentialDataSource {
 
     fun deleteAllCards()
     fun deleteAllPasswords()
+    fun deletePasswordById(appId : String)
+    fun deleteCardById(appId : String)
 }
