@@ -66,7 +66,7 @@ import com.sandeep03edu.passwordmanager.manager.credentials.presentation.compone
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.PasswordTagCard
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.SecureHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
-import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserFirstName
+import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserName
 import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTagsWithIcons
 import com.sandeep03edu.passwordmanager.space
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
@@ -223,7 +223,7 @@ fun DisplayPageDisplay(
 
                 item{
                     Text(
-                        text = "Welcome ${getLoggedInUserFirstName()}!",
+                        text = "Welcome ${getLoggedInUserName()}!",
                         style = TextStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.SemiBold,

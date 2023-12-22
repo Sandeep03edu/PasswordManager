@@ -127,12 +127,6 @@ data class AppHomeLayout(
         }
     }
 
-    private fun testEncryption() {
-        val encrypted = encryptString("Sandeep", "Hello")
-        println("$TAG Encrypted:: $encrypted")
-        println("$TAG Decrypted:: ${decryptString(encrypted, "Hello")}")
-    }
-
 }
 
 fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Screen {
