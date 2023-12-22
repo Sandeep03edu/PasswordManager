@@ -19,6 +19,11 @@ fun getLoggedInUser(): UserState? {
     return null
 }
 
+fun getLoggedInUserFirstName(): String{
+    val user = getLoggedInUser() ?: return ""
+    return user.firstName
+}
+
 fun getLoggedInUserToken(): String {
     val user = getLoggedInUser() ?: return ""
     return user.token

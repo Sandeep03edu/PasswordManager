@@ -56,18 +56,6 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
         filteredPasswords,
     ) { state, cards, passwords, filteredPasswords ->
 
-        // Updated Value
-        println("$TAG FilterTag in State: ${filterTag.value}")
-        println("$TAG FilterTag ${filterTag.value} --> $filteredPasswords")
-
-        println(
-            "$TAG Data:: ${
-                credentialDataSource.getFilteredPasswords(
-                    filterTag.value
-                ).firstOrNull()
-            }"
-        )
-
         state.copy(
             cards = cards,
             passwords = passwords,
@@ -249,7 +237,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
             }
 
             CredentialEvent.SaveCard -> {
-                println("$TAG Saving Card:: $newCard")
+
                 newCard?.let { card ->
                     val cardValidator = CardValidator.validateCard(card)
 

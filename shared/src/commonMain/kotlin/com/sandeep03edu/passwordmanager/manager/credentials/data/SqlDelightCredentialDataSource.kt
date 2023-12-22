@@ -8,7 +8,9 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.CredentialDataSource
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.toDecryptedCard
+import com.sandeep03edu.passwordmanager.manager.credentials.domain.toDecryptedPassword
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.toEncryptedCard
+import com.sandeep03edu.passwordmanager.manager.credentials.domain.toEncryptedPassword
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.TAG
 import com.sandeep03edu.passwordmanager.manager.utils.data.tagsListToString
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +43,9 @@ class SqlDelightCredentialDataSource(
                     it
                         .map { cardEntity ->
                             async {
-                                cardEntity.toCard().toDecryptedCard()
+                                cardEntity
+                                    .toCard()
+                                    .toDecryptedCard()
                             }
                         }
                         .map {
@@ -62,7 +66,9 @@ class SqlDelightCredentialDataSource(
                     it.map { passwordEntity ->
                         async {
                             println("$TAG AllPasswordEntity:: $passwordEntity")
-                            passwordEntity.toPassword()
+                            passwordEntity
+                                .toPassword()
+                                .toDecryptedPassword()
                         }
                     }
                         .map {
@@ -81,7 +87,9 @@ class SqlDelightCredentialDataSource(
                 supervisorScope {
                     it.map { passwordEntity ->
                         async {
-                            passwordEntity.toPassword()
+                            passwordEntity
+                                .toPassword()
+                                .toDecryptedPassword()
                         }
                     }
                         .map {
@@ -99,6 +107,7 @@ class SqlDelightCredentialDataSource(
                 supervisorScope {
                     it.executeAsOne()
                         .toPassword()
+                        .toDecryptedPassword()
                 }
             }
     }
@@ -131,22 +140,25 @@ class SqlDelightCredentialDataSource(
             pin = encryptedCard.pin,
             cvv = encryptedCard.cvv,
             creationTime = encryptedCard.creationTime,
-            isSynced = encryptedCard.isSynced
+            isSynced = encryptedCard.isSynced,
+            updatedAt = encryptedCard.updatedAt
         )
     }
 
     override fun addPassword(password: Password) {
+        val encryptedPassword = password.toEncryptedPassword()
         passwordQueries.insertPassword(
-            appId = password.appId,
-            title = password.title,
-            url = password.url,
-            username = password.username,
-            emailId = password.email,
-            password = password.password,
-            pin = password.pin,
-            tags = tagsListToString(password.tags),
-            creationTime = password.creationTime,
-            isSynced = password.isSynced
+            appId = encryptedPassword.appId,
+            title = encryptedPassword.title,
+            url = encryptedPassword.url,
+            username = encryptedPassword.username,
+            emailId = encryptedPassword.email,
+            password = encryptedPassword.password,
+            pin = encryptedPassword.pin,
+            tags = tagsListToString(encryptedPassword.tags),
+            creationTime = encryptedPassword.creationTime,
+            isSynced = encryptedPassword.isSynced,
+            updatedAt = encryptedPassword.updatedAt
         )
     }
 

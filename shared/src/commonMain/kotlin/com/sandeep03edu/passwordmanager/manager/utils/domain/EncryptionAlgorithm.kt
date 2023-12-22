@@ -22,6 +22,10 @@ fun hashString(input: String): String {
 
 @OptIn(ExperimentalStdlibApi::class)
 fun encryptString(inputText: String, appId: String): String {
+    if(inputText.trim().isEmpty()){
+        return ""
+    }
+
     val userId = getLoggedInUserId()
     val salt = "ABCDEFGHIJ"
 
@@ -40,6 +44,9 @@ fun encryptString(inputText: String, appId: String): String {
 
 @OptIn(ExperimentalStdlibApi::class)
 fun decryptString(inputText: String, appId: String) : String{
+    if(inputText.trim().isEmpty()){
+        return ""
+    }
 
     val userId = getLoggedInUserId()
     val salt = "ABCDEFGHIJ"

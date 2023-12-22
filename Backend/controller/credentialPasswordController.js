@@ -58,7 +58,7 @@ const addUpdatePassword = asyncHandler(async (req, res) => {
   }).select("-__v -createdAt ");
 
   if (!passwordExist) {
-    const passwordAdd = await Password.create({
+    var passwordAdd = await Password.create({
       appId: appId,
       createdBy: createdBy,
       title: title,
@@ -72,14 +72,19 @@ const addUpdatePassword = asyncHandler(async (req, res) => {
       creationTime,
     });
 
+    passwordAdd = await Password.findOne({
+      createdBy: createdBy,
+      appId: appId,
+    }).select("-__v -createdAt ");
+
     if (passwordAdd) {
       return res.status(200).json({
         success: true,
         passwords: [
           decryptPassword(
-            updatePassword,
-            updatePassword.createdBy,
-            updatePassword.appId
+            passwordAdd,
+            passwordAdd.createdBy,
+            passwordAdd.appId
           ),
         ],
       });
@@ -108,7 +113,7 @@ const addUpdatePassword = asyncHandler(async (req, res) => {
       {
         new: true,
       }
-    );
+    ).select("-__v -createdAt ");
 
     return res.status(200).json({
       success: true,
@@ -226,19 +231,19 @@ const deletePasswordById = asyncHandler(async (req, res) => {
       // Delete successful
       res.status(200).json({
         success: true,
-        appId: appId,
+        passwords: [{ appId }],
       });
     } else {
       res.status(200).json({
         success: false,
-        appId: appId,
+        passwords: [{ appId }],
         error: "No Password found!!",
       });
     }
   } catch (error) {
     res.status(200).json({
       success: false,
-      appId: appId,
+      passwords: [{ appId }],
       error: error.message,
     });
   }
@@ -272,11 +277,11 @@ const passwordValidator = (
     return "Url can't be empty!!";
   }
 
-  if (!username.trim() && !email.trim()) {
+  if ((!username || !username.trim()) && (!email || !email.trim())) {
     return "Username or Email id is compulsory!!";
   }
 
-  if (!pin.trim() & !password.trim()) {
+  if ((!pin || !pin.trim) && (!password || !password.trim)) {
     return "Pin or Password is compulsory!!";
   }
 

@@ -61,7 +61,7 @@ const addUpdateCard = asyncHandler(async (req, res) => {
   }).select("-__v -createdAt ");
 
   if (!cardExit) {
-    const card = await Card.create({
+    var card = await Card.create({
       appId: appId,
       createdBy: createdBy,
       issuerName: issuerName,
@@ -75,6 +75,10 @@ const addUpdateCard = asyncHandler(async (req, res) => {
       isSynced: 1,
       creationTime: creationTime,
     });
+
+    card = await Card.findOne({ createdBy: createdBy, appId: appId }).select(
+      "-__v -createdAt "
+    );
 
     if (card) {
       // Card Created Successfully!!
@@ -109,7 +113,8 @@ const addUpdateCard = asyncHandler(async (req, res) => {
       {
         new: true,
       }
-    );
+    ).select("-__v -createdAt ");
+
     return res.status(200).json({
       success: true,
       cards: [decryptCard(updateCard, updateCard.createdBy, updateCard.appId)],
@@ -206,25 +211,25 @@ const deleteCardById = asyncHandler(async (req, res) => {
       appId: appId,
       createdBy: loggedUser._id,
     });
-    console.log(response);
+
     const deletedCard = response.deletedCount;
     if (deletedCard != 0) {
       // Delete successful
       res.status(200).json({
         success: true,
-        appId: appId,
+        cards: [{ appId }],
       });
     } else {
       res.status(200).json({
         success: false,
-        appId: appId,
+        cards: [{ appId }],
         error: "No Card found!!",
       });
     }
   } catch (error) {
     res.status(200).json({
       success: false,
-      appId: appId,
+      cards: [{ appId }],
       error: error.message,
     });
   }

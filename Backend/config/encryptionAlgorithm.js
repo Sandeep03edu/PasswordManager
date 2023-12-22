@@ -11,6 +11,9 @@ const hashString = (input) => {
 };
 
 const encryptString = (text, userId, appId) => {
+  if (!text) {
+    return "";
+  }
   var salt = process.env.AES_SALT;
   var merger = salt + appId + userId;
 
@@ -32,6 +35,9 @@ const encryptString = (text, userId, appId) => {
 };
 
 const decryptString = (text, userId, appId) => {
+  if (!text) {
+    return "";
+  }
   var salt = process.env.AES_SALT;
   var merger = salt + appId + userId;
 

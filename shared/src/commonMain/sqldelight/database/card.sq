@@ -11,7 +11,8 @@ CREATE TABLE cardEntity (
     pin TEXT NOT NULL,
     cvv TEXT NOT NULL,
     creationTime INTEGER NOT NULL,
-    isSynced INTEGER NOT NULL
+    isSynced INTEGER NOT NULL,
+    updatedAt TEXT NOT NULL
 );
 
 getAllCards:
@@ -34,8 +35,9 @@ INTO cardEntity(
     pin,
     cvv,
     creationTime,
-    isSynced
-) VALUES (?,?,?,?,?,?,?,?,?,?,?);
+    isSynced,
+    updatedAt
+) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
 
 
 getCardById:

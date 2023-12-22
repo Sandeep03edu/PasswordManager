@@ -1,6 +1,7 @@
 package com.sandeep03edu.passwordmanager.manager.utils.presentation
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,12 +31,18 @@ fun IconLabeledTextField(
     text: String,
     modifier: Modifier = Modifier,
     prefix: String = "",
+    onClick: (() -> Unit)? = null,
 ) {
     var borderColor by remember { mutableStateOf(Color.LightGray) }
 
     Box(
         modifier = modifier
             .clipToBounds()
+            .clickable(enabled = onClick != null) {
+                if (onClick != null) {
+                    onClick()
+                }
+            }
     ) {
 
         Column() {

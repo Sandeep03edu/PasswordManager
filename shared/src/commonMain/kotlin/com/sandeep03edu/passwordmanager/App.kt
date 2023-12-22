@@ -20,7 +20,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
-import com.sandeep03edu.passwordmanager.manager.authentication.data.getCardCredentialResult
+import com.sandeep03edu.passwordmanager.manager.authentication.data.getCredentialGetResult
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserAuthentication
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserFormFillUpClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedCardDisplayPageClass
@@ -61,6 +61,8 @@ data class AppHomeLayout(
     @Composable
     override fun Content() {
 
+//        updateServerCards(appModule)
+//        updateServerPasswords(appModule)
 
         val navigator = LocalNavigator.currentOrThrow
 
@@ -238,7 +240,7 @@ fun validateUser(checkUser: UserState, navigator: Navigator, appModule: AppModul
 }
 
 fun updateServerPasswords(appModule: AppModule) {
-    getCardCredentialResult("/api/credentials/fetchAllPasswords",
+    getCredentialGetResult("/api/credentials/fetchAllPasswords",
         result = {
             println("$TAG Cred Passwords Resp:: ${it.passwords}")
             MainScope().launch {
@@ -256,7 +258,7 @@ fun updateServerPasswords(appModule: AppModule) {
 }
 
 fun updateServerCards(appModule: AppModule) {
-    getCardCredentialResult("/api/credentials/fetchAllCards",
+    getCredentialGetResult("/api/credentials/fetchAllCards",
         result = {
             println("$TAG Cred Resp:: ${it.cards}")
             MainScope().launch {
@@ -266,6 +268,7 @@ fun updateServerCards(appModule: AppModule) {
                     it.cards.let { cards ->
                         cards.forEach { card ->
                             appModule.credentialDataSource.addCard(card)
+                            println("Fetched Card $card")
                         }
                     }
                 }
