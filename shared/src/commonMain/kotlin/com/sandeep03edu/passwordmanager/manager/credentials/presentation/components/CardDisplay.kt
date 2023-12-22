@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,15 +55,13 @@ fun SecureHalfCardDisplay(
     onCardItemClicked: (Card) -> Unit,
     onCardItemLongClicked: (Card) -> Unit,
 ) {
-    Box(
+    Card  (
         modifier = Modifier
             .fillMaxWidth(1f)
             .padding(5.dp)
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
-//            .clickable {
-//            }
             .combinedClickable(
                 onClick = {
                     onCardItemClicked(card)
@@ -70,8 +70,9 @@ fun SecureHalfCardDisplay(
                     onCardItemLongClicked(card)
                 },
             )
-            .padding(10.dp)
+            .padding(10.dp),
     ) {
+
         Column(horizontalAlignment = Alignment.Start) {
             space(4)
 

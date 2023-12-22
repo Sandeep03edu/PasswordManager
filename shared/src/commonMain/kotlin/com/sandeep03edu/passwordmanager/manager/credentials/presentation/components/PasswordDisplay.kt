@@ -45,9 +45,6 @@ fun PasswordSecureHalfDisplay(
         modifier = modifier
             .background(MaterialTheme.colorScheme.background)
             .padding(8.dp)
-//            .clickable {
-//                onPasswordItemClicked()
-//            },
             .combinedClickable(
                 onClick = {
                     onPasswordItemClicked()

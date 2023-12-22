@@ -1,12 +1,12 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,15 +16,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.DeleteForever
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,18 +49,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
-import com.sandeep03edu.passwordmanager.manager.authentication.data.getCredentialDeleteResponse
-import com.sandeep03edu.passwordmanager.manager.authentication.data.getCredentialPostResponse
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.PasswordSecureHalfDisplay
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.PasswordTagCard
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.SecureHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
-import com.sandeep03edu.passwordmanager.manager.utils.data.NetworkEndPoints
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserFirstName
 import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTagsWithIcons
-import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconLabeledTextField
 import com.sandeep03edu.passwordmanager.space
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
@@ -232,7 +227,6 @@ fun DisplayPageDisplay(
                         LazyRow(
                             modifier = Modifier
                                 .fillMaxWidth()
-//                                .aspectRatio(2f)
                         ) {
                             items(state.cards) {
                                 Box(
@@ -259,14 +253,13 @@ fun DisplayPageDisplay(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-//                                .aspectRatio(1.8f)
                         ) {
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth(0.7f)
                                     .aspectRatio(1.75f)
                                     .padding(5.dp)
-                                    .dashedBorder(1.dp, Color.Red, 8.dp),
+                                    .dashedBorder(2.dp, Color.Red, 8.dp),
                             ) {
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -369,25 +362,71 @@ fun DisplayPageDisplay(
                     list = state.filteredPasswords
                 }
 
+                if (!state.passwords.isNotEmpty()) {
+                    items(list) {
+                        // Password -> it
+                        PasswordSecureHalfDisplay(password = it,
+                            onPasswordItemClicked = {
+                                // onClick
+                                println("$TAG Clicked $it")
+                                onPasswordItemClicked(it)
+                            },
+                            onPasswordItemLongClicked = {
+                                scope.launch {
+                                    selectedPassword = it
+                                    selectedCard = null
+                                    isBottomSheetVisible = true
+                                }
+                            }
+                        )
+                    }
+                } else {
+                    item {
+                        // Display Add new password option
+                        Card(
+                            modifier = Modifier.fillMaxWidth()
+                                .aspectRatio(5.5f)
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(8.dp)
+                                .dashedBorder(2.dp, Color.Red, 8.dp)
+                                .clickable {
+                                    onEvent(
+                                        CredentialEvent.OnDisplayAddEditNewDataClick(
+                                            Password(),
+                                            null
+                                        )
+                                    )
+                                },
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 10.dp
+                            ),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Image(
+                                    imageVector = Icons.Default.AddCircle,
+                                    contentDescription = null
+                                )
 
+                                space(width = 8)
 
-                items(list) {
-                    // Password -> it
-                    PasswordSecureHalfDisplay(password = it,
-                        onPasswordItemClicked = {
-                            // onClick
-                            println("$TAG Clicked $it")
-                            onPasswordItemClicked(it)
-                        },
-                        onPasswordItemLongClicked = {
-                            scope.launch {
-                                selectedPassword = it
-                                selectedCard = null
-                                isBottomSheetVisible = true
+                                Text(
+                                    text = "Add your Password here!!",
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                )
                             }
                         }
-                    )
-
+                    }
                 }
 
             }
