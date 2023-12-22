@@ -1,6 +1,9 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,9 +16,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.AddCircle
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -30,9 +36,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -203,45 +216,91 @@ fun DisplayPageDisplay(
 
                 item {
 
-                    if (state.cards.isNotEmpty()) {
-                        Text(
-                            text = "Your Cards",
-                            style = TextStyle(
-                                fontSize = 20.sp
-                            ),
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(horizontal = 5.dp)
-                        )
-                    }
+                    Text(
+                        text = "Your Cards",
+                        style = TextStyle(
+                            fontSize = 20.sp
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 5.dp)
+                    )
 
                     space(4)
 
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(2f)
-                    ) {
-                        items(state.cards) {
-                            Box(
-                                modifier = Modifier
-                                    .fillParentMaxWidth(0.7f)
-                            ) {
-                                SecureHalfCardDisplay(it,
+                    if (state.cards.isNotEmpty()) {
+                        // Display all cards
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+//                                .aspectRatio(2f)
+                        ) {
+                            items(state.cards) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillParentMaxWidth(0.7f)
+                                ) {
+                                    SecureHalfCardDisplay(it,
 
-                                    onCardItemClicked = { card ->
-                                        onCardItemClicked(card)
-                                    },
-                                    onCardItemLongClicked = { card ->
-                                        scope.launch {
-                                            selectedCard = card
-                                            selectedPassword = null
-                                            isBottomSheetVisible = true
+                                        onCardItemClicked = { card ->
+                                            onCardItemClicked(card)
+                                        },
+                                        onCardItemLongClicked = { card ->
+                                            scope.launch {
+                                                selectedCard = card
+                                                selectedPassword = null
+                                                isBottomSheetVisible = true
+                                            }
+                                        })
+                                }
+                            }
+                        }
+                    } else {
+                        // Display Add card option
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+//                                .aspectRatio(1.8f)
+                        ) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.7f)
+                                    .aspectRatio(1.75f)
+                                    .padding(5.dp)
+                                    .dashedBorder(1.dp, Color.Red, 8.dp),
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                        .clickable {
+                                            onEvent(
+                                                CredentialEvent.OnDisplayAddEditNewDataClick(
+                                                    null,
+                                                    Card()
+                                                )
+                                            )
                                         }
-                                    })
+                                ) {
+                                    Image(
+                                        imageVector = Icons.Default.AddCircle,
+                                        contentDescription = null
+                                    )
+
+                                    space(8)
+
+                                    Text(
+                                        text = "Add your card here!!",
+                                        style = TextStyle(
+                                            fontSize = 22.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    )
+                                }
                             }
                         }
                     }
-                    space(4)
+
+                    space(16)
                 }
 
                 item {
@@ -341,251 +400,30 @@ fun DisplayPageDisplay(
             newPassword = newPassword
         )
 
-
     }
-
 }
 
-@Composable
-fun BottomSheetMenu(
-    appModule: AppModule,
-    card: Card?,
-    password: Password?,
-    modifier: Modifier = Modifier,
-    onLoading: (String) -> Unit,
-    onComplete: () -> Unit,
-) {
-    var selectedCard = card
-    var selectedPassword = password
-    val isCard: Boolean = selectedCard != null
-    val isPass: Boolean = selectedPassword != null
+fun Modifier.dashedBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp) = composed(
+    factory = {
+        val density = LocalDensity.current
+        val strokeWidthPx = density.run { strokeWidth.toPx() }
+        val cornerRadiusPx = density.run { cornerRadiusDp.toPx() }
 
-    var syncStatus: Long by remember { mutableStateOf(-1) }
-    if (isCard) {
-        syncStatus = selectedCard!!.isSynced
-    } else if (isPass) {
-        syncStatus = selectedPassword!!.isSynced
-    } else {
-        return
-    }
+        this.then(
+            Modifier.drawWithCache {
+                onDrawBehind {
+                    val stroke = Stroke(
+                        width = strokeWidthPx,
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                    )
 
-    println("$TAG SyncStatus:: $syncStatus || Card:: $selectedCard || Password:: $selectedPassword")
-    var syncLabel: String = ""
-    if (syncStatus == 0L) {
-        // Not uploaded
-        syncLabel = "Sync Now"
-    } else if (syncStatus == 1L) {
-        // Alr Uploaded
-        syncLabel = "Un-Sync now"
-    } else if (syncStatus == 2L) {
-        // Upload on the way
-        syncLabel = "Re-Sync"
-    } else {
-        return
-    }
-
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
-        modifier = modifier
-    ) {
-
-        IconLabeledTextField(
-            leadingIcon = Icons.Default.Person,
-            label = syncLabel,
-            text = "",
-            onClick = {
-                // Perform action
-                if (syncStatus == 0L || syncStatus == 2L) {
-                    // Post/Re-Upload credential
-                    onLoading("Syncing Credential to Server")
-                    var url = ""
-                    if (isCard) {
-                        url = NetworkEndPoints.addUpdateCard
-                    } else if (isPass) {
-                        url = NetworkEndPoints.addUpdatePassword
-                    }
-
-
-                    println("$TAG Syncing URL: $url || Card: $selectedCard || Pass: $selectedPassword ")
-
-                    if (url.isNotEmpty()) {
-                        setSyncStatus(appModule, selectedCard, selectedPassword, 2L)
-
-                        getCredentialPostResponse(
-                            url = url,
-                            card = selectedCard,
-                            password = selectedPassword,
-                            result = {
-                                onLoading("")
-                                println("$TAG Syncing Response:: $it")
-                                if (it.success) {
-                                    syncStatus = 1
-                                    val cards = it.cards
-                                    val passwords = it.passwords
-
-                                    if (cards.size != 0) {
-                                        selectedCard = cards[0]
-                                    }
-                                    if (passwords.size != 0) {
-                                        selectedPassword = passwords[0]
-                                    }
-
-                                    setSyncStatus(
-                                        appModule,
-                                        selectedCard,
-                                        selectedPassword,
-                                        1L
-                                    )
-
-                                    onComplete()
-                                } else {
-                                    syncStatus = 0
-                                    // TODO : Toast Error
-                                    setSyncStatus(
-                                        appModule = appModule,
-                                        selectedCard = selectedCard,
-                                        selectedPassword = selectedPassword,
-                                        0L
-                                    )
-
-                                    onComplete()
-                                }
-                            })
-                    }
-                } else if (syncStatus == 1L) {
-                    // Remove from server
-                    onLoading("Un Syncing from server!!")
-
-                    var url = ""
-                    if (isCard) {
-                        url = NetworkEndPoints.deleteCard
-                    } else if (isPass) {
-                        url = NetworkEndPoints.deletePassword
-                    }
-                    if (url.isNotEmpty()) {
-
-                        setSyncStatus(
-                            appModule = appModule,
-                            selectedCard = selectedCard,
-                            selectedPassword = selectedPassword,
-                            2L
-                        )
-
-                        println("$TAG Un-Syncing URL: $url || Card: $selectedCard || Pass: $selectedPassword ")
-
-                        getCredentialDeleteResponse(
-                            url = url,
-                            card = selectedCard,
-                            password = selectedPassword,
-                            result = {
-                                onLoading("")
-                                println("$TAG Un-Syncing Response:: $it")
-
-                                if (it.success) {
-                                    syncStatus = 1
-                                    // Un Sync successful!!
-                                    setSyncStatus(
-                                        appModule = appModule,
-                                        selectedCard = selectedCard,
-                                        selectedPassword = selectedPassword,
-                                        0L
-                                    )
-                                    onComplete()
-                                } else {
-                                    syncStatus = 0
-                                    // Un Sync failed!!
-                                    // TODO : Toast error
-                                    setSyncStatus(
-                                        appModule = appModule,
-                                        selectedCard = selectedCard,
-                                        selectedPassword = selectedPassword,
-                                        1L
-                                    )
-                                    onComplete()
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-        )
-
-        space(4)
-        IconLabeledTextField(
-            leadingIcon = Icons.Default.DeleteForever,
-            label = "Delete",
-            text = "",
-            onClick = {
-                // Perform delete action
-                if (syncStatus == 0L) {
-                    // Not uploaded to server!!
-                    onLoading("Deleting credentials locally")
-
-                    if (selectedCard != null) {
-                        appModule.credentialDataSource.deleteCardById(selectedCard!!.appId)
-                    } else if (selectedPassword != null) {
-                        appModule.credentialDataSource.deletePasswordById(selectedPassword!!.appId)
-                    }
-
-                    onLoading("")
-
-                    onComplete()
-                } else {
-                    // Already uploaded to server
-                    onLoading("Deleting credentials from server")
-
-                    var url = ""
-                    if (selectedCard != null) {
-                        url = NetworkEndPoints.deleteCard
-                    } else if (selectedPassword != null) {
-                        url = NetworkEndPoints.deletePassword
-                    }
-
-                    getCredentialDeleteResponse(
-                        url = url,
-                        card = selectedCard,
-                        password = selectedPassword,
-                        result = {
-                            if (it.success) {
-                                // Deleted from server successful
-                                onLoading("Deleting credentials locally")
-
-                                if (selectedCard != null) {
-                                    appModule.credentialDataSource.deleteCardById(selectedCard!!.appId)
-                                } else if (selectedPassword != null) {
-                                    appModule.credentialDataSource.deletePasswordById(
-                                        selectedPassword!!.appId
-                                    )
-                                }
-
-                                onLoading("")
-
-                                onComplete()
-                            } else {
-                                // TODO : Toast error message
-                                onComplete()
-                            }
-                        }
+                    drawRoundRect(
+                        color = color,
+                        style = stroke,
+                        cornerRadius = CornerRadius(cornerRadiusPx)
                     )
                 }
             }
         )
     }
-
-}
-
-fun setSyncStatus(
-    appModule: AppModule,
-    selectedCard: Card?,
-    selectedPassword: Password?,
-    status: Long,
-) {
-    if (selectedCard != null) {
-        selectedCard.isSynced = status
-        appModule.credentialDataSource.addCard(selectedCard)
-    } else if (selectedPassword != null) {
-        selectedPassword.isSynced = status
-        appModule.credentialDataSource.addPassword(selectedPassword)
-    }
-}
+)

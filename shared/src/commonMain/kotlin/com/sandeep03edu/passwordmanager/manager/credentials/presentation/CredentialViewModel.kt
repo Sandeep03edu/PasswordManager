@@ -100,13 +100,6 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
                     var card = event.card
                     var password = event.password
 
-//                    if (card != null) {
-//                        card = credentialDataSource.getCardById(card.appId).firstOrNull()
-//                    }
-//                    if(password!=null){
-//                        password = credentialDataSource.getPasswordById(password.appId).firstOrNull()
-//                    }
-
                     newCard = card
                     newPassword = password
                 }
