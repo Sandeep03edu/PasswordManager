@@ -55,7 +55,7 @@ fun SecureHalfCardDisplay(
     onCardItemClicked: (Card) -> Unit,
     onCardItemLongClicked: (Card) -> Unit,
 ) {
-    Card  (
+    Box  (
         modifier = Modifier
             .fillMaxWidth(1f)
             .padding(5.dp)
