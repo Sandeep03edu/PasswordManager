@@ -142,6 +142,96 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+const updateUser = asyncHandler(async (req, res) => {
+  const loggedUser = req.user;
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      success: false,
+      error: "User not authenticated!!",
+    });
+  }
+
+  const { email, firstName, lastName, loginPin, appPin } = req.body;
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      error: "Email id missing!!",
+    });
+  }
+
+  if (!firstName || firstName.trim().length < 4) {
+    return res.status(400).json({
+      success: false,
+      error: "First Name should contain atleast 4 characters!!",
+    });
+  }
+
+  if (!loginPin || loginPin.trim().length != 4) {
+    return res.status(400).json({
+      success: false,
+      error: "Login pin should contain 4 digits",
+    });
+  }
+
+  if (!appPin || appPin.trim().length != 6) {
+    return res.status(400).json({
+      success: false,
+      error: "App pin should contain 6 digits",
+    });
+  }
+
+  // Check whether user exist or not
+  const userExist = await User.findOne({ email });
+
+  if (userExist) {
+    // Register the user
+
+    const hashedAppPin = hashString(appPin);
+    const hashedLoginPin = hashString(loginPin);
+
+    const updateUser = await User.findByIdAndUpdate(
+      loggedUser._id,
+      {
+        email,
+        firstName,
+        lastName,
+        loginPin: hashedLoginPin,
+        appPin: hashedAppPin,
+      },
+      {
+        new: true,
+      }
+    ).select("-__v -createdAt -updatedAt");
+
+    if (updateUser) {
+      // New User created successfully
+
+      return res.status(201).json({
+        success: true,
+        _id: updateUser._id,
+        email: updateUser.email,
+        firstName: updateUser.firstName,
+        lastName: updateUser.lastName,
+        loginPin: updateUser.loginPin,
+        appPin: updateUser.appPin,
+        token: generateJWT(updateUser._id),
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        error: "An internal error occurred!!",
+      });
+    }
+  } else {
+    return res.status(400).json({
+      success: false,
+      error: "User doesn't exist!!",
+    });
+  }
+});
+
 const userEmailExist = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -170,4 +260,4 @@ const userEmailExist = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser, loginUser, userEmailExist };
+module.exports = { registerUser, loginUser, updateUser, userEmailExist };

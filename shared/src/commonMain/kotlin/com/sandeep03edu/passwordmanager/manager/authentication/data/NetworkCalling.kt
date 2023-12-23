@@ -39,6 +39,7 @@ fun getAuthResult(
             {
                 contentType(ContentType.Application.Json)
                 setBody(userState.toJson())
+                bearerAuth(getLoggedInUserToken())
             }
 
             val bodyText: String = response.bodyAsText()

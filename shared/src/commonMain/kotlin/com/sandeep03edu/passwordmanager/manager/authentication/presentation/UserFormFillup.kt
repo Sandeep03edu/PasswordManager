@@ -34,6 +34,7 @@ import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
 import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
+import com.sandeep03edu.passwordmanager.manager.utils.presentation.BuildDesignedHeader
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CardButton
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditNumberField
@@ -42,23 +43,29 @@ import com.sandeep03edu.passwordmanager.paintResource
 import kotlinx.coroutines.launch
 
 data class UserFormFillUpClass(
-    var email: String,
+    var url: String,
+    var labelList: MutableList<String> = mutableListOf(),
+    var buttonLabel : String,
+    var userState: UserState,
     var onRegister: (AuthResponse) -> Unit,
 ) : Screen {
     @Composable
     override fun Content() {
-        UserFormFillUp(email,onRegister)
+        UserFormFillUp(url, labelList, buttonLabel, userState, onRegister)
     }
 
 }
 
 @Composable
 fun UserFormFillUp(
-    email: String,
+    url: String,
+    labelList: MutableList<String> = mutableListOf(),
+    buttonLabel : String,
+    userState: UserState,
     onRegister: (AuthResponse) -> Unit,
 ) {
     val TAG = "UserFormFillUp";
-    var user by remember { mutableStateOf(UserState(email = email)) }
+    var user by remember { mutableStateOf(userState) }
     var isLoading by remember { mutableStateOf(false) }
 
     var validator by remember { mutableStateOf(UserValidation()) }
@@ -73,45 +80,7 @@ fun UserFormFillUp(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Text(
-                    buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.ExtraBold,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 40.sp
-                            )
-                        ) {
-                            append("S")
-                        }
-                        withStyle(
-                            style = SpanStyle(
-                                fontSize = 36.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        ) {
-                            append("ign ")
-                        }
-
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.ExtraBold,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 40.sp
-                            )
-                        ) {
-                            append("U")
-                        }
-                        withStyle(
-                            style = SpanStyle(
-                                fontSize = 36.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        ) {
-                            append("p")
-                        }
-                    }
-                )
+                BuildDesignedHeader(labelList)
             }
 
             item {
@@ -212,7 +181,7 @@ fun UserFormFillUp(
             item {
                 CardButton(
                     backgroundColor = MaterialTheme.colorScheme.primary,
-                    text = "Create Account",
+                    text = buttonLabel,
                     clickEnabled = !isLoading,
                     onClick = {
                         // Check All fields
@@ -235,7 +204,7 @@ fun UserFormFillUp(
                             isLoading = true
 
                             getAuthResult(
-                                url = "/api/auth/register",
+                                url = url,
                                 result = {
                                     println("$TAG Auth From Register:: $it")
                                     onRegister(it)
@@ -245,6 +214,7 @@ fun UserFormFillUp(
                                     } else {
                                         // Registration failed!!
                                         // TODO : Display Error Message
+                                        onRegister(it)
                                     }
                                 },
                                 userState = user

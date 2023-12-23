@@ -20,7 +20,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
-import com.sandeep03edu.passwordmanager.manager.authentication.data.getCredentialGetResult
 import com.sandeep03edu.passwordmanager.manager.authentication.data.updateServerCards
 import com.sandeep03edu.passwordmanager.manager.authentication.data.updateServerPasswords
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserAuthentication
@@ -33,15 +32,11 @@ import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.profile.domain.toUserState
+import com.sandeep03edu.passwordmanager.manager.utils.data.NetworkEndPoints
 import com.sandeep03edu.passwordmanager.manager.utils.data.checkAppPin
-import com.sandeep03edu.passwordmanager.manager.utils.data.checkLoginPin
 import com.sandeep03edu.passwordmanager.manager.utils.data.deleteLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.saveLoggedInUser
-import com.sandeep03edu.passwordmanager.manager.utils.domain.decryptString
-import com.sandeep03edu.passwordmanager.manager.utils.domain.encryptString
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 
 val TAG = "AppTag"
 
@@ -101,7 +96,12 @@ data class AppHomeLayout(
                             // User DNE
                             // Move to registration page
                             navigator.replace(
-                                UserFormFillUpClass(userAuth!!.email) {
+                                UserFormFillUpClass(
+                                    url = NetworkEndPoints.registerUser,
+                                    labelList = mutableListOf("Sign", "Up"),
+                                    buttonLabel = "Create Account",
+                                    userState = UserState(email = userAuth!!.email)
+                                ) {
                                     if (it.success) {
                                         // Convert to User state
                                         val user = it.toUserState()
@@ -201,6 +201,30 @@ fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Scr
                 )
             )
 
+        },
+        onEditProfile = {
+            val userState = getLoggedInUser()!!
+            userState.loginPin=""
+            userState.appPin=""
+            navigator.push(
+                UserFormFillUpClass(
+                    url = NetworkEndPoints.updateUser,
+                    labelList = mutableListOf("Edit", "Profile"),
+                    buttonLabel = "Update Account",
+                    userState = userState,
+                    onRegister = {
+                        if (it.success) {
+                            val user = it.toUserState()
+
+                            // Save the logged in user
+                            saveLoggedInUser(user)
+                        } else {
+                            // TODO : Toast error message
+                        }
+                        navigator.pop()
+                    }
+                )
+            )
         }
     )
 }
@@ -225,7 +249,7 @@ fun validateUser(checkUser: UserState, navigator: Navigator, appModule: AppModul
                             navigator.pop()
 
                             getAuthResult(
-                                url = "/api/auth/login",
+                                url = NetworkEndPoints.loginUser,
                                 userState = checkUser,
                                 result = { authResponse ->
                                     println("$TAG Login Response : $authResponse")

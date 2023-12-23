@@ -31,8 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sandeep03edu.passwordmanager.SharedRes
@@ -45,11 +43,14 @@ import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
 
 
-class SettingTab(var appModule: AppModule,
-    var onLogoutUser: ()-> Unit) : Tab {
+class SettingTab(
+    var appModule: AppModule,
+    var onLogoutUser: () -> Unit,
+    var onEditProfile: () -> Unit,
+) : Tab {
     @Composable
     override fun Content() {
-        SettingPageDisplay(appModule, onLogoutUser)
+        SettingPageDisplay(appModule, onLogoutUser, onEditProfile)
     }
 
 
@@ -70,8 +71,7 @@ class SettingTab(var appModule: AppModule,
 
 
 @Composable
-fun SettingPageDisplay(appModule: AppModule, onLogout: () -> Unit) {
-    val navigator = LocalNavigator.currentOrThrow
+fun SettingPageDisplay(appModule: AppModule, onLogoutUser: () -> Unit, onEditProfile: () -> Unit) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -113,7 +113,7 @@ fun SettingPageDisplay(appModule: AppModule, onLogout: () -> Unit) {
 
         item {
             SettingOptions(Icons.Default.Person, "Edit Profile") {
-                // TODO : Move to Edit Profile Page
+                onEditProfile()
             }
             space(8)
         }
@@ -136,7 +136,7 @@ fun SettingPageDisplay(appModule: AppModule, onLogout: () -> Unit) {
                         AlertDialogBox(
                             title = "Do you want to logout?",
                             onYesClick = {
-                                onLogout()
+                                onLogoutUser()
                                 displayLogoutDialog = false
                             },
                             onNoClick = {

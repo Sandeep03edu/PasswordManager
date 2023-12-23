@@ -11,8 +11,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
@@ -29,16 +33,21 @@ data class DisplayPageDisplayClass(
     val appModule: AppModule,
     val onPasswordItemClicked: (Password) -> Unit,
     val onCardItemClicked: (Card) -> Unit,
-    val onLogoutUser: ()-> Unit
+    val onLogoutUser: () -> Unit,
+    val onEditProfile: () -> Unit,
 ) : Screen {
     @Composable
     override fun Content() {
         val displayCredentialTab =
             DisplayCredentialTab(appModule, onPasswordItemClicked, onCardItemClicked)
 
-        val settingTab = SettingTab(appModule, onLogoutUser = {
-            onLogoutUser()
-        })
+        val settingTab = SettingTab(appModule,
+            onLogoutUser = {
+                onLogoutUser()
+            },
+            onEditProfile = {
+                onEditProfile()
+            })
 
         TabNavigator(tab = displayCredentialTab) {
             Scaffold(
@@ -54,12 +63,12 @@ data class DisplayPageDisplayClass(
                     }
                 }
             ) { innerPadding ->
+
                 Box(modifier = Modifier.padding(innerPadding)) {
                     CurrentTab()
                 }
             }
         }
-
 
     }
 
