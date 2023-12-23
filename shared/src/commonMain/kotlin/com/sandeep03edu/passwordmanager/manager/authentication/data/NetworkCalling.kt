@@ -3,6 +3,7 @@ package com.sandeep03edu.passwordmanager.manager.authentication.data
 import com.sandeep03edu.passwordmanager.core.data.Background
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
+import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.CredentialResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
@@ -17,6 +18,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
@@ -153,4 +155,43 @@ fun getCredentialDeleteResponse(
             result(CredentialResponse(error = err.message!!, success = false))
         }
     }
+}
+
+fun updateServerPasswords(appModule: AppModule) {
+    getCredentialGetResult("/api/credentials/fetchAllPasswords",
+        result = {
+            println("${com.sandeep03edu.passwordmanager.TAG} Cred Passwords Resp:: ${it.passwords}")
+            MainScope().launch {
+                appModule.credentialDataSource.deleteAllPasswords()
+
+                it.let {
+                    it.passwords.let { passwords ->
+                        passwords.forEach { password ->
+                            appModule.credentialDataSource.addPassword(password)
+                        }
+                    }
+                }
+            }
+        })
+}
+
+fun updateServerCards(appModule: AppModule) {
+    getCredentialGetResult("/api/credentials/fetchAllCards",
+        result = {
+            println("${com.sandeep03edu.passwordmanager.TAG} Cred Resp:: ${it.cards}")
+            MainScope().launch {
+                appModule.credentialDataSource.deleteAllCards()
+
+                it.let {
+                    it.cards.let { cards ->
+                        cards.forEach { card ->
+                            appModule.credentialDataSource.addCard(card)
+                            println("Fetched Card $card")
+                        }
+                    }
+                }
+
+            }
+
+        })
 }

@@ -41,6 +41,10 @@ fun saveLoggedInUser(userState: UserState) {
     val settings = Settings()
     settings.putString("UserState", userState.toJson())
 }
+fun deleteLoggedInUser() {
+    val settings = Settings()
+    settings.remove("UserState")
+}
 
 fun checkLoginPin(
     loginPin: String,

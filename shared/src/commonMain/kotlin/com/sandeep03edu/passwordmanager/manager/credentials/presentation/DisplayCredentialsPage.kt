@@ -5,24 +5,19 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.tabs.DisplayCredentialTab
@@ -34,12 +29,17 @@ data class DisplayPageDisplayClass(
     val appModule: AppModule,
     val onPasswordItemClicked: (Password) -> Unit,
     val onCardItemClicked: (Card) -> Unit,
+    val onLogoutUser: ()-> Unit
 ) : Screen {
-
     @Composable
     override fun Content() {
         val displayCredentialTab =
             DisplayCredentialTab(appModule, onPasswordItemClicked, onCardItemClicked)
+
+        val settingTab = SettingTab(appModule, onLogoutUser = {
+            onLogoutUser()
+        })
+
         TabNavigator(tab = displayCredentialTab) {
             Scaffold(
                 bottomBar = {
@@ -50,7 +50,7 @@ data class DisplayPageDisplayClass(
                         contentPadding = PaddingValues(0.dp)
                     ) {
                         TabNavigationItems(displayCredentialTab)
-                        TabNavigationItems(SettingTab)
+                        TabNavigationItems(settingTab)
                     }
                 }
             ) { innerPadding ->

@@ -21,6 +21,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getCredentialGetResult
+import com.sandeep03edu.passwordmanager.manager.authentication.data.updateServerCards
+import com.sandeep03edu.passwordmanager.manager.authentication.data.updateServerPasswords
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserAuthentication
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserFormFillUpClass
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.DetailedCardDisplayPageClass
@@ -32,6 +34,8 @@ import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.profile.domain.toUserState
 import com.sandeep03edu.passwordmanager.manager.utils.data.checkAppPin
+import com.sandeep03edu.passwordmanager.manager.utils.data.checkLoginPin
+import com.sandeep03edu.passwordmanager.manager.utils.data.deleteLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.saveLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.domain.decryptString
@@ -98,7 +102,7 @@ data class AppHomeLayout(
                             // Move to registration page
                             navigator.replace(
                                 UserFormFillUpClass(userAuth!!.email) {
-                                    if(it.success) {
+                                    if (it.success) {
                                         // Convert to User state
                                         val user = it.toUserState()
 
@@ -109,8 +113,7 @@ data class AppHomeLayout(
                                         navigator.replace(
                                             launchLoggedUserDisplayPage(navigator, appModule)
                                         )
-                                    }
-                                    else{
+                                    } else {
                                         // TODO : Display Error message
                                     }
                                 }
@@ -120,7 +123,18 @@ data class AppHomeLayout(
                 } else {
                     // Move to display page for logged in user
                     navigator.push(
-                        launchLoggedUserDisplayPage(navigator, appModule)
+                        PinAuthenticationDisplayClass(
+                            label = "Login pin",
+                            pinLength = 4,
+                            onComplete = {
+                                // TODO : Uncomment this
+//                                if (checkLoginPin(it)) {
+                                navigator.replace(
+                                    launchLoggedUserDisplayPage(navigator, appModule)
+                                )
+//                                }
+                            }
+                        )
                     )
                 }
             }
@@ -175,6 +189,18 @@ fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Scr
                         })
                 )
             }
+        },
+        onLogoutUser = {
+            deleteLoggedInUser()
+            navigator.popUntilRoot()
+            navigator.replace(
+                AppHomeLayout(
+                    darkTheme = false,
+                    dynamicColor = true,
+                    appModule = appModule
+                )
+            )
+
         }
     )
 }
@@ -233,44 +259,6 @@ fun validateUser(checkUser: UserState, navigator: Navigator, appModule: AppModul
     )
 }
 
-fun updateServerPasswords(appModule: AppModule) {
-    getCredentialGetResult("/api/credentials/fetchAllPasswords",
-        result = {
-            println("$TAG Cred Passwords Resp:: ${it.passwords}")
-            MainScope().launch {
-                appModule.credentialDataSource.deleteAllPasswords()
-
-                it.let {
-                    it.passwords.let {passwords ->
-                        passwords.forEach { password ->
-                            appModule.credentialDataSource.addPassword(password)
-                        }
-                    }
-                }
-            }
-        })
-}
-
-fun updateServerCards(appModule: AppModule) {
-    getCredentialGetResult("/api/credentials/fetchAllCards",
-        result = {
-            println("$TAG Cred Resp:: ${it.cards}")
-            MainScope().launch {
-                appModule.credentialDataSource.deleteAllCards()
-
-                it.let {
-                    it.cards.let { cards ->
-                        cards.forEach { card ->
-                            appModule.credentialDataSource.addCard(card)
-                            println("Fetched Card $card")
-                        }
-                    }
-                }
-
-            }
-
-        })
-}
 
 @Composable
 fun space(height: Int = 0, width: Int = 0) {
