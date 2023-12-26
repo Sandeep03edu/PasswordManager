@@ -9,11 +9,15 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -27,32 +31,36 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.tabs.DisplayCredentialTab
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.tabs.SettingTab
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
+import kotlinx.coroutines.CoroutineScope
 
 
 data class DisplayPageDisplayClass(
     val appModule: AppModule,
     val onPasswordItemClicked: (Password) -> Unit,
     val onCardItemClicked: (Card) -> Unit,
-    val onLogoutUser: () -> Unit,
-    val onEditProfile: () -> Unit,
+    val onLogoutUser: (SnackbarHostState, CoroutineScope) -> Unit,
+    val onEditProfile: (SnackbarHostState, CoroutineScope) -> Unit,
 ) : Screen {
     @Composable
     override fun Content() {
+        val coroutineScope = rememberCoroutineScope()
+        val snackbarHostState = remember { SnackbarHostState() }
+
         val displayCredentialTab =
             DisplayCredentialTab(appModule, onPasswordItemClicked, onCardItemClicked)
 
         val settingTab = SettingTab(appModule,
             onLogoutUser = {
-                onLogoutUser()
+                onLogoutUser(snackbarHostState, coroutineScope)
             },
             onEditProfile = {
-                onEditProfile()
+                onEditProfile(snackbarHostState, coroutineScope)
             })
 
         TabNavigator(tab = displayCredentialTab) {
             Scaffold(
+                snackbarHost = { SnackbarHost(snackbarHostState) },
                 bottomBar = {
-
                     BottomAppBar(
                         modifier = Modifier.fillMaxWidth()
                             .padding(0.dp),

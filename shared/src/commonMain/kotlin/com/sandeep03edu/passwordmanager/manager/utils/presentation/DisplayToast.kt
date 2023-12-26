@@ -9,10 +9,10 @@ import kotlinx.coroutines.launch
 
 fun DisplaySnackbarToast(
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope,
+    coroutineScope: CoroutineScope,
     message: String
 ){
-    scope.launch {
+    coroutineScope.launch {
         snackbarHostState.showSnackbar(message = message)
     }
 }

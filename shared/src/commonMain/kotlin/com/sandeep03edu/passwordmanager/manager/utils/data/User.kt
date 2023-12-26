@@ -5,7 +5,6 @@ import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.utils.domain.hashString
 
 fun getLoggedInUser(): UserState? {
-    return null
     val settings = Settings()
     if (settings.hasKey("UserState")) {
         val str = settings.getString("UserState", "")

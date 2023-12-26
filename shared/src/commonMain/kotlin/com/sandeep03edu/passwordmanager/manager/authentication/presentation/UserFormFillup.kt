@@ -12,8 +12,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,6 +43,7 @@ import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditNumberField
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditTextField
 import com.sandeep03edu.passwordmanager.paintResource
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 data class UserFormFillUpClass(
@@ -47,11 +51,20 @@ data class UserFormFillUpClass(
     var labelList: MutableList<String> = mutableListOf(),
     var buttonLabel : String,
     var userState: UserState,
-    var onRegister: (AuthResponse) -> Unit,
+    var onRegister: (AuthResponse, SnackbarHostState, CoroutineScope) -> Unit,
 ) : Screen {
     @Composable
     override fun Content() {
-        UserFormFillUp(url, labelList, buttonLabel, userState, onRegister)
+        val coroutineScope = rememberCoroutineScope()
+        val snackbarHostState = remember { SnackbarHostState() }
+
+        Scaffold (
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+        ) {
+            UserFormFillUp(url, labelList, buttonLabel, userState, onRegister = {
+                onRegister(it, snackbarHostState, coroutineScope)
+            })
+        }
     }
 
 }

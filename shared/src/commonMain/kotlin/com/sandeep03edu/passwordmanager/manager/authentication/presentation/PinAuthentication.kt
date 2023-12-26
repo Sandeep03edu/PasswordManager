@@ -52,13 +52,13 @@ val TAG = "PinAuthenticationTag"
 fun PinAuthentication(
     pinLength: Int = 6,
     label: String,
-    onComplete: (String) -> Unit
+    onComplete: (String) -> Unit,
 ) {
 
     var currentIndex by remember { mutableStateOf(0) }
 
-    var values = remember { mutableStateListOf<Int>() }
-    repeat(pinLength) {
+    val values = remember { mutableStateListOf<Int>() }
+    while(values.size<pinLength) {
         values.add(-1)
     }
 
@@ -132,31 +132,39 @@ fun PinAuthentication(
                 content = {
                     items(list.size) {
                         CircularNumber(list.get(it), onClick = {
-                            if (it == -1) {
-                                if (currentIndex != 0) {
-                                    currentIndex--;
-                                    values.set(currentIndex, -1)
-                                }
-                            } else if (currentIndex < pinLength) {
-                                values.set(currentIndex, it)
-                                currentIndex++
-                            }
+                            if (values.size != 0) {
 
-                            if (currentIndex == pinLength) {
-                                var ans = ""
-                                var i = 0
-
-                                repeat(pinLength) {
-                                    ans += values.get(i).toString()
-                                    i++;
+                                if (it == -1) {
+                                    if (currentIndex != 0) {
+                                        currentIndex--;
+                                        values.set(currentIndex, -1)
+                                    }
+                                } else if (currentIndex < pinLength) {
+                                    values.set(currentIndex, it)
+                                    currentIndex++
                                 }
 
-                                values.clear()
+                                println("$TAG Values:: ${values.toList()}")
 
-                                currentIndex = 0
+                                if (currentIndex == pinLength) {
+                                    var ans = ""
+                                    var i = 0
 
-                                onComplete(ans)
+                                    println("$TAG Complete Values:: ${values.toList()} || Curr:: $currentIndex || pinLength:: $pinLength")
 
+                                    repeat(pinLength) {
+                                        ans += values[i].toString()
+                                        values[i] = -1;
+                                        i++;
+                                    }
+
+//                                    values.clear()
+
+                                    currentIndex = 0
+
+                                    onComplete(ans)
+
+                                }
                             }
                         })
                     }
@@ -172,7 +180,7 @@ fun PinAuthentication(
 @Composable
 fun CircularNumber(
     value: Int,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
 ) {
     if (value == -2) {
         return
@@ -229,7 +237,7 @@ fun CircularNumber(
 @Composable
 fun CircularDot(
     index: Int,
-    values: List<Int>
+    values: List<Int>,
 ) {
     var backgroundColor = MaterialTheme.colorScheme.background
     if (values[index] != -1) {

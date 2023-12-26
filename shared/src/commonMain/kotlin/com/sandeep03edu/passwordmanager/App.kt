@@ -38,10 +38,12 @@ import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.profile.domain.toUserState
 import com.sandeep03edu.passwordmanager.manager.utils.data.NetworkEndPoints
 import com.sandeep03edu.passwordmanager.manager.utils.data.checkAppPin
+import com.sandeep03edu.passwordmanager.manager.utils.data.checkLoginPin
 import com.sandeep03edu.passwordmanager.manager.utils.data.deleteLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.saveLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.DisplaySnackbarToast
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 val TAG = "AppTag"
@@ -100,11 +102,19 @@ data class AppHomeLayout(
                             if (userAuth!!.success) {
                                 if (userAuth!!.userExist) {
                                     // User Alr exist
-                                    val checkUser: UserState by remember { mutableStateOf(UserState()) }
+                                    val checkUser: UserState by remember {
+                                        mutableStateOf(
+                                            UserState()
+                                        )
+                                    }
                                     checkUser.email = userAuth!!.email
 
                                     // Move to loginPin and appPin authentication
-                                    validateUser(checkUser, navigator, appModule)
+                                    validateUser(
+                                        checkUser,
+                                        navigator,
+                                        appModule
+                                    )
                                 } else {
                                     // User DNE
                                     // Move to registration page
@@ -114,7 +124,7 @@ data class AppHomeLayout(
                                             labelList = mutableListOf("Sign", "Up"),
                                             buttonLabel = "Create Account",
                                             userState = UserState(email = userAuth!!.email)
-                                        ) {
+                                        ) { it, snackbarHostState, coroutineScope ->
                                             println("$TAG Response:: $it")
                                             if (it.success) {
                                                 // Convert to User state
@@ -133,7 +143,7 @@ data class AppHomeLayout(
                                             } else {
                                                 DisplaySnackbarToast(
                                                     snackbarHostState = snackbarHostState,
-                                                    scope = coroutineScope,
+                                                    coroutineScope = coroutineScope,
                                                     message = it.error
                                                 )
                                             }
@@ -144,7 +154,7 @@ data class AppHomeLayout(
                                 println("$TAG Error Received")
                                 DisplaySnackbarToast(
                                     snackbarHostState = snackbarHostState,
-                                    scope = coroutineScope,
+                                    coroutineScope = coroutineScope,
                                     message = userAuth!!.error
                                 )
                             }
@@ -155,14 +165,23 @@ data class AppHomeLayout(
                             PinAuthenticationDisplayClass(
                                 label = "Login pin",
                                 pinLength = 4,
-                                onComplete = {
+                                onComplete = { it, snackbarHostState, coroutineScope ->
+                                    if (checkLoginPin(it)) {
+                                        navigator.replace(
+                                            launchLoggedUserDisplayPage(
+                                                navigator,
+                                                appModule
+                                            )
+                                        )
+                                    } else {
+                                        println("$TAG Wrong Login Pin!!")
+                                        DisplaySnackbarToast(
+                                            snackbarHostState,
+                                            coroutineScope,
+                                            "Wrong Login Pin!!"
+                                        )
+                                    }
 
-                                    // TODO : Uncomment this
-                                    //                                if (checkLoginPin(it)) {
-                                    navigator.replace(
-                                        launchLoggedUserDisplayPage(navigator, appModule)
-                                    )
-                                    //                                }
                                 }
                             )
                         )
@@ -174,7 +193,10 @@ data class AppHomeLayout(
 }
 
 
-fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Screen {
+fun launchLoggedUserDisplayPage(
+    navigator: Navigator,
+    appModule: AppModule,
+): Screen {
     return DisplayPageDisplayClass(
         appModule,
         onPasswordItemClicked = { selectedPassword ->
@@ -184,15 +206,21 @@ fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Scr
                     PinAuthenticationDisplayClass(
                         pinLength = 6,
                         label = "App Pin",
-                        onComplete = { appPin ->
-                            navigator.pop()
+                        onComplete = { appPin, snackbarHostState, coroutineScope ->
                             if (checkAppPin(appPin)) {
                                 // Move to Detailed password page if login passes
+                                navigator.pop()
                                 navigator.push(
                                     DetailedPasswordDisplayPageClass(
                                         appModule,
                                         selectedPassword
                                     )
+                                )
+                            } else {
+                                DisplaySnackbarToast(
+                                    snackbarHostState = snackbarHostState,
+                                    coroutineScope = coroutineScope,
+                                    message = "Wrong App pin"
                                 )
                             }
                         })
@@ -206,9 +234,10 @@ fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Scr
                     PinAuthenticationDisplayClass(
                         pinLength = 6,
                         label = "App Pin",
-                        onComplete = { appPin ->
-                            navigator.pop()
+                        onComplete = { appPin, snackbarHostState, coroutineScope ->
                             if (checkAppPin(appPin)) {
+                                println("$TAG Check App Pin passed!!")
+                                navigator.pop()
                                 navigator.push(
                                     // Move to Detailed card page if login passes
                                     DetailedCardDisplayPageClass(
@@ -217,11 +246,27 @@ fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Scr
                                     )
                                 )
                             }
+                            else{
+                                DisplaySnackbarToast(
+                                    snackbarHostState = snackbarHostState,
+                                    coroutineScope = coroutineScope,
+                                    message = "Wrong App pin"
+                                )
+                            }
                         })
                 )
             }
         },
-        onLogoutUser = {
+        onLogoutUser = {snackbarHostState, coroutineScope->
+            DisplaySnackbarToast(
+                snackbarHostState = snackbarHostState,
+                coroutineScope = coroutineScope,
+                message = "Logging out!!"
+            )
+            coroutineScope.launch {
+                delay(1000L)
+            }
+
             deleteLoggedInUser()
             navigator.popUntilRoot()
             navigator.replace(
@@ -233,7 +278,7 @@ fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Scr
             )
 
         },
-        onEditProfile = {
+        onEditProfile = {snackbarHostState, coroutineScope->
             val userState = getLoggedInUser()!!
             userState.loginPin = ""
             userState.appPin = ""
@@ -243,16 +288,29 @@ fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Scr
                     labelList = mutableListOf("Edit", "Profile"),
                     buttonLabel = "Update Account",
                     userState = userState,
-                    onRegister = {
+                    onRegister = { it, snackbarHostState, coroutineScope ->
                         if (it.success) {
                             val user = it.toUserState()
 
                             // Save the logged in user
                             saveLoggedInUser(user)
+
+                            // Display Toast
+                            DisplaySnackbarToast(
+                                snackbarHostState = snackbarHostState,
+                                coroutineScope = coroutineScope,
+                                message = "Edit profile successful"
+                            )
+
+                            // Moving back
+                            navigator.pop()
                         } else {
-                            // TODO : Toast error message
+                            DisplaySnackbarToast(
+                                snackbarHostState = snackbarHostState,
+                                coroutineScope = coroutineScope,
+                                message = it.error
+                            )
                         }
-                        navigator.pop()
                     }
                 )
             )
@@ -260,20 +318,24 @@ fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Scr
     )
 }
 
-fun validateUser(checkUser: UserState, navigator: Navigator, appModule: AppModule) {
+fun validateUser(
+    checkUser: UserState,
+    navigator: Navigator,
+    appModule: AppModule,
+) {
     navigator.push(
         PinAuthenticationDisplayClass(
             label = "Login pin",
             pinLength = 4,
-            onComplete = {
-                checkUser.loginPin = it
+            onComplete = { loginPin, _, _ ->
+                checkUser.loginPin = loginPin
                 navigator.pop()
 
                 navigator.push(
                     PinAuthenticationDisplayClass(
                         label = "App pin",
                         pinLength = 6,
-                        onComplete = {
+                        onComplete = { it, snackbarHostState, coroutineScope ->
                             checkUser.appPin = it
 
                             println("$TAG CheckUser: $checkUser")
@@ -297,11 +359,15 @@ fun validateUser(checkUser: UserState, navigator: Navigator, appModule: AppModul
                                         updateServerPasswords(appModule)
 
                                         navigator.replace(
-                                            launchLoggedUserDisplayPage(navigator, appModule)
+                                            launchLoggedUserDisplayPage(
+                                                navigator,
+                                                appModule
+                                            )
                                         )
                                     } else {
                                         // Credentials not matched!!
                                         // TODO : Show error message
+
                                     }
                                 }
                             )
