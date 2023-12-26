@@ -7,10 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,6 +41,8 @@ import com.sandeep03edu.passwordmanager.manager.utils.data.checkAppPin
 import com.sandeep03edu.passwordmanager.manager.utils.data.deleteLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUser
 import com.sandeep03edu.passwordmanager.manager.utils.data.saveLoggedInUser
+import com.sandeep03edu.passwordmanager.manager.utils.presentation.DisplaySnackbarToast
+import kotlinx.coroutines.launch
 
 val TAG = "AppTag"
 
@@ -65,83 +71,108 @@ data class AppHomeLayout(
 
         val navigator = LocalNavigator.currentOrThrow
 
+        val coroutineScope = rememberCoroutineScope()
+        val snackbarHostState = remember { SnackbarHostState() }
+
         AppTheme(
             darkTheme = darkTheme, dynamicColor = dynamicColor
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.background)
+            Scaffold(
+                snackbarHost = { SnackbarHost(snackbarHostState) },
             ) {
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .background(color = MaterialTheme.colorScheme.background)
+                ) {
 
-                val currUser: UserState? = getLoggedInUser()
+                    val currUser: UserState? = getLoggedInUser()
 
-                if (currUser == null) {
-                    // User is not logged in
-                    var userAuth: AuthResponse? by remember { mutableStateOf(null) }
+                    if (currUser == null) {
+                        // User is not logged in
+                        var userAuth: AuthResponse? by remember { mutableStateOf(null) }
 
-                    UserAuthentication(
-                        onResponse = {
-                            userAuth = it
-                        })
+                        UserAuthentication(
+                            onResponse = {
+                                userAuth = it
+                            })
 
-                    if (userAuth != null) {
-                        if (userAuth!!.userExist) {
-                            // User Alr exist
-                            val checkUser: UserState by remember { mutableStateOf(UserState()) }
-                            checkUser.email = userAuth!!.email
+                        if (userAuth != null) {
+                            if (userAuth!!.success) {
+                                if (userAuth!!.userExist) {
+                                    // User Alr exist
+                                    val checkUser: UserState by remember { mutableStateOf(UserState()) }
+                                    checkUser.email = userAuth!!.email
 
-                            // Move to loginPin and appPin authentication
-                            validateUser(checkUser, navigator, appModule)
-                        } else {
-                            // User DNE
-                            // Move to registration page
-                            navigator.replace(
-                                UserFormFillUpClass(
-                                    url = NetworkEndPoints.registerUser,
-                                    labelList = mutableListOf("Sign", "Up"),
-                                    buttonLabel = "Create Account",
-                                    userState = UserState(email = userAuth!!.email)
-                                ) {
-                                    if (it.success) {
-                                        // Convert to User state
-                                        val user = it.toUserState()
+                                    // Move to loginPin and appPin authentication
+                                    validateUser(checkUser, navigator, appModule)
+                                } else {
+                                    // User DNE
+                                    // Move to registration page
+                                    navigator.replace(
+                                        UserFormFillUpClass(
+                                            url = NetworkEndPoints.registerUser,
+                                            labelList = mutableListOf("Sign", "Up"),
+                                            buttonLabel = "Create Account",
+                                            userState = UserState(email = userAuth!!.email)
+                                        ) {
+                                            println("$TAG Response:: $it")
+                                            if (it.success) {
+                                                // Convert to User state
+                                                val user = it.toUserState()
 
-                                        // Save the logged in user
-                                        saveLoggedInUser(user)
+                                                // Save the logged in user
+                                                saveLoggedInUser(user)
 
-                                        // Move to Display Page
-                                        navigator.replace(
-                                            launchLoggedUserDisplayPage(navigator, appModule)
-                                        )
-                                    } else {
-                                        // TODO : Display Error message
-                                    }
+                                                // Move to Display Page
+                                                navigator.replace(
+                                                    launchLoggedUserDisplayPage(
+                                                        navigator,
+                                                        appModule
+                                                    )
+                                                )
+                                            } else {
+                                                DisplaySnackbarToast(
+                                                    snackbarHostState = snackbarHostState,
+                                                    scope = coroutineScope,
+                                                    message = it.error
+                                                )
+                                            }
+                                        }
+                                    )
+                                }
+                            } else {
+                                println("$TAG Error Received")
+                                DisplaySnackbarToast(
+                                    snackbarHostState = snackbarHostState,
+                                    scope = coroutineScope,
+                                    message = userAuth!!.error
+                                )
+                            }
+                        }
+                    } else {
+                        // Move to display page for logged in user
+                        navigator.push(
+                            PinAuthenticationDisplayClass(
+                                label = "Login pin",
+                                pinLength = 4,
+                                onComplete = {
+
+                                    // TODO : Uncomment this
+                                    //                                if (checkLoginPin(it)) {
+                                    navigator.replace(
+                                        launchLoggedUserDisplayPage(navigator, appModule)
+                                    )
+                                    //                                }
                                 }
                             )
-                        }
-                    }
-                } else {
-                    // Move to display page for logged in user
-                    navigator.push(
-                        PinAuthenticationDisplayClass(
-                            label = "Login pin",
-                            pinLength = 4,
-                            onComplete = {
-                                // TODO : Uncomment this
-//                                if (checkLoginPin(it)) {
-                                navigator.replace(
-                                    launchLoggedUserDisplayPage(navigator, appModule)
-                                )
-//                                }
-                            }
                         )
-                    )
+                    }
                 }
             }
         }
     }
-
 }
+
 
 fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Screen {
     return DisplayPageDisplayClass(
@@ -204,8 +235,8 @@ fun launchLoggedUserDisplayPage(navigator: Navigator, appModule: AppModule): Scr
         },
         onEditProfile = {
             val userState = getLoggedInUser()!!
-            userState.loginPin=""
-            userState.appPin=""
+            userState.loginPin = ""
+            userState.appPin = ""
             navigator.push(
                 UserFormFillUpClass(
                     url = NetworkEndPoints.updateUser,

@@ -26,6 +26,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -68,6 +70,7 @@ import com.sandeep03edu.passwordmanager.manager.credentials.presentation.compone
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserName
 import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTagsWithIcons
+import com.sandeep03edu.passwordmanager.manager.utils.presentation.bottomDialogModifier
 import com.sandeep03edu.passwordmanager.space
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
@@ -127,9 +130,26 @@ fun DisplayPageDisplay(
     onCardItemClicked: (Card) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
+    var toastMessage by remember { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    if (toastMessage.isNotEmpty()) {
+        scope.launch {
+            snackbarHostState.showSnackbar(message = toastMessage)
+            toastMessage = ""
+        }
+    }
 
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                snackbarHostState,
+                modifier = Modifier
+                    .bottomDialogModifier()
+                    .background(Color.Red)
+            )
+        },
         floatingActionButton = {
             if (!state.isAddNewCredentialSheetOpen) {
                 FloatingActionButton(
@@ -151,7 +171,6 @@ fun DisplayPageDisplay(
             }
         }
     ) {
-
 
         var selectedCard: Card? by remember { mutableStateOf(null) }
         var selectedPassword: Password? by remember { mutableStateOf(null) }
@@ -215,13 +234,12 @@ fun DisplayPageDisplay(
         ) {
 
 
-
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
                     .padding(horizontal = 10.dp, vertical = 5.dp)
             ) {
 
-                item{
+                item {
                     Text(
                         text = "Welcome ${getLoggedInUserName()}!",
                         style = TextStyle(

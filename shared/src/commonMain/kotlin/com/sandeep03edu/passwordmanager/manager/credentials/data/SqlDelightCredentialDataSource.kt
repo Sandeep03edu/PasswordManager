@@ -65,7 +65,6 @@ class SqlDelightCredentialDataSource(
                 supervisorScope {
                     it.map { passwordEntity ->
                         async {
-                            println("$TAG AllPasswordEntity:: $passwordEntity")
                             passwordEntity
                                 .toPassword()
                                 .toDecryptedPassword()

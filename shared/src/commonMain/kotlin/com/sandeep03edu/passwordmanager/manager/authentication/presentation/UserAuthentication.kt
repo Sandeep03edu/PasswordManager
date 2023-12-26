@@ -114,9 +114,7 @@ fun UserAuthentication(
                 ) {
                     println("$TAG Auth from email:: $it")
                     isLoading = false
-                    if (it != null) {
-                        onResponse(it)
-                    }
+                    onResponse(it)
                 }
             },
             backgroundColor = if (isEmailIdValid) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error

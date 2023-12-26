@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sandeep03edu.passwordmanager.SharedRes
@@ -146,7 +147,8 @@ fun SettingPageDisplay(appModule: AppModule, onLogoutUser: () -> Unit, onEditPro
                     },
                     onDismissRequest = {
                         displayLogoutDialog = false
-                    }
+                    },
+
                 )
             }
             space(8)

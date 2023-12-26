@@ -41,7 +41,6 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
 
     private val filteredPasswords: StateFlow<List<Password>> = _filterTag.flatMapLatest { tag ->
         val pass = credentialDataSource.getFilteredPasswords(tag)
-        println("$TAG Inside FilterPass: $tag ->> ${pass}")
         pass
     }.stateIn(
         screenModelScope,

@@ -94,6 +94,9 @@ kotlin {
                 implementation(libs.ktor.client.core)
                 implementation(libs.kotlinx.coroutines.core)
 
+                // Compose Multiplatform moko-biometry
+                implementation("dev.icerock.moko:biometry-compose:0.4.0")
+
 
                 // Multiplatform Navigation
                 val voyagerVersion = "1.0.0-rc10"
