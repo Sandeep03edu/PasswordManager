@@ -23,7 +23,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 val TAG = "NetworkCallingTag"
-val BASE_URL = "http://192.168.1.4:5000"
+//val BASE_URL = "http://192.168.1.4:5000"
+val BASE_URL = "https://password-manager-sandeep03edu-backend.onrender.com"
 
 fun getAuthResult(
     url: String,

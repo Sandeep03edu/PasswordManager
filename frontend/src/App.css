@@ -1,0 +1,52 @@
+.App {
+  text-align: center;
+}
+
+.welcome-container {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url("./images/welcomeBkg.jpg"); /* Set the path to your background image */
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  color: #fff; /* Text color for better visibility */
+  padding: 20px; /* Add padding for content */
+}
+
+h1 {
+  font-size: 3rem; /* Larger heading */
+}
+
+h2 {
+  font-size: 2.5rem; /* Larger heading */
+}
+
+h3 {
+  font-size: 2.25rem; /* Larger heading */
+}
+
+p {
+  font-size: 1.5rem; /* Larger text */
+  margin-bottom: 30px; /* Spacing */
+}
+
+.login-button {
+  width: 150px; /* Wider button */
+  padding: 12px 24px; /* Adjusted padding */
+  font-size: 1.2rem; /* Slightly larger font */
+  border-radius: 8px; /* Rounder corners */
+  background-color: #ffd700; /* Golden color for button */
+  color: #000; /* Dark text for contrast */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #ffa500; /* Darken button color on hover */
+  transform: scale(1.1); /* Scale up the button size on hover */
+}
