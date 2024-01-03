@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import credentialsBkg from "../../images/credentialsLoginBkg2.png";
 
-const CredentialsVerification = ({ onChangeLoginPin, onChangeAppPin }) => {
+const CredentialsVerification = ({onSuccessValidation}) => {
   const styles = {
     fullHeight: {
       height: "100vh",
@@ -64,7 +64,7 @@ const CredentialsVerification = ({ onChangeLoginPin, onChangeAppPin }) => {
     const newPin = e.target.value.replace(/\D/g, ""); // Allow only numeric values
     if (newPin.length <= 4) {
       setLoginPin(newPin);
-      onChangeLoginPin(newPin);
+      // onChangeLoginPin(newPin);
     }
   };
 
@@ -72,7 +72,7 @@ const CredentialsVerification = ({ onChangeLoginPin, onChangeAppPin }) => {
     const newPin = e.target.value.replace(/\D/g, ""); // Allow only numeric values
     if (newPin.length <= 6) {
       setAppPin(newPin);
-      onChangeAppPin(newPin);
+      // onChangeAppPin(newPin);
     }
   };
 

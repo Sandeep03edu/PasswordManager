@@ -3,12 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import credentialsBkg from "../../images/credentialsLoginBkg2.png";
 
-const UserFormFillup = ({
-  onChangeFirstName,
-  onChangeLastName,
-  onChangeLoginPin,
-  onChangeAppPin,
-}) => {
+const UserFormFillup = () => {
   const styles = {
     fullHeight: {
       height: "100vh",
@@ -69,19 +64,16 @@ const UserFormFillup = ({
 
   const handleFirstNameChange = (e) => {
     setFirstName(e.target.value);
-    onChangeFirstName(e.target.value);
   };
 
   const handleLastNameChange = (e) => {
     setLastName(e.target.value);
-    onChangeLastName(e.target.value);
   };
 
   const handleLoginPinChange = (e) => {
     const newPin = e.target.value.replace(/\D/g, ""); // Allow only numeric values
     if (newPin.length <= 4) {
       setLoginPin(newPin);
-      onChangeLoginPin(newPin);
     }
   };
 
@@ -89,7 +81,6 @@ const UserFormFillup = ({
     const newPin = e.target.value.replace(/\D/g, ""); // Allow only numeric values
     if (newPin.length <= 6) {
       setAppPin(newPin);
-      onChangeAppPin(newPin);
     }
   };
 

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 import emailCheckerBkg from "../../images/emailCheckerBkg.jpeg";
 
-const EmailChecker = () => {
+const EmailChecker = ({ onSuccessVerification }) => {
   // Define styles as objects
 
   const styles = {
@@ -41,7 +42,42 @@ const EmailChecker = () => {
     },
   };
 
+  const checkEmail = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      // TODO : Toast Message
+      // Check pattern
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const headerConfig = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        "https://password-manager-sandeep03edu-backend.onrender.com/api/auth/emailExist",
+        {
+          email,
+        },
+        headerConfig
+      );
+      console.log(data);
+        setLoading(false);
+        onSuccessVerification(data)
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleRememberMeChange = () => {
     setRememberMe(!rememberMe);
   };
@@ -64,12 +100,14 @@ const EmailChecker = () => {
                 A Secure way to store your credentials
               </p>
               <form>
-                <div className="mb-">
+                <div className="mb-2">
                   <input
                     type="email"
                     className="form-control"
                     id="email"
                     placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="form-check mb-3" style={{ display: "flex" }}>
@@ -89,6 +127,8 @@ const EmailChecker = () => {
                   type="submit"
                   className="btn btn-primary"
                   style={{ width: "100%" }}
+                  onClick={checkEmail}
+                  disabled={loading}
                 >
                   Continue
                 </button>

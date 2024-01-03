@@ -34,8 +34,3 @@ app.use("/api/auth", userAuthRoutes);
 
 // Credentials API
 app.use("/api/credentials", credentialRoutes);
-
-// Test Encryption
-var encrypted = encryptString("Sandeep", "Hello", "Bye");
-console.log(encrypted);
-console.log(decryptString(encrypted, "Hello", "Bye"));
