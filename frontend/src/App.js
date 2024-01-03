@@ -1,6 +1,7 @@
 import "./App.css";
+import CredentialsVerification from "./components/authentication/CredentialsVerification";
 import EmailChecker from "./components/authentication/EmailChecker";
-import PinEntries from "./components/authentication/PinEntries";
+import UserFormFillup from "./components/authentication/UserFormFillup";
 import Welcome from "./components/authentication/Welcome";
 
 function App() {
@@ -8,14 +9,18 @@ function App() {
     <div style={{ height: "100vh" }}>
       {/* <Welcome /> */}
       {/* <EmailChecker/> */}
-      <PinEntries
+
+      {/* <CredentialsVerification
         onChangeLoginPin={(pin) => {
           console.log(`Pin1 value:: ${pin}`);
         }}
         onChangeAppPin={(pin) => {
           console.log(`Pin2 value:: ${pin}`);
-        }}
-      />
+        }} */
+      }
+      
+      <UserFormFillup/>
+      
     </div>
   );
 }

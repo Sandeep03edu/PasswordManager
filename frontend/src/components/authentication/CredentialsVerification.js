@@ -3,8 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import credentialsBkg from "../../images/credentialsLoginBkg2.png";
 
-const PinEntries = ({ onChangeLoginPin, onChangeAppPin }) => {
-  
+const CredentialsVerification = ({ onChangeLoginPin, onChangeAppPin }) => {
   const styles = {
     fullHeight: {
       height: "100vh",
@@ -151,4 +150,4 @@ const PinEntries = ({ onChangeLoginPin, onChangeAppPin }) => {
   );
 };
 
-export default PinEntries;
+export default CredentialsVerification;
