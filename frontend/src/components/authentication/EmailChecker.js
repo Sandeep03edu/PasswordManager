@@ -64,7 +64,7 @@ const EmailChecker = () => {
                 A Secure way to store your credentials
               </p>
               <form>
-                <div className="mb-3">
+                <div className="mb-">
                   <input
                     type="email"
                     className="form-control"
