@@ -9,7 +9,7 @@ const Welcome = (props) => {
         features and services tailored for you.
       </p>
       <div style={{ width: "100%" }}>
-        <button className="login-button">Login</button>
+        <button className="get-started-button">Get Started</button>
       </div>
     </div>
   );

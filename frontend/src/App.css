@@ -34,7 +34,7 @@ p {
   margin-bottom: 30px; /* Spacing */
 }
 
-.login-button {
+.get-started-button {
   width: 150px; /* Wider button */
   padding: 12px 24px; /* Adjusted padding */
   font-size: 1.2rem; /* Slightly larger font */
@@ -46,7 +46,7 @@ p {
   transition: background-color 0.3s ease;
 }
 
-.login-button:hover {
+.get-started-button:hover {
   background-color: #ffa500; /* Darken button color on hover */
   transform: scale(1.1); /* Scale up the button size on hover */
 }
