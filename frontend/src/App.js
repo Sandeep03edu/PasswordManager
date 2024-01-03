@@ -4,8 +4,11 @@ import EmailChecker from "./components/authentication/EmailChecker";
 import UserFormFillup from "./components/authentication/UserFormFillup";
 import Welcome from "./components/authentication/Welcome";
 import { Routes, Route } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function App() {
+  const navigate = useNavigate();
+
   return (
     <div style={{ height: "100vh" }}>
       <Routes>
@@ -15,7 +18,10 @@ function App() {
           element={
             <EmailChecker
               onSuccessVerification={(authResponse) => {
-                console.log("AuthResponse:: " + authResponse);
+                if (authResponse.success && authResponse.userExist) {
+                  localStorage.setItem("EmailId", authResponse.email);
+                  navigate("/authentication/verification");
+                }
               }}
             />
           }
@@ -24,13 +30,10 @@ function App() {
           path="/authentication/verification"
           element={
             <CredentialsVerification
-              onChangeLoginPin={(pin) => {
-                console.log(`Pin1 value:: ${pin}`);
-              }}
-              onChangeAppPin={(pin) => {
-                console.log(`Pin2 value:: ${pin}`);
-              }}
-            />
+              onSuccessValidation={(data) => {
+                console.log("Dataaa")
+                console.log(data)
+            }} />
           }
         />
         <Route

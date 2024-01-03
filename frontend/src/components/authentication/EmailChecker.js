@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import emailCheckerBkg from "../../images/emailCheckerBkg.jpeg";
@@ -67,16 +67,22 @@ const EmailChecker = ({ onSuccessVerification }) => {
         headerConfig
       );
       console.log(data);
-        setLoading(false);
-        onSuccessVerification(data)
+      localStorage.setItem("RememberMe", rememberMe);
+      setLoading(false);
+      onSuccessVerification(data);
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
   };
 
+  // Clearing LocalStorage RememberMe Value
+  useEffect(() => {
+    localStorage.setItem("RememberMe", false);
+  }, []);
+
   const [rememberMe, setRememberMe] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("Test1@gmail.com");
   const [loading, setLoading] = useState(false);
   const handleRememberMeChange = () => {
     setRememberMe(!rememberMe);
