@@ -31,9 +31,20 @@ function App() {
           element={
             <CredentialsVerification
               onSuccessValidation={(data) => {
-                console.log("Dataaa")
-                console.log(data)
-            }} />
+                if (data.success) {
+                  // User logged in successfully!!
+                  delete data["loginPin"];
+                  delete data["appPin"];
+                  console.log("Dataaa");
+                  console.log(data);
+
+                  if (localStorage.getItem("RememberMe")) {
+                    localStorage.setItem("EmailId", JSON.stringify(data));
+                  }
+                  // Move to display page
+                }
+              }}
+            />
           }
         />
         <Route

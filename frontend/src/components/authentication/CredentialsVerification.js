@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import credentialsBkg from "../../images/credentialsLoginBkg2.png";
+import axios from "axios";
 
-const CredentialsVerification = ({onSuccessValidation}) => {
+const CredentialsVerification = ({ onSuccessValidation }) => {
   const styles = {
     fullHeight: {
       height: "100vh",
@@ -55,6 +56,42 @@ const CredentialsVerification = ({onSuccessValidation}) => {
     },
   };
 
+  const checkCredentials = async (e) => {
+    e.preventDefault();
+
+    if (!loginPin || !appPin) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const headerConfig = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const email = localStorage.getItem("EmailId");
+      const { data } = await axios.post(
+        "https://password-manager-sandeep03edu-backend.onrender.com/api/auth/login",
+        {
+          email,
+          loginPin,
+          appPin,
+        },
+        headerConfig
+      );
+      console.log(data);
+      setLoading(false);
+      onSuccessValidation(data);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const [loading, setLoading] = useState(false);
   const [loginPin, setLoginPin] = useState("");
   const [appPin, setAppPin] = useState("");
   const [showLoginPin, setShowLoginPin] = useState(false);
@@ -138,6 +175,8 @@ const CredentialsVerification = ({onSuccessValidation}) => {
                   type="submit"
                   className="btn btn-primary"
                   style={{ width: "100%" }}
+                  onClick={checkCredentials}
+                  disabled={loading}
                 >
                   Submit
                 </button>
