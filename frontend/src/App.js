@@ -7,6 +7,8 @@ import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ToastDisplay from "./components/utils/Toast";
 import { useEffect, useState } from "react";
+import DisplayCredentialsPage from "./components/credentials/DisplayCredentialsPage";
+import AddCardPage from "./components/credentials/AddCardPage";
 
 function App() {
   const navigate = useNavigate();
@@ -32,11 +34,17 @@ function App() {
               <EmailChecker
                 onSuccessVerification={(authResponse) => {
                   if (authResponse.success && authResponse.userExist) {
+                    setToastMessage("Email Id registered!!");
+                    setToastVariant("Success");
+
                     localStorage.setItem("EmailId", authResponse.email);
                     navigate("/authentication/verification");
                   } else {
                     setToastMessage("User doesn't exist");
-                    setToastVariant("Danger");
+                    setToastVariant("Primary");
+
+                    localStorage.setItem("EmailId", authResponse.email);
+                    navigate("/authentication/registration");
                   }
                 }}
               />
@@ -58,8 +66,11 @@ function App() {
                       localStorage.setItem("UserData", JSON.stringify(data));
                     }
                     // Move to display page
+                    setToastMessage("Login Successful");
+                    setToastVariant("Success");
                   } else {
                     setToastMessage(data.error);
+                    setToastVariant("Danger");
                   }
                 }}
               />
@@ -68,6 +79,14 @@ function App() {
           <Route
             path="/authentication/registration"
             element={<UserFormFillup />}
+          />
+          <Route
+            path="/credential/display"
+            element={<DisplayCredentialsPage />}
+          />
+          <Route
+            path="/credential/addCard"
+            element={<AddCardPage/>}
           />
         </Routes>
       </div>

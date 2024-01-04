@@ -18,10 +18,10 @@ const ToastDisplay = ({ title, toastVariant }) => {
           delay={3000}
           autohide
           onClose={toggleShow}
-          bg={"dark"}
+          bg={toastVariant.toLowerCase()}
         >
           <Toast.Header>
-            <strong className="me-auto">{toastVariant}</strong>
+            <strong className="me-auto">Message</strong>
             <small>Just now</small>
           </Toast.Header>
           <Toast.Body className={"text-white"}>{title}</Toast.Body>
