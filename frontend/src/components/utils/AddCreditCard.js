@@ -5,10 +5,71 @@ const AddCreditCard = () => {
   const [cardNumber, setCardNumber] = useState("1234567812345678");
   const [bankName, setBankName] = useState("State Bank of India");
   const [issuerName, setIssuerName] = useState("Master Card");
-  const [expiryDate, setExpiryDate] = useState("12/26");
+  const [expiryDate, setExpiryDate] = useState("");
   const [issueDate, setIssueDate] = useState("04/20");
   const [cvv, setCVV] = useState("123");
   const [pin, setPin] = useState("1234");
+
+  const [issuerNameError, setIssuerNameError] = useState("");
+  const [cardHolderNameError, setCardHolderNameError] = useState("");
+  const [cardNumberError, setCardNumberError] = useState("");
+  const [cardTypeError, setCardTypeError] = useState("");
+  const [dateError, setDateError] = useState("");
+  const [securityKeyError, setSecurityKeyError] = useState("");
+
+  function validateCard(
+    cardHolderName,
+    cardNumber,
+    bankName,
+    issuerName,
+    expiryDate,
+    issueDate,
+    cvv,
+    pin
+  ) {
+    if (issuerName.trim() === "") {
+      setIssuerNameError("Card issuer name can't be empty!!");
+    } else {
+      setIssuerNameError("");
+    }
+
+    if (cardHolderName.trim() === "") {
+      setCardHolderNameError("Card holder name can't be empty!!");
+    } else if (cardHolderName.length < 3) {
+      setCardHolderNameError("Card holder name invalid!!");
+    } else {
+      setCardHolderNameError("");
+    }
+
+    if (cardNumber.trim() === "") {
+      setCardNumberError("Card number can't be empty!!");
+    } else if (cardNumber.length < 6) {
+      setCardNumberError("Card number should be 6 digit long");
+    } else {
+      setCardNumberError("");
+    }
+
+    if (!bankName || bankName.trim() === "") {
+      setCardTypeError("Card type can't be empty!!");
+    } else {
+      setCardTypeError("");
+    }
+
+    if (
+      (!issueDate || issueDate.trim() === "") &&
+      (!expiryDate || expiryDate.trim() === "")
+    ) {
+      setDateError("Issue date or Expiry date is compulsory!!");
+    } else {
+      setDateError("");
+    }
+
+    if ((!pin || pin.trim() === "") && !cvv && cvv.trim() === "") {
+      setSecurityKeyError("Pin or Cvv is compulsory!!");
+    } else {
+      setSecurityKeyError("");
+    }
+  }
 
   const styles = {
     creditCard: {
@@ -183,7 +244,7 @@ const AddCreditCard = () => {
     event.preventDefault();
     // Handle adding the card details
     // You can perform validation and submit the data here
-    console.log("Card details submitted:", {
+    validateCard(
       cardHolderName,
       cardNumber,
       bankName,
@@ -191,13 +252,26 @@ const AddCreditCard = () => {
       expiryDate,
       issueDate,
       cvv,
-      pin,
-    });
+      pin
+    );
   };
 
   // Format card number with space every 4 digits
   const formattedCardNumber =
     cardNumber && cardNumber.match(/.{1,4}/g).join(" ");
+
+  const handleDateChange = (e, setDateFunction) => {
+    var value = e.target.value.replace("/", "");
+    const isNumeric = value.length === 0 || /^\d+$/.test(value);
+
+    if (isNumeric && value.length <= 4) {
+      if (value.length > 2) {
+        setDateFunction(value.slice(0, 2) + "/" + value.slice(2));
+      } else {
+        setDateFunction(value);
+      }
+    }
+  };
 
   return (
     <div className="container-fluid">
@@ -280,7 +354,7 @@ const AddCreditCard = () => {
             <form
               className="mx-2 my-3"
               style={styles.form}
-              onSubmit={handleAddCard}
+              onClick={handleAddCard}
             >
               <div style={styles.formHeader}>Add Card</div>
               <input
@@ -291,6 +365,14 @@ const AddCreditCard = () => {
                 onChange={(e) => setCardHolderName(e.target.value)}
                 required
               />
+              {cardHolderNameError && (
+                <p
+                  className="text-danger"
+                  style={{ fontSize: "0.8rem", margin: 0, width: "100%" }}
+                >
+                  {cardHolderNameError}
+                </p>
+              )}
               <input
                 type="number"
                 placeholder="Card Number"
@@ -299,6 +381,14 @@ const AddCreditCard = () => {
                 onChange={(e) => setCardNumber(e.target.value)}
                 required
               />
+              {cardNumberError && (
+                <p
+                  className="text-danger"
+                  style={{ fontSize: "0.8rem", margin: 0, width: "100%" }}
+                >
+                  {cardNumberError}
+                </p>
+              )}
               <select
                 style={styles.formInput}
                 value={bankName}
@@ -309,6 +399,14 @@ const AddCreditCard = () => {
                 <option value="State Bank of India">State Bank of India</option>
                 <option value="PNB">PNB</option>
               </select>
+              {cardTypeError && (
+                <p
+                  className="text-danger"
+                  style={{ fontSize: "0.8rem", margin: 0, width: "100%" }}
+                >
+                  {cardTypeError}
+                </p>
+              )}
               <select
                 style={styles.formInput}
                 value={issuerName}
@@ -319,12 +417,21 @@ const AddCreditCard = () => {
                 <option value="Master Card">Master Card</option>
                 <option value="SBI">SBI</option>
               </select>
+              {issuerNameError && (
+                <p
+                  className="text-danger"
+                  style={{ fontSize: "0.8rem", margin: 0, width: "100%" }}
+                >
+                  {issuerNameError}
+                </p>
+              )}
               <input
                 type="text"
                 placeholder="Expiry Date (MM/YY)"
                 style={styles.formInput}
                 value={expiryDate}
-                onChange={(e) => setExpiryDate(e.target.value)}
+                onChange={(e) => handleDateChange(e, setExpiryDate)}
+                maxLength={5}
                 required
               />
               <input
@@ -332,9 +439,18 @@ const AddCreditCard = () => {
                 placeholder="Issue Date (MM/YY)"
                 style={styles.formInput}
                 value={issueDate}
-                onChange={(e) => setIssueDate(e.target.value)}
+                onChange={(e) => handleDateChange(e, setIssueDate)}
+                maxLength={5}
                 required
               />
+              {dateError && (
+                <p
+                  className="text-danger"
+                  style={{ fontSize: "0.8rem", margin: 0, width: "100%" }}
+                >
+                  {dateError}
+                </p>
+              )}
               <input
                 type="number"
                 placeholder="CVV"
@@ -351,6 +467,14 @@ const AddCreditCard = () => {
                 onChange={(e) => setPin(e.target.value)}
                 required
               />
+              {securityKeyError && (
+                <p
+                  className="text-danger"
+                  style={{ fontSize: "0.8rem", margin: 0, width: "100%" }}
+                >
+                  {securityKeyError}
+                </p>
+              )}
               <button type="submit" style={styles.formButton}>
                 Add Card
               </button>
