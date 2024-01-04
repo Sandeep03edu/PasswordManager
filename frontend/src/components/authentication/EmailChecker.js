@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
 import emailCheckerBkg from "../../images/emailCheckerBkg.jpeg";
+import ToastDisplay from "../utils/Toast";
 
 const EmailChecker = ({ onSuccessVerification }) => {
   // Define styles as objects
@@ -82,7 +82,7 @@ const EmailChecker = ({ onSuccessVerification }) => {
   }, []);
 
   const [rememberMe, setRememberMe] = useState(false);
-  const [email, setEmail] = useState("Test1@gmail.com");
+  const [email, setEmail] = useState("Test9@gmail.com");
   const [loading, setLoading] = useState(false);
   const handleRememberMeChange = () => {
     setRememberMe(!rememberMe);
