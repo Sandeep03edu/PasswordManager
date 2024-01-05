@@ -35,18 +35,18 @@ const AddPasswordPage = () => {
       className="container-fluid p-3"
       style={{
         background: "linear-gradient(135deg, #3949ab, #1e88e5)",
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        justifyContent:"center"
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <div
         className=""
         style={{
           height: "100%",
-          width: "100%",
-          
+          width: "90%",
         }}
       >
         <div>

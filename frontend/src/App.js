@@ -87,6 +87,7 @@ function App() {
           />
           <Route path="/credential/addCard" element={<AddCardPage />} />
           <Route path="/credential/addPassword" element={<AddPasswordPage />} />
+          <Route path="/credential/displayCredentials" element={<DisplayCredentialsPage />} />
         </Routes>
       </div>
 
