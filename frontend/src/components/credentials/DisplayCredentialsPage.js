@@ -27,7 +27,7 @@ const HeaderWithProfile = () => {
       >
         {/* Brand/logo (You may replace this with your logo or site name) */}
         <a className="navbar-brand" href="/">
-          Your Site
+          Password Manager
         </a>
 
         <div className="ml-auto">
@@ -85,7 +85,7 @@ const HeaderWithProfile = () => {
             issuerName: "baroda bank",
             cardHolderName: "sandeep mishra",
             cardType: "Paypal",
-            cardNumber: "123412345678",
+            cardNumber: "5678",
             cvv: "123",
             pin: "",
             issueDate: "10/23",
@@ -101,7 +101,7 @@ const HeaderWithProfile = () => {
             issuerName: "baroda bank",
             cardHolderName: "sandeep mishra",
             cardType: "Paypal",
-            cardNumber: "123412345678",
+            cardNumber: "5678",
             cvv: "123",
             pin: "",
             issueDate: "10/23",
@@ -117,7 +117,7 @@ const HeaderWithProfile = () => {
             issuerName: "baroda bank",
             cardHolderName: "sandeep mishra",
             cardType: "Paypal",
-            cardNumber: "123412345678",
+            cardNumber: "1234",
             cvv: "123",
             pin: "",
             issueDate: "10/23",
@@ -133,7 +133,7 @@ const HeaderWithProfile = () => {
             issuerName: "baroda bank",
             cardHolderName: "sandeep mishra",
             cardType: "Paypal",
-            cardNumber: "123412345678",
+            cardNumber: "3456",
             cvv: "123",
             pin: "",
             issueDate: "10/23",
@@ -149,7 +149,7 @@ const HeaderWithProfile = () => {
             issuerName: "baroda bank",
             cardHolderName: "sandeep mishra",
             cardType: "Paypal",
-            cardNumber: "123412345678",
+            cardNumber: "7812",
             cvv: "123",
             pin: "",
             issueDate: "10/23",
@@ -165,7 +165,7 @@ const HeaderWithProfile = () => {
             issuerName: "airtel bank",
             cardHolderName: "sandeep mishra",
             cardType: "VISA",
-            cardNumber: "123456781234",
+            cardNumber: "1212",
             cvv: "456",
             pin: "1234",
             issueDate: "07/23",

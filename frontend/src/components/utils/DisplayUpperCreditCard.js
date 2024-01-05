@@ -76,6 +76,10 @@ const DisplayUpperCreditCard = ({ cards }) => {
       opacity: "0.7",
       maxWidth: "150px", // Added max-width
     },
+    title: {
+      fontFamily: "'Roboto', sans-serif", // Change the font family as needed
+      fontSize: "1.5rem",
+    },
   };
 
   // Function to capitalize the first letter of each word in a string
@@ -88,15 +92,23 @@ const DisplayUpperCreditCard = ({ cards }) => {
   };
 
   const formattedCardNumber = (cardNumber) => {
-    return cardNumber && cardNumber.match(/.{1,4}/g).join(" ");
+    if (!cardNumber) return "";
+    var cardNum = cardNumber;
+    if (cardNumber.length === 4) {
+      cardNum = "********" + cardNumber;
+    }
+    return cardNum && cardNum.match(/.{1,4}/g).join(" ");
   };
 
   return (
     <div className="container-fluid m-0 p-0">
+      <p className="mx-4 mb-0 mt-2 p-0" style={styles.title}>
+        Your Cards
+      </p>
       <div className="row m-0 overflow-auto flex-nowrap">
         {cards.map((card) => (
           <div
-            className="col-md-3 m-3 d-flex justify-content-start "
+            className="col-md-3 mx-3 my-2 d-flex justify-content-start "
             style={styles.creditCard}
           >
             <div style={styles.backgroundCircle}></div>
