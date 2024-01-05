@@ -176,8 +176,9 @@ fun UpperHalfCardDisplay(
         ) {
             space(4)
 
-            Text(modifier = Modifier
-                .align(Alignment.CenterHorizontally),
+            Text(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
                 text = buildAnnotatedString
                 {
                     withStyle(
@@ -189,8 +190,8 @@ fun UpperHalfCardDisplay(
                     ) {
                         append(
                             "${
-                                card.issuerName.uppercase()
-                                    .subSequence(0, card.issuerName.length / 2)
+                                card.cardHolderName.uppercase()
+                                    .subSequence(0, card.cardHolderName.length / 2)
                             }"
                         )
                     }
@@ -203,9 +204,9 @@ fun UpperHalfCardDisplay(
                     ) {
                         append(
                             "${
-                                card.issuerName.uppercase().subSequence(
-                                    card.issuerName.length / 2,
-                                    card.issuerName.length
+                                card.cardHolderName.uppercase().subSequence(
+                                    card.cardHolderName.length / 2,
+                                    card.cardHolderName.length
                                 )
                             }"
                         )
@@ -313,9 +314,8 @@ fun BottomHalfCardDisplay(
         ) {
             space(4)
 
-            Text(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
+            Text(modifier = Modifier
+                .align(Alignment.CenterHorizontally),
                 text = buildAnnotatedString
                 {
                     withStyle(
@@ -327,8 +327,8 @@ fun BottomHalfCardDisplay(
                     ) {
                         append(
                             "${
-                                card.cardHolderName.uppercase()
-                                    .subSequence(0, card.cardHolderName.length / 2)
+                                card.issuerName.uppercase()
+                                    .subSequence(0, card.issuerName.length / 2)
                             }"
                         )
                     }
@@ -341,15 +341,16 @@ fun BottomHalfCardDisplay(
                     ) {
                         append(
                             "${
-                                card.cardHolderName.uppercase().subSequence(
-                                    card.cardHolderName.length / 2,
-                                    card.cardHolderName.length
+                                card.issuerName.uppercase().subSequence(
+                                    card.issuerName.length / 2,
+                                    card.issuerName.length
                                 )
                             }"
                         )
                     }
                 }
             )
+
 
             space(8)
             Row(

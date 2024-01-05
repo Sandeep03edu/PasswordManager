@@ -242,8 +242,6 @@ const AddCreditCard = () => {
 
   const handleAddCard = (event) => {
     event.preventDefault();
-    // Handle adding the card details
-    // You can perform validation and submit the data here
     validateCard(
       cardHolderName,
       cardNumber,
@@ -425,6 +423,8 @@ const AddCreditCard = () => {
                   {issuerNameError}
                 </p>
               )}
+            
+
               <input
                 type="text"
                 placeholder="Expiry Date (MM/YY)"
