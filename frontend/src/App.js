@@ -7,10 +7,10 @@ import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ToastDisplay from "./components/utils/Toast";
 import { useEffect, useState } from "react";
-import DisplayCredentialsPage from "./components/credentials/DisplayCredentialDashboard";
+import DisplayCredentialsPage from "./components/credentials/DisplayCredentialPage";
 import AddCardPage from "./components/credentials/AddCardPage";
 import AddPasswordPage from "./components/credentials/AddPasswordPage";
-import DisplayCredentialDashboard from "./components/credentials/DisplayCredentialDashboard";
+import DisplayCredentialPage from "./components/credentials/DisplayCredentialPage";
 
 function App() {
   const navigate = useNavigate();
