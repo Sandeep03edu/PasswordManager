@@ -7,9 +7,10 @@ import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ToastDisplay from "./components/utils/Toast";
 import { useEffect, useState } from "react";
-import DisplayCredentialsPage from "./components/credentials/DisplayCredentialsPage";
+import DisplayCredentialsPage from "./components/credentials/DisplayCredentialDashboard";
 import AddCardPage from "./components/credentials/AddCardPage";
 import AddPasswordPage from "./components/credentials/AddPasswordPage";
+import DisplayCredentialDashboard from "./components/credentials/DisplayCredentialDashboard";
 
 function App() {
   const navigate = useNavigate();
@@ -82,12 +83,14 @@ function App() {
             element={<UserFormFillup />}
           />
           <Route
-            path="/credential/display"
-            element={<DisplayCredentialsPage />}
+            path="/credential/display/dashboard"
+            element={<DisplayCredentialDashboard />}
           />
-          <Route path="/credential/addCard" element={<AddCardPage />} />
-          <Route path="/credential/addPassword" element={<AddPasswordPage />} />
-          <Route path="/credential/displayCredentials" element={<DisplayCredentialsPage />} />
+          <Route path="/credential/add/card" element={<AddCardPage />} />
+          <Route
+            path="/credential/add/password"
+            element={<AddPasswordPage />}
+          />
         </Routes>
       </div>
 

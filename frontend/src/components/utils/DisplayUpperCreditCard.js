@@ -4,8 +4,8 @@ const DisplayUpperCreditCard = ({ cards }) => {
   const styles = {
     creditCard: {
       position: "relative",
-      width: "300px",
-      height: "200px",
+      width: "220px",
+      height: "150px",
       borderRadius: "20px",
       overflow: "hidden",
       boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.3)",
@@ -35,7 +35,7 @@ const DisplayUpperCreditCard = ({ cards }) => {
     },
 
     number: {
-      fontSize: "1.15rem", // Adjusted font size
+      fontSize: "1rem", // Adjusted font size
       letterSpacing: "3px",
       wordSpacing: "10px",
       marginTop: "5px",
@@ -62,19 +62,22 @@ const DisplayUpperCreditCard = ({ cards }) => {
     },
     bankLogo: {
       width: "auto",
-      height: "40px",
+      height: "20px",
       marginBottom: "5px",
     },
     issuerLogo: {
       width: "auto",
-      height: "40px",
+      height: "20px",
       marginBottom: "5px",
     },
     bankText: {
-      fontSize: "0.9rem",
+      fontSize: "0.8rem",
       marginTop: "5px",
       opacity: "0.7",
-      maxWidth: "150px", // Added max-width
+      maxWidth: "80px", // Added max-width
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap", // Set to nowrap to limit to one line
     },
     title: {
       fontFamily: "'Roboto', sans-serif", // Change the font family as needed
@@ -108,7 +111,7 @@ const DisplayUpperCreditCard = ({ cards }) => {
       <div className="row m-0 overflow-auto flex-nowrap">
         {cards.map((card) => (
           <div
-            className="col-md-3 mx-3 my-2 d-flex justify-content-start "
+            className=" mx-3 my-2 d-flex justify-content-start "
             style={styles.creditCard}
           >
             <div style={styles.backgroundCircle}></div>
