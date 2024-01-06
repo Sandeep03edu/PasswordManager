@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Sidebar.css";
 
-const DisplaySidebar = () => {
+const DisplaySidebar = ({ onClick }) => {
   const styles = {
     centerElement: {
       display: "flex",
@@ -22,25 +22,55 @@ const DisplaySidebar = () => {
       <hr />
       <ul className="mynav nav nav-pills flex-column mb-auto">
         <li className="nav-item mb-1">
-          <Link to="/credential/display/dashboard" style={styles.centerElement}>
-            <i className="fa-solid fa-chart-line mx-1"></i>
+          <div
+            className="px-1 py-2"
+            style={styles.centerElement}
+            onClick={(e) => {
+              e.preventDefault();
+              onClick("Dashboard");
+            }}
+          >
+            <i
+              className="fa-solid fa-chart-line"
+              style={{ marginRight: "10px", paddingLeft: "5px" }}
+            ></i>
             Dashboard
-          </Link>
+          </div>
         </li>
         <li className="nav-item mb-1">
-          <Link to="/credential/display/cards" style={styles.centerElement}>
-            <i className="fa-regular fa-credit-card mx-1"></i>
+          <div
+            className="px-1 py-2"
+            style={styles.centerElement}
+            onClick={(e) => {
+              e.preventDefault();
+              onClick("Cards");
+            }}
+          >
+            <i
+              className="fa-regular fa-credit-card"
+              style={{ marginRight: "10px", paddingLeft: "5px" }}
+            ></i>
             Cards
-          </Link>
+          </div>
         </li>
         <li className="nav-item mb-1">
-          <Link to="/credential/display/passwords" style={styles.centerElement}>
-            <i className="fa-solid fa-key mx-1"></i>
+          <div
+            className="px-1 py-2"
+            style={styles.centerElement}
+            onClick={(e) => {
+              e.preventDefault();
+              onClick("Passwords");
+            }}
+          >
+            <i
+              className="fa-solid fa-key "
+              style={{ marginRight: "10px", paddingLeft: "5px" }}
+            ></i>
             Passwords
-          </Link>
+          </div>
         </li>
         <li className="sidebar-item  nav-item mb-1">
-          <Link
+          <div
             to="/"
             className="sidebar-link collapsed"
             data-bs-toggle="collapse"
@@ -51,31 +81,29 @@ const DisplaySidebar = () => {
           >
             <i className="fas fa-cog pe-2 mx-1"></i>
             <span className="topic">Settings </span>
-          </Link>
+          </div>
           <ul
             id="settings"
             className="sidebar-dropdown list-unstyled collapse"
             data-bs-parent="#sidebar"
           >
             <li className="sidebar-item">
-              <Link
-                to="/"
-                className="sidebar-link"
-                style={styles.centerElement}
-              >
-                <i className="fas fa-user-plus pe-2 mx-1"></i>
+              <div to="/" className="sidebar-link" style={styles.centerElement}>
+                <i
+                  className="fas fa-user-plus"
+                  style={{ marginRight: "10px", paddingLeft: "5px" }}
+                ></i>
                 <span className="topic">Edit Profile</span>
-              </Link>
+              </div>
             </li>
             <li className="sidebar-item">
-              <Link
-                to="/"
-                className="sidebar-link"
-                style={styles.centerElement}
-              >
-                <i className="fas fa-sign-out-alt pe-2 mx-1"></i>
+              <div className="sidebar-link" style={styles.centerElement}>
+                <i
+                  className="fas fa-sign-out-alt"
+                  style={{ marginRight: "15px", paddingLeft: "5px" }}
+                ></i>
                 <span className="topic">Log Out</span>
-              </Link>
+              </div>
             </li>
           </ul>
         </li>
@@ -83,7 +111,12 @@ const DisplaySidebar = () => {
       <hr />
       <div className="d-flex" style={styles.centerElement}>
         <i className="fa-solid fa-user mx-2"></i>
-        <span>
+        <span
+          data-bs-toggle="collapse"
+          data-bs-target="#settings"
+          aria-expanded="false"
+          aria-controls="settings"
+        >
           <h6 className="mt-1 mb-0">Sandeep Mishra</h6>
         </span>
       </div>

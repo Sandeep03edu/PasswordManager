@@ -83,8 +83,8 @@ function App() {
             element={<UserFormFillup />}
           />
           <Route
-            path="/credential/display/dashboard"
-            element={<DisplayCredentialDashboard />}
+            path="/credential/display"
+            element={<DisplayCredentialsPage />}
           />
           <Route path="/credential/add/card" element={<AddCardPage />} />
           <Route

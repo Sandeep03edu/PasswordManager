@@ -2,10 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import DisplaySidebar from "./DisplaySidebar";
 
-const DisplayCredentialDashboard = () => {
+const DisplayCredentialPage = () => {
   return (
     <div className="container-fluid p-0 d-flex h-100">
-      <DisplaySidebar />
+      <DisplaySidebar
+        onClick={(type) => {
+          console.log("Type: " + type);
+        }}
+      />
 
       <div className="bg-light flex-fill">
         <div className="p-2 d-md-none d-flex text-white bg-success">
@@ -31,4 +35,4 @@ const DisplayCredentialDashboard = () => {
   );
 };
 
-export default DisplayCredentialDashboard;
+export default DisplayCredentialPage;
