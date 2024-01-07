@@ -1,4 +1,5 @@
 import React from "react";
+import DisplayDashboardChart from "../utils/DisplayDashboardChart";
 
 const DisplayDashboard = () => {
   const countData = [
@@ -39,18 +40,18 @@ const DisplayDashboard = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div
-            className="collapse navbar-collapse justify-content-end"
+            className="collapse navbar-collapse justify-content-end "
             id="navbarNav"
           >
             <ul className="navbar-nav">
               <li className="nav-item me-1">
-                <button className="btn btn-primary me-2">
+                <button className="btn btn-primary m-2">
                   <i class="fa-solid fa-circle-plus me-2"></i>
                   Card
                 </button>
               </li>
               <li className="nav-item">
-                <button className="btn btn-primary">
+                <button className="btn btn-primary m-2">
                   <i class="fa-solid fa-circle-plus me-2"></i>
                   Password
                 </button>
@@ -110,6 +111,15 @@ const DisplayDashboard = () => {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="row m-0">
+        <div className="col-lg-8 col-md-6">
+          <DisplayDashboardChart />
+        </div>
+        <div className="col-lg-4 col-md-6">
+          <div className="m-2">Hello gaiz</div>
         </div>
       </div>
     </>
