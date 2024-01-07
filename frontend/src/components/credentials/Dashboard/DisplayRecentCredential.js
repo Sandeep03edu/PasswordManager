@@ -36,7 +36,7 @@ const DisplayRecentCredential = () => {
   return (
     <div className="m-0 bg-white rounded px-2" style={{ width: "100%" }}>
       <div className="container m-0" style={{ minWidth: "100%" }}>
-        <h2 className="pb-3 pt-2">Recent Credentials</h2>
+        <h4 className="pb-3 pt-3">Recent Credentials</h4>
         <table className="table " style={{ width: "100%" }}>
           <thead className=" " style={{ background: "#00ffff" }}>
             <tr>

@@ -16,7 +16,7 @@ const DisplayCredentialPage = () => {
         }}
       />
 
-      <div className="bg-light flex-fill">
+      <div className="bg-light flex-fill" style={{ overflow: "auto" }}>
         <div className="p-2 d-md-none d-flex text-white bg-success">
           <Link
             to="/"
