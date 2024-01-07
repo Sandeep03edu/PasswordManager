@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import DisplaySidebar from "./DisplaySidebar";
-import DisplayDashboard from "./DisplayDashboard";
-import DisplayCards from "./DisplayCards";
-import DisplayPasswords from "./DisplayPasswords";
+import DisplayDashboard from "./Dashboard/DisplayDashboard";
+import DisplayCards from "./Card/DisplayCards";
+import DisplayPasswords from "./Password/DisplayPasswords";
 
 const DisplayCredentialPage = () => {
   const [displayType, setDisplayType] = useState("Dashboard");

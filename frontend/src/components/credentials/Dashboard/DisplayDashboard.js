@@ -1,5 +1,6 @@
-import React from "react";
-import DisplayDashboardChart from "../utils/DisplayDashboardChart";
+import React, { useState } from "react";
+import DisplayDashboardChart from "./DisplayDashboardChart";
+import DisplayRecentActivity from "./DisplayRecentActivity";
 
 const DisplayDashboard = () => {
   const countData = [
@@ -19,6 +20,8 @@ const DisplayDashboard = () => {
       icon: "fa-solid fa-unlock-keyhole",
     },
   ];
+
+  const [chartHeight, setChartHeight] = useState(0);
 
   return (
     <>
@@ -75,8 +78,8 @@ const DisplayDashboard = () => {
                 <div
                   class="filled-circle me-2"
                   style={{
-                    minWidth: "60px",
-                    minHeight: "60px",
+                    minWidth: "3rem",
+                    minHeight: "3rem",
                     borderRadius: "50%",
                     backgroundColor: "blue",
                     flexWrap: "nowrap",
@@ -89,9 +92,9 @@ const DisplayDashboard = () => {
                   <i
                     className={item.icon}
                     style={{
-                      fontSize: "30px", // Adjust the font size as needed
-                      width: "30px",
-                      height: "30px",
+                      fontSize: "1.5rem", // Adjust the font size as needed
+                      width: "1.5rem",
+                      height: "1.5rem",
                     }}
                   ></i>
                 </div>
@@ -114,12 +117,39 @@ const DisplayDashboard = () => {
         </div>
       </div>
 
-      <div className="row m-0">
-        <div className="col-lg-8 col-md-6">
-          <DisplayDashboardChart />
+      <div className="row m-0" style={{ height: "100%" }}>
+        <div className="col-lg-7 col-md-6">
+          <DisplayDashboardChart
+            setComponentHeight={(value) => {
+              console.log("Chart:: " + value);
+              if (value !== chartHeight) {
+                setChartHeight(value);
+              }
+            }}
+          />
         </div>
-        <div className="col-lg-4 col-md-6">
-          <div className="m-2">Hello gaiz</div>
+
+        <div className="col-lg-5 col-md-6 my-3 ">
+          <div className="bg-white rounded me-2 px-2">
+            <div
+              className="px-2 pt-2"
+              style={{
+                width: "100%",
+                fontSize: "1.25rem",
+              }}
+            >
+              Recent Activity
+            </div>
+            <div
+              style={{
+                height: `${chartHeight - 50}px`,
+                margin: "10px",
+                overflowY: "auto",
+              }}
+            >
+              <DisplayRecentActivity />
+            </div>
+          </div>
         </div>
       </div>
     </>

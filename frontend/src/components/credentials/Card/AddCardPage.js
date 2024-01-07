@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AddCreditCard from "../utils/AddCreditCard";
+import AddCreditCard from "../../utils/AddCreditCard";
 
 const AddCardPage = () => {
   return (
