@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DisplayDashboardChart from "./DisplayDashboardChart";
 import DisplayRecentActivity from "./DisplayRecentActivity";
+import DisplayRecentCredential from "./DisplayRecentCredential";
 
 const DisplayDashboard = () => {
   const countData = [
@@ -25,7 +26,7 @@ const DisplayDashboard = () => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light pt-3 pb-2">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light pt-1 pb-1">
         <div className="container-fluid">
           <p className="navbar-brand m-0 p-0">
             <i className="fa-solid fa-gauge-high p-0 me-2"></i>
@@ -73,6 +74,7 @@ const DisplayDashboard = () => {
                 style={{
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "flex-start",
                 }}
               >
                 <div
@@ -103,10 +105,11 @@ const DisplayDashboard = () => {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "center",
+                    alignItems: "flex-start",
                     justifyContent: "center",
                     width: "100%",
                   }}
+                  className="ms-2"
                 >
                   <h5 className="m-0 p-0">{item.count}</h5>
                   <p className="m-0 p-0">{item.type}</p>
@@ -152,6 +155,12 @@ const DisplayDashboard = () => {
           </div>
         </div>
       </div>
+
+      <div className="m-2">
+        <DisplayRecentCredential />
+      </div>
+
+      <div style={{ height: "100px" }} />
     </>
   );
 };
