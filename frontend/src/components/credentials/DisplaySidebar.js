@@ -1,11 +1,14 @@
 import React from "react";
 import "./Sidebar.css";
 
-const DisplaySidebar = () => {
+const DisplaySidebar = ({ onClick }) => {
   const styles = {
     centerElement: {
       display: "flex",
       alignItems: "center",
+    },
+    sizeFontAwesomeIcon: {
+      fontSize: "1rem",
     },
   };
   return (
@@ -33,14 +36,31 @@ const DisplaySidebar = () => {
               <div
                 to="/credential/display/dashboard"
                 style={styles.centerElement}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClick("Dashboard");
+                }}
               >
-                <i className="fa-solid fa-chart-line mx-1"></i>
+                <i
+                  className="fa-solid fa-chart-line mx-1"
+                  style={styles.sizeFontAwesomeIcon}
+                ></i>
                 Dashboard
               </div>
             </li>
             <li className="nav-item mb-1">
-              <div to="/credential/display/cards" style={styles.centerElement}>
-                <i className="fa-regular fa-credit-card mx-1"></i>
+              <div
+                to="/credential/display/cards"
+                style={styles.centerElement}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClick("Cards");
+                }}
+              >
+                <i
+                  className="fa-regular fa-credit-card mx-1"
+                  style={styles.sizeFontAwesomeIcon}
+                ></i>
                 Cards
               </div>
             </li>
@@ -48,8 +68,15 @@ const DisplaySidebar = () => {
               <div
                 to="/credential/display/passwords"
                 style={styles.centerElement}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClick("Passwords");
+                }}
               >
-                <i className="fa-solid fa-key mx-1"></i>
+                <i
+                  className="fa-solid fa-key mx-1"
+                  style={styles.sizeFontAwesomeIcon}
+                ></i>
                 Passwords
               </div>
             </li>
@@ -63,7 +90,10 @@ const DisplaySidebar = () => {
                 aria-controls="settings"
                 style={styles.centerElement}
               >
-                <i className="fas fa-cog pe-2 mx-1"></i>
+                <i
+                  className="fas fa-cog pe-2 ms-1"
+                  style={styles.sizeFontAwesomeIcon}
+                ></i>
                 <span className="topic">Settings </span>
               </div>
               <ul
@@ -77,7 +107,10 @@ const DisplaySidebar = () => {
                     className="sidebar-link"
                     style={styles.centerElement}
                   >
-                    <i className="fas fa-user-plus pe-2 mx-1"></i>
+                    <i
+                      className="fas fa-user-plus pe-2 me-0 ms-4"
+                      style={styles.sizeFontAwesomeIcon}
+                    ></i>
                     <span className="topic">Edit Profile</span>
                   </div>
                 </li>
@@ -87,7 +120,10 @@ const DisplaySidebar = () => {
                     className="sidebar-link"
                     style={styles.centerElement}
                   >
-                    <i className="fas fa-sign-out-alt pe-2 mx-1"></i>
+                    <i
+                      className="fas fa-sign-out-alt pe-2 me-1 ms-4"
+                      style={styles.sizeFontAwesomeIcon}
+                    ></i>
                     <span className="topic">Log Out</span>
                   </div>
                 </li>
@@ -97,7 +133,10 @@ const DisplaySidebar = () => {
           <hr />
 
           <div className="" style={styles.centerElement}>
-            <i className="fa-solid fa-user mx-2"></i>
+            <i
+              className="fa-solid fa-user mx-2"
+              style={styles.sizeFontAwesomeIcon}
+            ></i>
             <span>
               <h6 className="mt-1 mb-0">Sandeep Mishra</h6>
             </span>

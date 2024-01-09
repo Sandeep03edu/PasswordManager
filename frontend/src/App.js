@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import DisplayCredentialsPage from "./components/credentials/DisplayCredentialPage";
 import AddCardPage from "./components/credentials/Card/AddCardPage";
 import AddPasswordPage from "./components/credentials/Password/AddPasswordPage";
-import DisplayCredentialPage from "./components/credentials/DisplayCredentialPage";
 
 function App() {
   const navigate = useNavigate();
