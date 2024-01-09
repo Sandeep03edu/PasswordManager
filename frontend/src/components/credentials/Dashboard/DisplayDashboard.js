@@ -32,31 +32,31 @@ const DisplayDashboard = () => {
             <i className="fa-solid fa-gauge-high p-0 me-2"></i>
             Dashboard
           </p>
-          <button
+          <div
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
+            data-bs-target="#addCredentailDiv"
+            aria-controls="addCredentailDiv"
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+            <i className="fa-solid fa-circle-plus "></i>
+          </div>
           <div
             className="collapse navbar-collapse justify-content-end "
-            id="navbarNav"
+            id="addCredentailDiv"
           >
             <ul className="navbar-nav">
               <li className="nav-item me-1">
                 <button className="btn btn-primary m-2">
-                  <i class="fa-solid fa-circle-plus me-2"></i>
+                  <i className="fa-solid fa-circle-plus me-2"></i>
                   Card
                 </button>
               </li>
               <li className="nav-item">
                 <button className="btn btn-primary m-2">
-                  <i class="fa-solid fa-circle-plus me-2"></i>
+                  <i className="fa-solid fa-circle-plus me-2"></i>
                   Password
                 </button>
               </li>

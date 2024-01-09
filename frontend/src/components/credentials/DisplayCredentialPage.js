@@ -16,16 +16,18 @@ const DisplayCredentialPage = () => {
         }}
       />
 
-      <div className="bg-light flex-fill" style={{ overflow: "auto" }}>
-        <div className="p-2 d-md-none d-flex text-white bg-success">
-          <Link
-            to="/"
+      <div className="bg-light flex-fill" style={{ overflowY: "auto" }}>
+        <div
+          className="p-2 d-md-none d-flex text-white "
+          style={{ background: "#00004d" }}
+        >
+          <div
             className="text-white"
             data-bs-toggle="offcanvas"
             data-bs-target="#bdSidebar"
           >
             <i className="fa-solid fa-bars"></i>
-          </Link>
+          </div>
           <span className="ms-3">Password Manager</span>
         </div>
 
