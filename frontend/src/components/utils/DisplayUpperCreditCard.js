@@ -1,6 +1,6 @@
 import React from "react";
 
-const DisplayUpperCreditCard = ({ cards }) => {
+const DisplayUpperCreditCard = ({ card }) => {
   const styles = {
     creditCard: {
       position: "relative",
@@ -104,51 +104,41 @@ const DisplayUpperCreditCard = ({ cards }) => {
   };
 
   return (
-    <div className="container-fluid m-0 p-0">
-      <p className="mx-4 mb-0 mt-2 p-0" style={styles.title}>
-        Your Cards
-      </p>
-      <div className="row m-0 overflow-auto flex-nowrap">
-        {cards.map((card) => (
-          <div
-            className=" mx-3 my-2 d-flex justify-content-start "
-            style={styles.creditCard}
-          >
-            <div style={styles.backgroundCircle}></div>
-            <div style={styles.creditCardDetails}>
-              <div>
-                <div style={styles.holder}>
-                  {capitalizeWords(card.cardHolderName)}
-                </div>
-                <div style={styles.number}>
-                  {formattedCardNumber(card.cardNumber)}
-                </div>
-              </div>
-              <div style={styles.bankIssuerRow}>
-                <div style={styles.bankIssuerColumn}>
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/2048px-SBI-logo.svg.png"
-                    alt="Bank Logo"
-                    style={styles.bankLogo}
-                  />
-                  <span style={styles.bankText}>
-                    {capitalizeWords(card.issuerName)}
-                  </span>
-                </div>
-                <div style={styles.bankIssuerColumn}>
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg"
-                    alt="Issuer Logo"
-                    style={styles.issuerLogo}
-                  />
-                  <span style={styles.bankText}>
-                    {capitalizeWords(card.cardType)}
-                  </span>
-                </div>
-              </div>
+    <div style={{ width: "fit-content" }}>
+      <div style={styles.creditCard}>
+        <div style={styles.backgroundCircle}></div>
+        <div style={styles.creditCardDetails}>
+          <div>
+            <div style={styles.holder}>
+              {capitalizeWords(card.cardHolderName)}
+            </div>
+            <div style={styles.number}>
+              {formattedCardNumber(card.cardNumber)}
             </div>
           </div>
-        ))}
+          <div style={styles.bankIssuerRow}>
+            <div style={styles.bankIssuerColumn}>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/2048px-SBI-logo.svg.png"
+                alt="Bank Logo"
+                style={styles.bankLogo}
+              />
+              <span style={styles.bankText}>
+                {capitalizeWords(card.issuerName)}
+              </span>
+            </div>
+            <div style={styles.bankIssuerColumn}>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg"
+                alt="Issuer Logo"
+                style={styles.issuerLogo}
+              />
+              <span style={styles.bankText}>
+                {capitalizeWords(card.cardType)}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

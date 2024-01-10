@@ -33,7 +33,7 @@ const DisplayDashboard = () => {
             Dashboard
           </p>
           <div
-            className="navbar-toggler"
+            className="navbar-toggler m-0 p-0"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#addCredentailDiv"
@@ -41,7 +41,9 @@ const DisplayDashboard = () => {
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <i className="fa-solid fa-circle-plus "></i>
+            <button className="btn btn-primary py-1 px-2">
+              <i className="fa-solid fa-circle-plus"></i>
+            </button>
           </div>
           <div
             className="collapse navbar-collapse justify-content-end "

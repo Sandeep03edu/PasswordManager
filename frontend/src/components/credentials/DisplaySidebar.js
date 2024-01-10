@@ -12,7 +12,11 @@ const DisplaySidebar = ({ onClick }) => {
     },
   };
   return (
-    <div id="bdSidebar" className="text-white offcanvas-md offcanvas-start">
+    <div
+      id="bdSidebar"
+      className="text-white offcanvas-md offcanvas-start"
+      style={{ width: "max-content" }}
+    >
       <div
         className="p-3 "
         style={{

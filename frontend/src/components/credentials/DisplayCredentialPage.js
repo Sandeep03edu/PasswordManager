@@ -5,15 +5,19 @@ import DisplayCards from "./Card/DisplayCards";
 import DisplayPasswords from "./Password/DisplayPasswords";
 
 const DisplayCredentialPage = () => {
-  const [displayType, setDisplayType] = useState("Dashboard");
+  const [displayType, setDisplayType] = useState("Cards");
 
   return (
-    <div className="container-fluid p-0 d-flex h-100">
-      <DisplaySidebar
-        onClick={(type) => {
-          setDisplayType(type);
-        }}
-      />
+    <div
+      className="container-fluid p-0 d-flex h-100"
+    >
+      <div style={{ width: "fit-content" }}>
+        <DisplaySidebar
+          onClick={(type) => {
+            setDisplayType(type);
+          }}
+        />
+      </div>
 
       <div className="bg-light flex-fill" style={{ overflowY: "auto" }}>
         <div
@@ -31,7 +35,7 @@ const DisplayCredentialPage = () => {
         </div>
 
         <div
-          className=""
+          className="m-0 p-0"
           style={{ background: "#e6e6e6", minHeight: "100vh", width: "100%" }}
         >
           {/* Page Content */}
