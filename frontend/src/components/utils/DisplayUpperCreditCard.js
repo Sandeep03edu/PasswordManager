@@ -1,6 +1,6 @@
 import React from "react";
 
-const DisplayUpperCreditCard = ({ card }) => {
+const DisplayUpperCreditCard = ({ card, onClick }) => {
   const styles = {
     creditCard: {
       position: "relative",
@@ -104,7 +104,7 @@ const DisplayUpperCreditCard = ({ card }) => {
   };
 
   return (
-    <div style={{ width: "fit-content" }}>
+    <div style={{ width: "fit-content" }} onClick={() => onClick}>
       <div style={styles.creditCard}>
         <div style={styles.backgroundCircle}></div>
         <div style={styles.creditCardDetails}>

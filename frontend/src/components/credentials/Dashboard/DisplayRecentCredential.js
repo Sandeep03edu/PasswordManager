@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import PinEntry from "../PinEntry";
 
 const DisplayRecentCredential = () => {
   const dummyData = [
@@ -29,8 +30,16 @@ const DisplayRecentCredential = () => {
 
   const handleRowClick = (id) => {
     // Handle click action here based on the row ID
-    console.log(`Row clicked: ${id}`);
+     console.log(`Row clicked: ${id}`);
+     setShowModal(true);
   };
+
+   const [showModal, setShowModal] = useState(false);
+   const handleCloseModal = () => {
+     setShowModal(false);
+  };
+  
+  
 
   return (
     <div className="m-0 bg-white rounded px-2">
@@ -104,6 +113,15 @@ const DisplayRecentCredential = () => {
           </button>
         </div>
       </div>
+      <PinEntry
+        showModal={showModal}
+        handleClose={handleCloseModal}
+        keyTitle={"App Pin"}
+        keyLimit={6}
+        handleResponse={() => {
+          console.log("Response");
+        }}
+      />
     </div>
   );
 };

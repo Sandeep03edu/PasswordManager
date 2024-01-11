@@ -2,7 +2,13 @@ import { Modal } from "react-bootstrap";
 
 import React, { useState } from "react";
 
-const PinEntry = ({ showModal, handleClose, handleResponse, keyTitle, keyLimit }) => {
+const PinEntry = ({
+  showModal,
+  handleClose,
+  handleResponse,
+  keyTitle,
+  keyLimit,
+}) => {
   const [pin, setPin] = useState("");
 
   const handlePinChange = (event) => {
@@ -13,12 +19,12 @@ const PinEntry = ({ showModal, handleClose, handleResponse, keyTitle, keyLimit }
 
   const handleVerifyClick = () => {
     // Add your verification logic here
-      console.log(`Verifying PIN: ${pin}`);
-      handleResponse()
+    console.log(`Verifying PIN: ${pin}`);
+    handleResponse();
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose} >
+    <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton className="bg-primary text-white px-3 py-2">
         <Modal.Title>Verification</Modal.Title>
       </Modal.Header>
