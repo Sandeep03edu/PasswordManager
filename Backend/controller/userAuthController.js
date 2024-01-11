@@ -260,4 +260,36 @@ const userEmailExist = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser, loginUser, updateUser, userEmailExist };
+const verifyAppPin = asyncHandler(async (req, res) => {
+  const loggedUser = req.user;
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      success: false,
+      error: "User not authenticated!!",
+    });
+  }
+
+  const { appPin } = req.body;
+
+  const hashedAppPin = hashString(appPin);
+
+  if (loggedUser.appPin == hashedAppPin) {
+    return res.status(201).json({
+      success: true,
+    });
+  } else {
+    return res.status(201).json({
+      success: false,
+      errror: "Invalid Login Pin",
+    });
+  }
+});
+
+module.exports = {
+  registerUser,
+  loginUser,
+  updateUser,
+  userEmailExist,
+  verifyAppPin,
+};
