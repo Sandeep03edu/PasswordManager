@@ -3,14 +3,16 @@ import { cards } from "../../utils/DummyData";
 import DisplayUpperCreditCard from "../../utils/DisplayUpperCreditCard";
 import PinEntry from "../PinEntry";
 import { useNavigate } from "react-router-dom";
+import DisplayFullCreditCard from "./DisplayFullCreditCard";
+import DisplayCardDetailsModal from "./DisplayCardDetailsModal";
 
 const DisplayCards = () => {
   const [showPinModal, setPinEntryShowModal] = useState(false);
-  const handleCloseModal = () => {
+  const handlePinEntryCloseModal = () => {
     setPinEntryShowModal(false);
   };
 
-  const handleCardClick = (id) => {
+  const handlePinEntryCardClick = (id) => {
     // Handle click action here based on the row ID
     console.log(`Row clicked: ${id}`);
     setPinEntryShowModal(true);
@@ -71,7 +73,7 @@ const DisplayCards = () => {
                 cursor: "pointer",
               }}
               onClick={() => {
-                handleCardClick(card._id);
+                handlePinEntryCardClick(card._id);
               }}
             >
               <DisplayUpperCreditCard card={card} />
@@ -82,11 +84,20 @@ const DisplayCards = () => {
 
       <PinEntry
         showModal={showPinModal}
-        handleClose={handleCloseModal}
+        handleClose={handlePinEntryCloseModal}
         keyTitle={"App Pin"}
         keyLimit={6}
         handleResponse={() => {
           console.log("Response");
+          setPinEntryShowModal(false);
+          // setCardDetailsShowModal(true);
+          // navigate("/credential/display/card", { state: { card: cards[0] } });
+          window.open(
+            `/credential/display/card?cardData=${encodeURIComponent(
+              JSON.stringify(cards[0])
+            )}`,
+            "_blank"
+          );
         }}
       />
     </div>

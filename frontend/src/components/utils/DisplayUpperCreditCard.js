@@ -4,8 +4,9 @@ const DisplayUpperCreditCard = ({ card, onClick }) => {
   const styles = {
     creditCard: {
       position: "relative",
-      width: "220px",
-      height: "150px",
+      width: "250px",
+      height: "170px",
+
       borderRadius: "20px",
       overflow: "hidden",
       boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.3)",

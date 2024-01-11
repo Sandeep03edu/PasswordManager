@@ -1,14 +1,37 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 
-const AddCreditCard = () => {
-  const [cardHolderName, setCardHolderName] = useState("Sandeep Mishra");
-  const [cardNumber, setCardNumber] = useState("1234567812345678");
-  const [bankName, setBankName] = useState("State Bank of India");
-  const [issuerName, setIssuerName] = useState("Master Card");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [issueDate, setIssueDate] = useState("04/20");
-  const [cvv, setCVV] = useState("123");
-  const [pin, setPin] = useState("1234");
+const AddDisplayCreditCard = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const cardData = queryParams.get("cardData");
+
+  const card = cardData ? JSON.parse(decodeURIComponent(cardData)) : null;
+  const cardId = card ? card._id : null;
+
+  const [editable, setEditable] = useState(cardId === null);
+
+  const label = cardId !== null ? "Your Card" : "Add Card";
+  const buttonLabel = cardId !== null ? "Edit Card" : "Add Card";
+
+  const [cardHolderName, setCardHolderName] = useState(
+    card ? card.cardHolderName : "Sandeep Mishra"
+  );
+  const [cardNumber, setCardNumber] = useState(
+    card ? card.cardNumber : "1234567812345678"
+  );
+  const [issuerName, setIssuerName] = useState(
+    card ? card.issuerName : "State Bank of India"
+  );
+  const [cardType, setCardType] = useState(
+    card ? card.cardType : "Master Card"
+  );
+  const [expiryDate, setExpiryDate] = useState(
+    card ? card.expiryDate : "12/26"
+  );
+  const [issueDate, setIssueDate] = useState(card ? card.issueDate : "04/20");
+  const [cvv, setCVV] = useState(card ? card.cvv : "123");
+  const [pin, setPin] = useState(card ? card.pin : "1234");
 
   const [issuerNameError, setIssuerNameError] = useState("");
   const [cardHolderNameError, setCardHolderNameError] = useState("");
@@ -20,14 +43,17 @@ const AddCreditCard = () => {
   function validateCard(
     cardHolderName,
     cardNumber,
-    bankName,
     issuerName,
+    cardType,
     expiryDate,
     issueDate,
     cvv,
     pin
   ) {
-    if (issuerName.trim() === "") {
+    if (cardId !== null) {
+      return;
+    }
+    if (!issuerName || issuerName.trim() === "") {
       setIssuerNameError("Card issuer name can't be empty!!");
     } else {
       setIssuerNameError("");
@@ -49,7 +75,7 @@ const AddCreditCard = () => {
       setCardNumberError("");
     }
 
-    if (!bankName || bankName.trim() === "") {
+    if (!cardType || cardType.trim() === "") {
       setCardTypeError("Card type can't be empty!!");
     } else {
       setCardTypeError("");
@@ -124,6 +150,7 @@ const AddCreditCard = () => {
       marginTop: "10px",
       marginBottom: "10px",
       alignItems: "center",
+      minWidth: "250px",
     },
     bankIssuerColumn: {
       display: "flex",
@@ -141,10 +168,13 @@ const AddCreditCard = () => {
       marginBottom: "5px",
     },
     bankText: {
-      fontSize: "0.9rem",
+      fontSize: "0.8rem",
       marginTop: "5px",
       opacity: "0.7",
-      maxWidth: "150px", // Added max-width
+      maxWidth: "80px", // Added max-width
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap", // Set to nowrap to limit to one line
     },
     creditCardBack: {
       position: "relative",
@@ -190,6 +220,9 @@ const AddCreditCard = () => {
       fontSize: "1.75rem",
       marginTop: "5px",
       opacity: "1",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap", // Set to nowrap to limit to one line
     },
 
     label: {
@@ -238,6 +271,14 @@ const AddCreditCard = () => {
       fontSize: "16px",
       cursor: "pointer",
     },
+    formSelectInput: {
+      width: "100%",
+      padding: "8px",
+      borderRadius: "5px",
+      border: "1px solid #ccc",
+      fontSize: "16px",
+      pointerEvents: "none",
+    },
   };
 
   const handleAddCard = (event) => {
@@ -245,8 +286,8 @@ const AddCreditCard = () => {
     validateCard(
       cardHolderName,
       cardNumber,
-      bankName,
       issuerName,
+      cardType,
       expiryDate,
       issueDate,
       cvv,
@@ -300,7 +341,7 @@ const AddCreditCard = () => {
                     alt="Bank Logo"
                     style={styles.bankLogo}
                   />
-                  <span style={styles.bankText}>{bankName}</span>
+                  <span style={styles.bankText}>{issuerName}</span>
                 </div>
                 <div style={styles.bankIssuerColumn}>
                   <img
@@ -308,7 +349,7 @@ const AddCreditCard = () => {
                     alt="Issuer Logo"
                     style={styles.issuerLogo}
                   />
-                  <span style={styles.bankText}>{issuerName}</span>
+                  <span style={styles.bankText}>{cardType}</span>
                 </div>
               </div>
             </div>
@@ -320,7 +361,7 @@ const AddCreditCard = () => {
           >
             <div style={styles.creditCardBackDetails}>
               <div style={styles.bankIssuerRowBack}>
-                <span style={styles.bankTextBack}>{bankName}</span>
+                <span style={styles.bankTextBack}>{issuerName}</span>
               </div>
               <div style={styles.bankIssuerRowBack}>
                 <div style={styles.bankIssuerColumnBack}>
@@ -354,7 +395,7 @@ const AddCreditCard = () => {
               style={styles.form}
               onClick={handleAddCard}
             >
-              <div style={styles.formHeader}>Add Card</div>
+              <div style={styles.formHeader}>{label}</div>
               <input
                 type="text"
                 placeholder="Card Holder Name"
@@ -362,6 +403,8 @@ const AddCreditCard = () => {
                 value={cardHolderName}
                 onChange={(e) => setCardHolderName(e.target.value)}
                 required
+                // readonly={editable ? undefined : "readonly"}
+                readonly={editable ? undefined : "readonly"}
               />
               {cardHolderNameError && (
                 <p
@@ -376,8 +419,13 @@ const AddCreditCard = () => {
                 placeholder="Card Number"
                 style={styles.formInput}
                 value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value.length <= 16) {
+                    setCardNumber(e.target.value);
+                  }
+                }}
                 required
+                readonly={editable ? undefined : "readonly"}
               />
               {cardNumberError && (
                 <p
@@ -388,9 +436,9 @@ const AddCreditCard = () => {
                 </p>
               )}
               <select
-                style={styles.formInput}
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
+                style={editable ? styles.formInput : styles.formSelectInput}
+                value={issuerName}
+                onChange={(e) => setIssuerName(e.target.value)}
                 required
               >
                 <option value="">Select Bank</option>
@@ -406,10 +454,11 @@ const AddCreditCard = () => {
                 </p>
               )}
               <select
-                style={styles.formInput}
-                value={issuerName}
-                onChange={(e) => setIssuerName(e.target.value)}
+                style={editable ? styles.formInput : styles.formSelectInput}
+                value={cardType}
+                onChange={(e) => setCardType(e.target.value)}
                 required
+                readonly={editable ? undefined : "readonly"}
               >
                 <option value="">Select Issuer</option>
                 <option value="Master Card">Master Card</option>
@@ -423,7 +472,6 @@ const AddCreditCard = () => {
                   {issuerNameError}
                 </p>
               )}
-            
 
               <input
                 type="text"
@@ -433,6 +481,7 @@ const AddCreditCard = () => {
                 onChange={(e) => handleDateChange(e, setExpiryDate)}
                 maxLength={5}
                 required
+                readonly={editable ? undefined : "readonly"}
               />
               <input
                 type="text"
@@ -442,6 +491,7 @@ const AddCreditCard = () => {
                 onChange={(e) => handleDateChange(e, setIssueDate)}
                 maxLength={5}
                 required
+                readonly={editable ? undefined : "readonly"}
               />
               {dateError && (
                 <p
@@ -458,6 +508,7 @@ const AddCreditCard = () => {
                 value={cvv}
                 onChange={(e) => setCVV(e.target.value)}
                 required
+                readonly={editable ? undefined : "readonly"}
               />
               <input
                 type="number"
@@ -466,6 +517,7 @@ const AddCreditCard = () => {
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 required
+                readonly={editable ? undefined : "readonly"}
               />
               {securityKeyError && (
                 <p
@@ -475,8 +527,14 @@ const AddCreditCard = () => {
                   {securityKeyError}
                 </p>
               )}
-              <button type="submit" style={styles.formButton}>
-                Add Card
+              <button
+                type="submit"
+                style={styles.formButton}
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                {buttonLabel}
               </button>
             </form>
           </div>
@@ -486,4 +544,4 @@ const AddCreditCard = () => {
   );
 };
 
-export default AddCreditCard;
+export default AddDisplayCreditCard;

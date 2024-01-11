@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import DisplayCredentialsPage from "./components/credentials/DisplayCredentialPage";
 import AddCardPage from "./components/credentials/Card/AddCardPage";
 import AddPasswordPage from "./components/credentials/Password/AddPasswordPage";
+import DisplayFullCreditCard from "./components/credentials/Card/DisplayFullCreditCard";
 
 function App() {
   const navigate = useNavigate();
@@ -84,6 +85,10 @@ function App() {
           <Route
             path="/credential/display"
             element={<DisplayCredentialsPage />}
+          />
+          <Route
+            path="/credential/display/card"
+            element={<DisplayFullCreditCard />}
           />
           <Route path="/credential/add/card" element={<AddCardPage />} />
           <Route
