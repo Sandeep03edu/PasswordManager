@@ -197,6 +197,9 @@ const DisplayPasswords = () => {
         handleClose={handleCloseModal}
         keyTitle={"App Pin"}
         keyLimit={6}
+        handleResponse={() => {
+          console.log("Response");
+        }}
       />
     </div>
   );

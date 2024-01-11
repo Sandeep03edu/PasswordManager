@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { cards } from "../../utils/DummyData";
 import DisplayUpperCreditCard from "../../utils/DisplayUpperCreditCard";
+import PinEntry from "../PinEntry";
 
 const DisplayCards = () => {
-  
+  const [showModal, setShowModal] = useState(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleCardClick = (id) => {
+    // Handle click action here based on the row ID
+    console.log(`Row clicked: ${id}`);
+    setShowModal(true);
+  };
   return (
     <div className="p-0 m-0">
       <nav className="navbar navbar-expand-lg navbar-light bg-light pt-1 pb-1">
@@ -51,12 +61,31 @@ const DisplayCards = () => {
       >
         {cards.map((card) => {
           return (
-            <div className="col m-2" style={{ maxWidth: "250px" }}>
+            <div
+              className="col m-2"
+              style={{
+                maxWidth: "250px",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                handleCardClick(card._id);
+              }}
+            >
               <DisplayUpperCreditCard card={card} />
             </div>
           );
         })}
       </div>
+
+      <PinEntry
+        showModal={showModal}
+        handleClose={handleCloseModal}
+        keyTitle={"App Pin"}
+        keyLimit={6}
+        handleResponse={() => {
+          console.log("Response");
+        }}
+      />
     </div>
   );
 };
