@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DisplayDashboardChart from "./DisplayDashboardChart";
 import DisplayRecentActivity from "./DisplayRecentActivity";
 import DisplayRecentCredential from "./DisplayRecentCredential";
+import { useNavigate } from "react-router-dom";
 
 const DisplayDashboard = () => {
   const countData = [
@@ -23,6 +24,7 @@ const DisplayDashboard = () => {
   ];
 
   const [chartHeight, setChartHeight] = useState(0);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -51,13 +53,23 @@ const DisplayDashboard = () => {
           >
             <ul className="navbar-nav">
               <li className="nav-item me-1">
-                <button className="btn btn-primary m-2">
+                <button
+                  className="btn btn-primary m-2"
+                  onClick={() => {
+                    navigate("/credential/add/card");
+                  }}
+                >
                   <i className="fa-solid fa-circle-plus me-2"></i>
                   Card
                 </button>
               </li>
               <li className="nav-item">
-                <button className="btn btn-primary m-2">
+                <button
+                  className="btn btn-primary m-2"
+                  onClick={() => {
+                    navigate("/credential/add/password");
+                  }}
+                >
                   <i className="fa-solid fa-circle-plus me-2"></i>
                   Password
                 </button>

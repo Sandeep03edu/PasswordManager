@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { cards } from "../../utils/DummyData";
 import DisplayUpperCreditCard from "../../utils/DisplayUpperCreditCard";
 import PinEntry from "../PinEntry";
+import { useNavigate } from "react-router-dom";
 
 const DisplayCards = () => {
   const [showModal, setShowModal] = useState(false);
@@ -14,6 +15,9 @@ const DisplayCards = () => {
     console.log(`Row clicked: ${id}`);
     setShowModal(true);
   };
+
+  const navigate = useNavigate();
+
   return (
     <div className="p-0 m-0">
       <nav className="navbar navbar-expand-lg navbar-light bg-light pt-1 pb-1">
@@ -22,26 +26,25 @@ const DisplayCards = () => {
             <i className="fa-solid fa-credit-card p-0 me-2"></i>
             Your Cards
           </p>
-          <div
-            className="navbar-toggler m-0 p-0"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#addCredentailDiv"
-            aria-controls="addCredentailDiv"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <button className="btn btn-primary py-1 px-2">
+          <div className="navbar-toggler m-0 p-0" type="button">
+            <button
+              className="btn btn-primary py-1 px-2"
+              onClick={() => {
+                navigate("/credential/add/card");
+              }}
+            >
               <i className="fa-solid fa-circle-plus"></i>
             </button>
           </div>
-          <div
-            className="collapse navbar-collapse justify-content-end "
-            id="addCredentailDiv"
-          >
+          <div className="collapse navbar-collapse justify-content-end ">
             <ul className="navbar-nav">
               <li className="nav-item me-1">
-                <button className="btn btn-primary m-2">
+                <button
+                  className="btn btn-primary m-2"
+                  onClick={() => {
+                    navigate("/credential/add/card");
+                  }}
+                >
                   <i className="fa-solid fa-circle-plus me-2"></i>
                   Card
                 </button>
