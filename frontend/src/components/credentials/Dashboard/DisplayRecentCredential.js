@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 const DisplayRecentCredential = () => {
   const dummyData = [
@@ -36,7 +35,7 @@ const DisplayRecentCredential = () => {
   return (
     <div className="m-0 bg-white rounded px-2">
       <h4 className="pb-3 pt-3">Recent Credentials</h4>
-      <div className="" style={{ width: "100%", overflowX: "scroll" }}>
+      <div className="" style={{ width: "100%", overflowX: "auto" }}>
         <div className="container m-0" style={{ minWidth: "100%" }}>
           <table className="table " style={{ width: "100%" }}>
             <thead className=" " style={{ background: "#b3b3ff" }}>

@@ -5,12 +5,10 @@ import DisplayCards from "./Card/DisplayCards";
 import DisplayPasswords from "./Password/DisplayPasswords";
 
 const DisplayCredentialPage = () => {
-  const [displayType, setDisplayType] = useState("Cards");
+  const [displayType, setDisplayType] = useState("Passwords");
 
   return (
-    <div
-      className="container-fluid p-0 d-flex h-100"
-    >
+    <div className="container-fluid p-0 d-flex h-100">
       <div style={{ width: "fit-content" }}>
         <DisplaySidebar
           onClick={(type) => {

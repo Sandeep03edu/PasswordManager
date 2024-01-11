@@ -3,12 +3,7 @@ import { cards } from "../../utils/DummyData";
 import DisplayUpperCreditCard from "../../utils/DisplayUpperCreditCard";
 
 const DisplayCards = () => {
-  const styles = {
-    title: {
-      fontFamily: "'Roboto', sans-serif", // Change the font family as needed
-      fontSize: "1.5rem",
-    },
-  };
+  
   return (
     <div className="p-0 m-0">
       <nav className="navbar navbar-expand-lg navbar-light bg-light pt-1 pb-1">
