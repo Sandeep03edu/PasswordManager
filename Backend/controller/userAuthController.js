@@ -272,6 +272,12 @@ const verifyAppPin = asyncHandler(async (req, res) => {
 
   const { appPin } = req.body;
 
+  if (!appPin) {
+    return res.status(201).json({
+      success: false,
+      errror: "Invalid Login Pin",
+    });
+  }
   const hashedAppPin = hashString(appPin);
 
   if (loggedUser.appPin == hashedAppPin) {
