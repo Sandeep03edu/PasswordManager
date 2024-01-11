@@ -1,15 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { passwords } from "../../utils/DummyData";
+import PinEntry from "../PinEntry";
 
 const DisplayPasswords = () => {
+  const [showModal, setShowModal] = useState(false);
+
   const handleRowClick = (id) => {
     // Handle click action here based on the row ID
     console.log(`Row clicked: ${id}`);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   const styles = {
     dataFont: {
-      fontSize: "0.8rem",
+      fontSize: "0.9rem",
     },
     buttonFont: {
       fontSize: "1rem",
@@ -183,6 +191,13 @@ const DisplayPasswords = () => {
           </div>
         </div>
       </div>
+
+      <PinEntry
+        showModal={showModal}
+        handleClose={handleCloseModal}
+        keyTitle={"App Pin"}
+        keyLimit={6}
+      />
     </div>
   );
 };
