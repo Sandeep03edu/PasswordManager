@@ -4,16 +4,16 @@ import PinEntry from "../PinEntry";
 import { useNavigate } from "react-router-dom";
 
 const DisplayPasswords = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [showPinEntryModal, setPinEntryShowModal] = useState(false);
 
   const handleRowClick = (id) => {
     // Handle click action here based on the row ID
     console.log(`Row clicked: ${id}`);
-    setShowModal(true);
+    setPinEntryShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false);
+    setPinEntryShowModal(false);
   };
 
   const styles = {
@@ -195,7 +195,7 @@ const DisplayPasswords = () => {
       </div>
 
       <PinEntry
-        showModal={showModal}
+        showModal={showPinEntryModal}
         handleClose={handleCloseModal}
         keyTitle={"App Pin"}
         keyLimit={6}

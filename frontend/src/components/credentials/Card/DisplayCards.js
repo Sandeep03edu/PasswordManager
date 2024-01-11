@@ -5,15 +5,15 @@ import PinEntry from "../PinEntry";
 import { useNavigate } from "react-router-dom";
 
 const DisplayCards = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [showPinModal, setPinEntryShowModal] = useState(false);
   const handleCloseModal = () => {
-    setShowModal(false);
+    setPinEntryShowModal(false);
   };
 
   const handleCardClick = (id) => {
     // Handle click action here based on the row ID
     console.log(`Row clicked: ${id}`);
-    setShowModal(true);
+    setPinEntryShowModal(true);
   };
 
   const navigate = useNavigate();
@@ -81,7 +81,7 @@ const DisplayCards = () => {
       </div>
 
       <PinEntry
-        showModal={showModal}
+        showModal={showPinModal}
         handleClose={handleCloseModal}
         keyTitle={"App Pin"}
         keyLimit={6}
