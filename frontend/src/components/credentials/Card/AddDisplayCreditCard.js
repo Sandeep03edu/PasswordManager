@@ -11,8 +11,12 @@ const AddDisplayCreditCard = () => {
 
   const [editable, setEditable] = useState(cardId === null);
 
-  const label = cardId !== null ? "Your Card" : "Add Card";
-  const buttonLabel = cardId !== null ? "Edit Card" : "Add Card";
+  const [buttonLabel, setButtonLabel] = useState(
+    cardId !== null ? "Edit Card" : "Add Card"
+  );
+  const [label, setLabel] = useState(
+    cardId !== null ? "Your Card" : "Add Card"
+  );
 
   const [cardHolderName, setCardHolderName] = useState(
     card ? card.cardHolderName : "Sandeep Mishra"
@@ -39,6 +43,21 @@ const AddDisplayCreditCard = () => {
   const [cardTypeError, setCardTypeError] = useState("");
   const [dateError, setDateError] = useState("");
   const [securityKeyError, setSecurityKeyError] = useState("");
+
+  const handleButtonClick = () => {
+    if (cardId !== null) {
+      // Display Card present
+      if (buttonLabel === "Edit Card") {
+        setEditable(true);
+        setButtonLabel("Update Card");
+        setLabel("Update Card Details");
+      } else if (buttonLabel === "Update Card") {
+        // Update details for card
+      }
+    } else {
+      // Add Card Data
+    }
+  };
 
   function validateCard(
     cardHolderName,
@@ -532,6 +551,7 @@ const AddDisplayCreditCard = () => {
                 style={styles.formButton}
                 onClick={(e) => {
                   e.preventDefault();
+                  handleButtonClick();
                 }}
               >
                 {buttonLabel}

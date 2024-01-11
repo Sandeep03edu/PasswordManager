@@ -1,5 +1,5 @@
 import React from "react";
-import AddDisplayCreditCard from "../../utils/AddDisplayCreditCard";
+import AddDisplayCreditCard from "./AddDisplayCreditCard";
 
 const DisplayFullCreditCard = () => {
   return <AddDisplayCreditCard />;
