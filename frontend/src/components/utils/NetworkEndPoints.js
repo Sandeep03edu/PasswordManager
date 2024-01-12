@@ -1,9 +1,18 @@
 const BASE_URL = "http://localhost:5000";
 
 const EndPoints = {
+  // Authentication
   emailExist: "api/auth/emailExist",
   login: "api/auth/login",
   registerUser: "api/auth/register",
+
+  // Cards
+
+  // Passwords
+  securePaginatedAllPassword:
+    "api/credentials/securePaginatedAllPasswords?page=",
+
+  // Credentials
   fetchCredentialCount: "api/credentials/fetchCredentialCount",
   fetchMonthlyCredentialsData: "api/credentials/fetchMonthlyCredentialsData",
   fetchRecentEncryptedCredentials:

@@ -31,7 +31,6 @@ const DisplayRecentCredential = () => {
         config
       );
 
-      console.log(data);
 
       if (data.success) {
         setRecentCredentials(data.data);

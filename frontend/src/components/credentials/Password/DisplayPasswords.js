@@ -1,10 +1,18 @@
-import React, { useState } from "react";
-import { passwords } from "../../utils/DummyData";
+import React, { useState, useEffect } from "react";
 import PinEntry from "../PinEntry";
 import { useNavigate } from "react-router-dom";
+import { getUserToken } from "../../utils/UserInfo";
+import axios from "axios";
+import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
+import { capitalizeWords } from "../../utils/ModiyText";
+import { convertToDateTime } from "../../utils/DateUtils";
 
 const DisplayPasswords = () => {
   const [showPinEntryModal, setPinEntryShowModal] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [passwords, setPasswords] = useState([]);
 
   const handleRowClick = (id) => {
     // Handle click action here based on the row ID
@@ -15,6 +23,33 @@ const DisplayPasswords = () => {
   const handleCloseModal = () => {
     setPinEntryShowModal(false);
   };
+
+  const fetchPaginatedPasswords = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${BASE_URL}/${EndPoints.securePaginatedAllPassword}${currentPage}`,
+        config
+      );
+
+      console.log(data);
+
+      if (data.success) {
+        setPasswords(data.passwords);
+        setCurrentPage(data.currentPage);
+        setTotalPages(data.totalPage);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchPaginatedPasswords();
+  }, [currentPage]);
 
   const styles = {
     dataFont: {
@@ -85,7 +120,7 @@ const DisplayPasswords = () => {
                     {/* <th>Password</th>
                     <th>Pin</th> */}
                     <th>Tags</th>
-                    <th>Updated At</th>
+                    <th>Created At</th>
                     <th className="text-center">Action</th>
                   </tr>
                 </thead>
@@ -108,7 +143,9 @@ const DisplayPasswords = () => {
                         e.currentTarget.style.backgroundColor = "transparent";
                       }}
                     >
-                      <td style={styles.dataFont}>{data.title || "N/A"}</td>
+                      <td style={styles.dataFont}>
+                        {capitalizeWords(data.title) || "N/A"}
+                      </td>
                       <td
                         style={styles.dataFont}
                         className="custom-url-container"
@@ -134,7 +171,7 @@ const DisplayPasswords = () => {
                         {`[${data.tags}]` || "N/A"}
                       </td>
                       <td style={styles.dataFont}>
-                        {`${data.updatedAt.slice(0, 10)}` || "N/A"}
+                        {`${convertToDateTime(data.creationTime)}` || "N/A"}
                       </td>
                       <td style={styles.centerElements}>
                         <button
@@ -174,15 +211,29 @@ const DisplayPasswords = () => {
           </div>
           <div className="row mt-3 justify-content-end">
             <div className="col-auto">
-              <button className="btn btn-link text-decoration-none me-2">
+              <button
+                className="btn btn-link text-decoration-none me-2"
+                disabled={currentPage <= 1}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage(Math.max(1, currentPage - 1));
+                }}
+              >
                 <i
                   className="fas fa-chevron-left"
                   style={styles.buttonFont}
                 ></i>
                 Prev
               </button>
-              <span>1</span>
-              <button className="btn btn-link text-decoration-none ms-2">
+              <span>{currentPage}</span>
+              <button
+                className="btn btn-link text-decoration-none ms-2"
+                disabled={currentPage >= totalPages}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage(Math.min(totalPages, currentPage + 1));
+                }}
+              >
                 Next
                 <i
                   className="fas fa-chevron-right"
