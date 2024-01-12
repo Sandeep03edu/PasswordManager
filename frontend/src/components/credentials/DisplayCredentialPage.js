@@ -38,7 +38,11 @@ const DisplayCredentialPage = () => {
         >
           {/* Page Content */}
           {displayType === "Dashboard" ? (
-            <DisplayDashboard />
+            <DisplayDashboard
+              onClick={(type) => {
+                setDisplayType(type);
+              }}
+            />
           ) : displayType === "Cards" ? (
             <DisplayCards />
           ) : displayType === "Passwords" ? (

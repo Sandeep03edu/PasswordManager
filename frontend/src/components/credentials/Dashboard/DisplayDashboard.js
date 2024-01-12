@@ -7,7 +7,7 @@ import { getUserToken } from "../../utils/UserInfo";
 import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
 import axios from "axios";
 
-const DisplayDashboard = () => {
+const DisplayDashboard = ({ onClick }) => {
   const countData = [
     {
       count: 0,
@@ -110,7 +110,16 @@ const DisplayDashboard = () => {
       <div className="container mt-4">
         <div className="row ">
           {credentialCountArray.map((item, index) => (
-            <div key={index} className="col-lg-4 col-md-6 mb-3">
+            <div
+              key={index}
+              className="col-lg-4 col-md-6 mb-3"
+              onClick={() => {
+                onClick(item.type === "Credentials" ? "Dashboard" : item.type);
+              }}
+              style={{
+                cursor: "pointer",
+              }}
+            >
               <div
                 className="px-3 py-4 bg-white rounded mx-3"
                 style={{
