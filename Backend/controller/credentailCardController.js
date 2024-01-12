@@ -234,6 +234,63 @@ const deleteCardById = asyncHandler(async (req, res) => {
   }
 });
 
+const securePaginatedAllCards = asyncHandler(async (req, res) => {
+  const loggedUser = req.user;
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      success: false,
+      error: "User not authenticated!!",
+    });
+  }
+
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 10;
+
+  try {
+    const totalItems = await Card.countDocuments({
+      createdBy: loggedUser._id,
+    });
+
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    if (page < 1 || page > totalPages) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid page number",
+      });
+    }
+
+    const skip = (page - 1) * pageSize;
+    const cards = await Card.find(
+      { createdBy: loggedUser._id },
+      "_id appId createdBy creationTime issuerName cardHolderName cardType cardNumber"
+    )
+      .skip(skip)
+      .limit(pageSize)
+      .sort({ createdAt: -1 });
+
+    for (var i = 0; i < cards.length; ++i) {
+      var currCard = cards[i];
+      cards[i] = decryptCard(currCard, currCard.createdBy, currCard.appId);
+
+      cards[i].cardNumber = "*".repeat(8) + cards[i].cardNumber.slice(-4);
+    }
+
+    return res.status(201).json({
+      success: true,
+      cards: cards,
+      currentPage: page,
+      totalPage: totalPages,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+});
+
 const cardValidator = (
   appId,
   createdBy,
@@ -299,4 +356,10 @@ const cardValidator = (
   return "";
 };
 
-module.exports = { addUpdateCard, getAllCards, getCardDetails, deleteCardById };
+module.exports = {
+  addUpdateCard,
+  getAllCards,
+  getCardDetails,
+  deleteCardById,
+  securePaginatedAllCards,
+};

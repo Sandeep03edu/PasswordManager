@@ -259,7 +259,7 @@ const securePaginatedAllPasswords = asyncHandler(async (req, res) => {
   }
 
   const page = parseInt(req.query.page) || 1;
-  const pageSize = 1;
+  const pageSize = 10;
 
   try {
     const totalItems = await Password.countDocuments({
