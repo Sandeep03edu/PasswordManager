@@ -104,9 +104,7 @@ const DisplayPasswords = () => {
       </nav>
 
       <div className="row my-0 m-2 p-0">
-        <div
-          className="m-0 bg-white rounded px-2 py-3 mt-2"
-        >
+        <div className="m-0 bg-white rounded px-2 py-3 mt-2">
           <div className="" style={{ width: "100%", overflowX: "auto" }}>
             <div className="container m-0" style={{ minWidth: "100%" }}>
               <table className="table " style={{ width: "100%" }}>
@@ -208,39 +206,41 @@ const DisplayPasswords = () => {
               </table>
             </div>
           </div>
-          <div className="row mt-3 justify-content-end">
-            <div className="col-auto">
-              <button
-                className="btn btn-link text-decoration-none me-2"
-                disabled={currentPage <= 1}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setCurrentPage(Math.max(1, currentPage - 1));
-                }}
-              >
-                <i
-                  className="fas fa-chevron-left"
-                  style={styles.buttonFont}
-                ></i>
-                Prev
-              </button>
-              <span>{currentPage}</span>
-              <button
-                className="btn btn-link text-decoration-none ms-2"
-                disabled={currentPage >= totalPages}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setCurrentPage(Math.min(totalPages, currentPage + 1));
-                }}
-              >
-                Next
-                <i
-                  className="fas fa-chevron-right"
-                  style={styles.buttonFont}
-                ></i>
-              </button>
+          {passwords.length !== 0 && (
+            <div className="row mt-3 justify-content-end">
+              <div className="col-auto">
+                <button
+                  className="btn btn-link text-decoration-none me-2"
+                  disabled={currentPage <= 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage(Math.max(1, currentPage - 1));
+                  }}
+                >
+                  <i
+                    className="fas fa-chevron-left"
+                    style={styles.buttonFont}
+                  ></i>
+                  Prev
+                </button>
+                <span>{currentPage}</span>
+                <button
+                  className="btn btn-link text-decoration-none ms-2"
+                  disabled={currentPage >= totalPages}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage(Math.min(totalPages, currentPage + 1));
+                  }}
+                >
+                  Next
+                  <i
+                    className="fas fa-chevron-right"
+                    style={styles.buttonFont}
+                  ></i>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

@@ -121,39 +121,41 @@ const DisplayCards = () => {
               );
             })}
           </div>
-          <div className="row mx-0 mt-3 justify-content-end">
-            <div className="col-auto">
-              <button
-                className="btn btn-link text-decoration-none me-2"
-                disabled={currentPage <= 1}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setCurrentPage(Math.max(1, currentPage - 1));
-                }}
-              >
-                <i
-                  className="fas fa-chevron-left"
-                  style={styles.buttonFont}
-                ></i>
-                Prev
-              </button>
-              <span>{currentPage}</span>
-              <button
-                className="btn btn-link text-decoration-none ms-2"
-                disabled={currentPage >= totalPages}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setCurrentPage(Math.min(totalPages, currentPage + 1));
-                }}
-              >
-                Next
-                <i
-                  className="fas fa-chevron-right"
-                  style={styles.buttonFont}
-                ></i>
-              </button>
+          {cards.length !== 0 && (
+            <div className="row mx-0 mt-3 justify-content-end">
+              <div className="col-auto">
+                <button
+                  className="btn btn-link text-decoration-none me-2"
+                  disabled={currentPage <= 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage(Math.max(1, currentPage - 1));
+                  }}
+                >
+                  <i
+                    className="fas fa-chevron-left"
+                    style={styles.buttonFont}
+                  ></i>
+                  Prev
+                </button>
+                <span>{currentPage}</span>
+                <button
+                  className="btn btn-link text-decoration-none ms-2"
+                  disabled={currentPage >= totalPages}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage(Math.min(totalPages, currentPage + 1));
+                  }}
+                >
+                  Next
+                  <i
+                    className="fas fa-chevron-right"
+                    style={styles.buttonFont}
+                  ></i>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <PinEntry

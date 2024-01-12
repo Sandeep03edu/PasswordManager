@@ -31,7 +31,6 @@ const DisplayRecentCredential = () => {
         config
       );
 
-
       if (data.success) {
         setRecentCredentials(data.data);
       }
@@ -103,17 +102,7 @@ const DisplayRecentCredential = () => {
           </table>
         </div>
       </div>
-      <div className="row mt-3 justify-content-end">
-        <div className="col-auto">
-          <button className="btn btn-link text-decoration-none me-2">
-            <i className="fas fa-chevron-left fs-5"></i> Prev
-          </button>
-          <span>1</span> {/* Current Page Number */}
-          <button className="btn btn-link text-decoration-none ms-2">
-            Next <i className="fas fa-chevron-right fs-5"></i>
-          </button>
-        </div>
-      </div>
+
       <PinEntry
         showModal={showPinEntryModal}
         handleClose={handleCloseModal}
