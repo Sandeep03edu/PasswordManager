@@ -1,35 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PinEntry from "../PinEntry";
+import { getUserToken } from "../../utils/UserInfo";
+import axios from "axios";
+import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
+import { capitalizeWords } from "../../utils/ModiyText";
 
 const DisplayRecentCredential = () => {
-  const dummyData = [
-    {
-      id: 1,
-      title: "State Bank of India",
-      type: "Card",
-      userDetails: "**** **** 6677",
-      updatedAt: "10/01/2023 08:30",
-    },
-    {
-      id: 2,
-      title: "Gmail",
-      type: "Password",
-      userDetails: "sandee******",
-      updatedAt: "10/01/2023 08:30",
-    },
-
-    {
-      id: 3,
-      title: "Facebook",
-      type: "Password",
-      userDetails: "sandee*******",
-      updatedAt: "10/01/2023 08:30",
-    },
-    // ... dummy data for more rows
-  ];
+  const [recentCredentials, setRecentCredentials] = useState([]);
 
   const handleRowClick = (id) => {
-    // Handle click action here based on the row ID
     console.log(`Row clicked: ${id}`);
     setPinEntryShowModal(true);
   };
@@ -38,6 +17,31 @@ const DisplayRecentCredential = () => {
   const handleCloseModal = () => {
     setPinEntryShowModal(false);
   };
+
+  const fetchRecentCredentials = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${BASE_URL}/${EndPoints.fetchRecentEncryptedCredentials}`,
+        config
+      );
+
+      console.log(data);
+
+      if (data.success) {
+        setRecentCredentials(data.data);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchRecentCredentials();
+  }, []);
 
   return (
     <div className="m-0 bg-white rounded px-2">
@@ -55,10 +59,10 @@ const DisplayRecentCredential = () => {
               </tr>
             </thead>
             <tbody>
-              {dummyData.map((data) => (
+              {recentCredentials.map((data) => (
                 <tr
-                  key={data.id}
-                  onClick={() => handleRowClick(data.id)}
+                  key={data.appId}
+                  onClick={() => handleRowClick(data.appId)}
                   style={{
                     textDecoration: "none",
                     color: "inherit",
@@ -73,10 +77,10 @@ const DisplayRecentCredential = () => {
                     e.currentTarget.style.backgroundColor = "transparent"; // Remove background color on mouse leave
                   }}
                 >
-                  <td>{data.title}</td>
+                  <td>{capitalizeWords(data.dataTitle)}</td>
                   <td>{data.type}</td>
-                  <td>{data.userDetails}</td>
-                  <td>{data.updatedAt}</td>
+                  <td>{data.dataUserDetails}</td>
+                  <td>{data.updatedAt.slice(0, 10)}</td>
                   <td
                     style={{
                       display: "flex",

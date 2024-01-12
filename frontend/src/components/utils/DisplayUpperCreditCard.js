@@ -1,4 +1,5 @@
 import React from "react";
+import { capitalizeWords } from "./ModiyText";
 
 const DisplayUpperCreditCard = ({ card, onClick }) => {
   const styles = {
@@ -84,15 +85,6 @@ const DisplayUpperCreditCard = ({ card, onClick }) => {
       fontFamily: "'Roboto', sans-serif", // Change the font family as needed
       fontSize: "1.5rem",
     },
-  };
-
-  // Function to capitalize the first letter of each word in a string
-  const capitalizeWords = (str) => {
-    return str
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
   };
 
   const formattedCardNumber = (cardNumber) => {

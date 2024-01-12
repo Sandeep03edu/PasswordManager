@@ -9,11 +9,6 @@ import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
 Chart.register(...registerables);
 
 const DisplayDashboardChart = ({ setComponentHeight }) => {
-  // const datesArray = Array.from({ length: 31 }, (_, index) => index + 1);
-  // const randomValuesArray = Array.from({ length: 31 }, () =>
-  //   Math.floor(Math.random() * 11)
-  // );
-
   const getDaysInCurrentMonth = () => {
     const currentDate = new Date();
     const year = currentDate.getFullYear();
@@ -30,6 +25,7 @@ const DisplayDashboardChart = ({ setComponentHeight }) => {
 
     return numberOfDays;
   };
+
   const getCurrentMonthAndYear = () => {
     const currentDate = new Date();
     const month = currentDate.toLocaleString("default", { month: "long" });
@@ -59,8 +55,6 @@ const DisplayDashboardChart = ({ setComponentHeight }) => {
         `${BASE_URL}/${EndPoints.fetchMonthlyCredentialsData}`,
         config
       );
-
-      console.log(data);
 
       if (data.success) {
         setDateWiseCredentialsCount(data.data);
