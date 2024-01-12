@@ -9,11 +9,27 @@ import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
 Chart.register(...registerables);
 
 const DisplayDashboardChart = ({ setComponentHeight }) => {
-  const datesArray = Array.from({ length: 31 }, (_, index) => index + 1);
-  const randomValuesArray = Array.from({ length: 31 }, () =>
-    Math.floor(Math.random() * 11)
-  );
+  // const datesArray = Array.from({ length: 31 }, (_, index) => index + 1);
+  // const randomValuesArray = Array.from({ length: 31 }, () =>
+  //   Math.floor(Math.random() * 11)
+  // );
 
+  const getDaysInCurrentMonth = () => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
+
+    // Create a new date for the first day of the next month
+    const firstDayOfNextMonth = new Date(year, month, 1);
+
+    // Subtracting 1 day from the first day of the next month gives the last day of the current month
+    const lastDayOfCurrentMonth = new Date(firstDayOfNextMonth - 1);
+
+    // Extract the day component to get the total number of days
+    const numberOfDays = lastDayOfCurrentMonth.getDate();
+
+    return numberOfDays;
+  };
   const getCurrentMonthAndYear = () => {
     const currentDate = new Date();
     const month = currentDate.toLocaleString("default", { month: "long" });
@@ -21,6 +37,40 @@ const DisplayDashboardChart = ({ setComponentHeight }) => {
 
     return month + " " + year;
   };
+
+  const datesArray = Array.from(
+    { length: getDaysInCurrentMonth() },
+    (_, index) => index + 1
+  );
+
+  const [dateWiseCredentialsCount, setDateWiseCredentialsCount] = useState(
+    Array.from({ length: getDaysInCurrentMonth() }, (_, index) => 0)
+  );
+
+  const getMonthlyActivity = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${BASE_URL}/${EndPoints.fetchMonthlyCredentialsData}`,
+        config
+      );
+
+      console.log(data);
+
+      if (data.success) {
+        setDateWiseCredentialsCount(data.data);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getMonthlyActivity();
+  }, []);
 
   // Height adjustment
   const chartContainerRef = useRef(null);
@@ -73,10 +123,21 @@ const DisplayDashboardChart = ({ setComponentHeight }) => {
               {
                 id: 1,
                 label: getCurrentMonthAndYear(),
-                data: randomValuesArray,
+                data: dateWiseCredentialsCount,
                 backgroundColor: "#ff00ff",
               },
             ],
+          }}
+          options={{
+            scales: {
+              y: {
+                ticks: {
+                  stepSize: 1, // Set the step size to 1 to ensure integer values
+                  precision: 0, // Set precision to 0 to remove decimal places
+                },
+                max: Math.max(...dateWiseCredentialsCount) + 2, // Set the maximum y-tick value
+              },
+            },
           }}
         />
       </div>

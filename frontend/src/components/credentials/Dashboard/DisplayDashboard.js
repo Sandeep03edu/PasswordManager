@@ -166,7 +166,6 @@ const DisplayDashboard = () => {
         <div className="col-lg-7 col-md-6">
           <DisplayDashboardChart
             setComponentHeight={(value) => {
-              console.log("Chart:: " + value);
               if (value !== chartHeight) {
                 setChartHeight(value);
               }
