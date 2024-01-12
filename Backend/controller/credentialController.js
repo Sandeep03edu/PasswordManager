@@ -212,9 +212,23 @@ const fetchCredentialCount = asyncHandler(async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      passwords: totalPasswords,
-      cards: totalCards,
-      credentials: totalCards + totalPasswords,
+      data: [
+        {
+          count: totalCards,
+          type: "Cards",
+          icon: "fa-solid fa-credit-card",
+        },
+        {
+          count: totalPasswords,
+          type: "Passwords",
+          icon: "fa-solid fa-key",
+        },
+        {
+          count: totalCards + totalPasswords,
+          type: "Credentials",
+          icon: "fa-solid fa-unlock-keyhole",
+        },
+      ],
     });
   } catch (error) {
     return res.status(400).json({
