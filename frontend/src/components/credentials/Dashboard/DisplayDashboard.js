@@ -1,27 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DisplayDashboardChart from "./DisplayDashboardChart";
 import DisplayRecentActivity from "./DisplayRecentActivity";
 import DisplayRecentCredential from "./DisplayRecentCredential";
 import { useNavigate } from "react-router-dom";
+import { getUserToken } from "../../utils/UserInfo";
+import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
+import axios from "axios";
 
 const DisplayDashboard = () => {
   const countData = [
     {
-      count: 15,
+      count: 0,
       type: "Cards",
       icon: "fa-solid fa-credit-card",
     },
     {
-      count: 10,
+      count: 0,
       type: "Passwords",
       icon: "fa-solid fa-key",
     },
     {
-      count: 25,
+      count: 0,
       type: "Credentials",
       icon: "fa-solid fa-unlock-keyhole",
     },
   ];
+
+  const fetchCredentialCount = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${BASE_URL}/${EndPoints.fetchCredentialCount}`,
+        config
+      );
+
+      if (data.success) {
+        setCredentialCountArray(data.data);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchCredentialCount();
+  }, []);
+
+  const [credentialCountArray, setCredentialCountArray] = useState(countData);
 
   const [chartHeight, setChartHeight] = useState(0);
   const navigate = useNavigate();
@@ -81,7 +109,7 @@ const DisplayDashboard = () => {
 
       <div className="container mt-4">
         <div className="row ">
-          {countData.map((item, index) => (
+          {credentialCountArray.map((item, index) => (
             <div key={index} className="col-lg-4 col-md-6 mb-3">
               <div
                 className="px-3 py-4 bg-white rounded mx-3"
@@ -92,7 +120,7 @@ const DisplayDashboard = () => {
                 }}
               >
                 <div
-                  class="filled-circle me-2"
+                  className="filled-circle me-2"
                   style={{
                     minWidth: "3rem",
                     minHeight: "3rem",

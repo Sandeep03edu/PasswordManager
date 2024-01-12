@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import credentialsBkg from "../../images/credentialsLoginBkg2.png";
 import axios from "axios";
+import { BASE_URL, EndPoints } from "../utils/NetworkEndPoints";
 
 const CredentialsVerification = ({ onSuccessValidation }) => {
   const styles = {
@@ -74,7 +75,7 @@ const CredentialsVerification = ({ onSuccessValidation }) => {
 
       const email = localStorage.getItem("EmailId");
       const { data } = await axios.post(
-        "https://password-manager-sandeep03edu-backend.onrender.com/api/auth/login",
+        `${BASE_URL}/${EndPoints.login}`,
         {
           email,
           loginPin,

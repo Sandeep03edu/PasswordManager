@@ -2,6 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { useState } from "react";
+import { getUserToken } from "../../utils/UserInfo";
+import axios from "axios";
+import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
 
 Chart.register(...registerables);
 
@@ -11,9 +14,17 @@ const DisplayDashboardChart = ({ setComponentHeight }) => {
     Math.floor(Math.random() * 11)
   );
 
+  const getCurrentMonthAndYear = () => {
+    const currentDate = new Date();
+    const month = currentDate.toLocaleString("default", { month: "long" });
+    const year = currentDate.getFullYear();
+
+    return month + " " + year;
+  };
+
+  // Height adjustment
   const chartContainerRef = useRef(null);
   let timeoutRef = useRef(null);
-
   const [pastHeight, setPastHeight] = useState(-1);
 
   useEffect(() => {
@@ -61,7 +72,7 @@ const DisplayDashboardChart = ({ setComponentHeight }) => {
             datasets: [
               {
                 id: 1,
-                label: "December 2023",
+                label: getCurrentMonthAndYear(),
                 data: randomValuesArray,
                 backgroundColor: "#ff00ff",
               },

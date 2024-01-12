@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import emailCheckerBkg from "../../images/emailCheckerBkg.jpeg";
 import ToastDisplay from "../utils/Toast";
+import { BASE_URL, EndPoints } from "../utils/NetworkEndPoints";
 
 const EmailChecker = ({ onSuccessVerification }) => {
   // Define styles as objects
@@ -60,7 +61,8 @@ const EmailChecker = ({ onSuccessVerification }) => {
       };
 
       const { data } = await axios.post(
-        "https://password-manager-sandeep03edu-backend.onrender.com/api/auth/emailExist",
+        
+        `${BASE_URL}/${EndPoints.emailExist}`,
         {
           email,
         },

@@ -51,7 +51,7 @@ const DisplayRecentCredential = () => {
                 <th>Type</th>
                 <th>User Detail</th>
                 <th>Updated at</th>
-                <th className="text-center">Action</th>{" "}
+                <th className="text-center">Action</th>
               </tr>
             </thead>
             <tbody>

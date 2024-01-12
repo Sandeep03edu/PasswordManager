@@ -70,6 +70,7 @@ function App() {
                     // Move to display page
                     setToastMessage("Login Successful");
                     setToastVariant("Success");
+                    navigate("/credential/display");
                   } else {
                     setToastMessage(data.error);
                     setToastVariant("Danger");

@@ -178,12 +178,12 @@ const DisplayPasswords = () => {
                 <i
                   className="fas fa-chevron-left"
                   style={styles.buttonFont}
-                ></i>{" "}
+                ></i>
                 Prev
               </button>
               <span>1</span>
               <button className="btn btn-link text-decoration-none ms-2">
-                Next{" "}
+                Next
                 <i
                   className="fas fa-chevron-right"
                   style={styles.buttonFont}

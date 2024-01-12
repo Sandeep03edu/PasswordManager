@@ -21,6 +21,7 @@ const DisplayRecentActivity = () => {
       {recentActivity.map((item, idx) => {
         return (
           <div
+            key={idx}
             onClick={() => {
               handleRowClick(item._id);
             }}
