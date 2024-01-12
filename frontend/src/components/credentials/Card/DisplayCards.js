@@ -1,13 +1,51 @@
-import React, { useState } from "react";
-import { cards } from "../../utils/DummyData";
+import React, { useState, useEffect } from "react";
 import DisplayUpperCreditCard from "../../utils/DisplayUpperCreditCard";
 import PinEntry from "../PinEntry";
 import { useNavigate } from "react-router-dom";
-import DisplayFullCreditCard from "./DisplayFullCreditCard";
-import DisplayCardDetailsModal from "./DisplayCardDetailsModal";
+import { getUserToken } from "../../utils/UserInfo";
+import axios from "axios";
+import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
 
 const DisplayCards = () => {
   const [showPinModal, setPinEntryShowModal] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [cards, setCards] = useState([]);
+
+  const fetchPaginatedPasswords = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${BASE_URL}/${EndPoints.securePaginatedAllCard}${currentPage}`,
+        config
+      );
+
+      console.log(data);
+
+      if (data.success) {
+        setCards(data.cards);
+        setCurrentPage(data.currentPage);
+        setTotalPages(data.totalPage);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchPaginatedPasswords();
+  }, [currentPage]);
+
+  const styles = {
+    buttonFont: {
+      fontSize: "1rem",
+    },
+  };
+
   const handlePinEntryCloseModal = () => {
     setPinEntryShowModal(false);
   };
@@ -55,33 +93,69 @@ const DisplayCards = () => {
           </div>
         </div>
       </nav>
-
-      <div
-        className="row my-2 mx-0 p-0"
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "start",
-        }}
-      >
-        {cards.map((card) => {
-          return (
-            <div
-              className="col m-2"
-              style={{
-                maxWidth: "250px",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                handlePinEntryCardClick(card._id);
-              }}
-            >
-              <DisplayUpperCreditCard card={card} />
+      <div className="m-2">
+        <div className="m-0 bg-white rounded px-0 py-2 mt-2">
+          <div
+            className="row my-2 mx-0 p-0"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "start",
+            }}
+          >
+            {cards.map((card) => {
+              return (
+                <div
+                  key={card.appId}
+                  className="col m-2"
+                  style={{
+                    maxWidth: "250px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    handlePinEntryCardClick(card._id);
+                  }}
+                >
+                  <DisplayUpperCreditCard card={card} />
+                </div>
+              );
+            })}
+          </div>
+          <div className="row mx-0 mt-3 justify-content-end">
+            <div className="col-auto">
+              <button
+                className="btn btn-link text-decoration-none me-2"
+                disabled={currentPage <= 1}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage(Math.max(1, currentPage - 1));
+                }}
+              >
+                <i
+                  className="fas fa-chevron-left"
+                  style={styles.buttonFont}
+                ></i>
+                Prev
+              </button>
+              <span>{currentPage}</span>
+              <button
+                className="btn btn-link text-decoration-none ms-2"
+                disabled={currentPage >= totalPages}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage(Math.min(totalPages, currentPage + 1));
+                }}
+              >
+                Next
+                <i
+                  className="fas fa-chevron-right"
+                  style={styles.buttonFont}
+                ></i>
+              </button>
             </div>
-          );
-        })}
+          </div>
+        </div>
       </div>
-
       <PinEntry
         showModal={showPinModal}
         handleClose={handlePinEntryCloseModal}
@@ -90,8 +164,6 @@ const DisplayCards = () => {
         handleResponse={() => {
           console.log("Response");
           setPinEntryShowModal(false);
-          // setCardDetailsShowModal(true);
-          // navigate("/credential/display/card", { state: { card: cards[0] } });
           window.open(
             `/credential/display/card?cardData=${encodeURIComponent(
               JSON.stringify(cards[0])

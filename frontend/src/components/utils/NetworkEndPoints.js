@@ -7,6 +7,8 @@ const EndPoints = {
   registerUser: "api/auth/register",
 
   // Cards
+  securePaginatedAllCard:
+    "api/credentials/securePaginatedAllCards?page=",
 
   // Passwords
   securePaginatedAllPassword:

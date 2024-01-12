@@ -105,8 +105,7 @@ const DisplayPasswords = () => {
 
       <div className="row my-0 m-2 p-0">
         <div
-          className="m-0 bg- rounded px-2 py-3 mt-2"
-          style={{ background: "#ffffff" }}
+          className="m-0 bg-white rounded px-2 py-3 mt-2"
         >
           <div className="" style={{ width: "100%", overflowX: "auto" }}>
             <div className="container m-0" style={{ minWidth: "100%" }}>
