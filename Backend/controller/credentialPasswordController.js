@@ -248,6 +248,72 @@ const deletePasswordById = asyncHandler(async (req, res) => {
   }
 });
 
+const securePaginatedAllPasswords = asyncHandler(async (req, res) => {
+  const loggedUser = req.user;
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      success: false,
+      error: "User not authenticated!!",
+    });
+  }
+
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 1;
+
+  try {
+    const totalItems = await Password.countDocuments({
+      createdBy: loggedUser._id,
+    });
+
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    if (page < 1 || page > totalPages) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid page number",
+      });
+    }
+
+    const skip = (page - 1) * pageSize;
+    const passwords = await Password.find(
+      { createdBy: loggedUser._id },
+      "_id appId createdBy tags creationTime title url username email"
+    )
+      .skip(skip)
+      .limit(pageSize)
+      .sort({ createdAt: -1 });
+
+    for (var i = 0; i < passwords.length; ++i) {
+      var currPass = passwords[i];
+      passwords[i] = decryptPassword(
+        currPass,
+        currPass.createdBy,
+        currPass.appId
+      );
+
+      var len = passwords[i].username.length;
+      passwords[i].username =
+        passwords[i].username.slice(0, len / 2) + "*".repeat(len / 2);
+      len = passwords[i].email.length;
+      passwords[i].email =
+        passwords[i].email.slice(0, len / 2) + "*".repeat(len / 2);
+    }
+
+    return res.status(201).json({
+      success: true,
+      passwords: passwords,
+      currentPage: page,
+      totalPage: totalPages,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+});
+
 const passwordValidator = (
   appId,
   createdBy,
@@ -296,4 +362,5 @@ module.exports = {
   getAllPasswords,
   getPasswordDetails,
   deletePasswordById,
+  securePaginatedAllPasswords,
 };
