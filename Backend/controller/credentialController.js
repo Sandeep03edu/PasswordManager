@@ -191,7 +191,41 @@ const fetchMonthlyCredentialsData = asyncHandler(async (req, res) => {
   }
 });
 
+const fetchCredentialCount = asyncHandler(async (req, res) => {
+  const loggedUser = req.user;
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      success: false,
+      error: "User not authenticated!!",
+    });
+  }
+
+  try {
+    const totalPasswords = await Password.countDocuments({
+      createdBy: loggedUser._id,
+    });
+
+    const totalCards = await Card.countDocuments({
+      createdBy: loggedUser._id,
+    });
+
+    return res.status(201).json({
+      success: true,
+      passwords: totalPasswords,
+      cards: totalCards,
+      credentials: totalCards + totalPasswords,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+});
+
 module.exports = {
   fetchRecentEncryptedCredentials,
   fetchMonthlyCredentialsData,
+  fetchCredentialCount,
 };
