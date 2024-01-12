@@ -34,3 +34,19 @@ app.use("/api/auth", userAuthRoutes);
 
 // Credentials API
 app.use("/api/credentials", credentialRoutes);
+
+const currentDate = new Date();
+const startOfMonth = new Date(
+  currentDate.getFullYear(),
+  currentDate.getMonth() - 1,
+  1
+);
+const endOfMonth = new Date(
+  currentDate.getFullYear(),
+  currentDate.getMonth(),
+  1
+);
+
+console.log(currentDate);
+console.log(startOfMonth);
+console.log(endOfMonth);

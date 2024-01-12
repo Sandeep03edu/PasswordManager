@@ -107,4 +107,91 @@ const fetchRecentEncryptedCredentials = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { fetchRecentEncryptedCredentials };
+const fetchMonthlyCredentialsData = asyncHandler(async (req, res) => {
+  const loggedUser = req.user;
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      success: false,
+      error: "User not authenticated!!",
+    });
+  }
+
+  try {
+    const currentDate = new Date();
+    const startOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+    const endOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      1
+    );
+
+    const cards = await Card.find(
+      {
+        createdBy: loggedUser._id,
+        creationTime: {
+          $gte: startOfMonth.getTime(),
+          $lte: endOfMonth.getTime(),
+        },
+      },
+      "creationTime"
+    );
+
+    const credentialsCountByDate = new Array(
+      new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0
+      ).getDate()
+    ).fill(0);
+
+    cards.forEach((card) => {
+      const cardDate = new Date(card.creationTime);
+      const dayOfMonth = cardDate.getDate();
+      credentialsCountByDate[dayOfMonth - 1]++;
+    });
+
+    const passwords = await Password.find(
+      {
+        createdBy: loggedUser._id,
+        creationTime: {
+          $gte: startOfMonth.getTime(),
+          $lte: endOfMonth.getTime(),
+        },
+      },
+      "creationTime"
+    );
+
+    passwords.forEach((password) => {
+      const passwordDate = new Date(password.creationTime);
+      const dayOfMonth = passwordDate.getDate();
+      credentialsCountByDate[dayOfMonth - 1]++;
+    });
+
+    const monthName = new Intl.DateTimeFormat("en-US", {
+      month: "long",
+    }).format(currentDate);
+
+    const year = currentDate.getFullYear();
+
+    res.status(201).json({
+      success: true,
+      data: credentialsCountByDate,
+      month: monthName + " " + year,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+});
+
+module.exports = {
+  fetchRecentEncryptedCredentials,
+  fetchMonthlyCredentialsData,
+};
