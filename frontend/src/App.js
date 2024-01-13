@@ -12,19 +12,20 @@ import AddCardPage from "./components/credentials/Card/AddCardPage";
 import AddDisplayPasswordPage from "./components/credentials/Password/AddDisplayPasswordPage";
 import DisplayFullCreditCard from "./components/credentials/Card/DisplayFullCreditCard";
 import DisplayFullPassword from "./components/credentials/Password/DisplayFullPassword";
+import { useToastState } from "./components/context/ToastContext";
 
 function App() {
   const navigate = useNavigate();
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("Warning");
+
+  const { toastState, updateToastState } = useToastState();
 
   useEffect(() => {
-    if (toastMessage.length > 0) {
+    if (toastState !== null) {
       setTimeout(() => {
-        setToastMessage("");
+        updateToastState(null);
       }, 3000);
     }
-  }, [toastMessage]);
+  }, [toastState]);
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
@@ -37,14 +38,22 @@ function App() {
               <EmailChecker
                 onSuccessVerification={(authResponse) => {
                   if (authResponse.success && authResponse.userExist) {
-                    setToastMessage("Email Id registered!!");
-                    setToastVariant("Success");
+                    // setToastMessage("Email Id registered!!");
+                    // setToastVariant("Success");
+                    updateToastState({
+                      message: "Email Id registered!!",
+                      variant: "Success",
+                    });
 
                     localStorage.setItem("EmailId", authResponse.email);
                     navigate("/authentication/verification");
                   } else {
-                    setToastMessage("User doesn't exist");
-                    setToastVariant("Primary");
+                    // setToastMessage("User doesn't exist");
+                    // setToastVariant("Primary");
+                    updateToastState({
+                      message: "User doesn't exist",
+                      variant: "Primary",
+                    });
 
                     localStorage.setItem("EmailId", authResponse.email);
                     navigate("/authentication/registration");
@@ -69,12 +78,20 @@ function App() {
                       localStorage.setItem("UserData", JSON.stringify(data));
                     }
                     // Move to display page
-                    setToastMessage("Login Successful");
-                    setToastVariant("Success");
+                    // setToastMessage("Login Successful");
+                    // setToastVariant("Success");
+                    updateToastState({
+                      message: "Login Successful",
+                      variant: "Success",
+                    });
                     navigate("/credential/display");
                   } else {
-                    setToastMessage(data.error);
-                    setToastVariant("Danger");
+                    // setToastMessage(data.error);
+                    // setToastVariant("Danger");
+                    updateToastState({
+                      message: data.error,
+                      variant: "Danger",
+                    });
                   }
                 }}
               />
@@ -113,8 +130,11 @@ function App() {
           width: "400px",
         }}
       >
-        {toastMessage.length !== 0 ? (
-          <ToastDisplay title={toastMessage} toastVariant={toastVariant} />
+        {toastState !== null ? (
+          <ToastDisplay
+            title={toastState.message}
+            toastVariant={toastState.variant}
+          />
         ) : (
           <></>
         )}
