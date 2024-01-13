@@ -132,7 +132,7 @@ const AddDisplayPasswordPage = () => {
                           required
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
-                          readonly={editable ? undefined : "readonly"}
+                          readOnly={editable ? undefined : "readOnly"}
                         />
                         <label htmlFor="title">Title</label>
                       </div>
@@ -145,7 +145,7 @@ const AddDisplayPasswordPage = () => {
                           required
                           value={url}
                           onChange={(e) => setUrl(e.target.value)}
-                          readonly={editable ? undefined : "readonly"}
+                          readOnly={editable ? undefined : "readOnly"}
                         />
                         <label htmlFor="url">URL</label>
                       </div>
@@ -158,7 +158,7 @@ const AddDisplayPasswordPage = () => {
                           required
                           value={username}
                           onChange={(e) => setUsername(e.target.value)}
-                          readonly={editable ? undefined : "readonly"}
+                          readOnly={editable ? undefined : "readOnly"}
                         />
                         <label htmlFor="username">Username</label>
                       </div>
@@ -171,7 +171,7 @@ const AddDisplayPasswordPage = () => {
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          readonly={editable ? undefined : "readonly"}
+                          readOnly={editable ? undefined : "readOnly"}
                         />
                         <label htmlFor="email">Email Id</label>
                       </div>
@@ -192,7 +192,7 @@ const AddDisplayPasswordPage = () => {
                           required
                           value={passwordInput}
                           onChange={(e) => setPasswordInput(e.target.value)}
-                          readOnly={editable ? undefined : "readonly"}
+                          readOnly={editable ? undefined : "readOnly"}
                           style={{ paddingRight: "40px" }} // Adjust the padding to leave space for the button
                         />
                         <label htmlFor="password">Password</label>
@@ -227,7 +227,7 @@ const AddDisplayPasswordPage = () => {
                           required
                           value={pin}
                           onChange={(e) => setPin(e.target.value)}
-                          readonly={editable ? undefined : "readonly"}
+                          readOnly={editable ? undefined : "readOnly"}
                           style={{ paddingRight: "40px" }} // Adjust the padding to leave space for the button
                         />
                         <label htmlFor="pin">Pin</label>

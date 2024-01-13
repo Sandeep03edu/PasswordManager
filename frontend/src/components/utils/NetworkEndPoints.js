@@ -10,6 +10,7 @@ const EndPoints = {
   // Cards
   securePaginatedAllCard: "api/credentials/securePaginatedAllCards?page=",
   fetchCardDetails: "api/credentials/fetchCardDetails",
+  addUpdateCard: "api/credentials/addUpdateCard",
 
   // Passwords
   securePaginatedAllPassword:

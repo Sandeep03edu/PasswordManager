@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { getUserToken } from "../../utils/UserInfo";
+import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
+import axios from "axios";
+import { useToastState } from "../../context/ToastContext";
 
 const AddDisplayCreditCard = () => {
+  const { updateToastState } = useToastState();
+
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const cardData = queryParams.get("cardData");
 
   const card = cardData ? JSON.parse(decodeURIComponent(cardData)) : null;
-  const cardId = card ? card._id : null;
+  const cardId = card ? card.appId : null;
 
   const [editable, setEditable] = useState(cardId === null);
 
@@ -44,6 +50,63 @@ const AddDisplayCreditCard = () => {
   const [dateError, setDateError] = useState("");
   const [securityKeyError, setSecurityKeyError] = useState("");
 
+  const getCardData = () => {
+    return {
+      issuerName,
+      cardHolderName,
+      cardType,
+      cardNumber,
+      cvv,
+      pin,
+      issueDate,
+      expiryDate,
+    };
+  };
+  const validateInput = () => {
+    return (
+      issuerNameError === "" &&
+      cardHolderNameError === "" &&
+      cardNumberError === "" &&
+      cardTypeError === "" &&
+      dateError === "" &&
+      securityKeyError === ""
+    );
+  };
+
+  const addUpdateCardData = async (card) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+          "Content-type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        `${BASE_URL}/${EndPoints.addUpdateCard}`,
+        card,
+        config
+      );
+
+      if (data.success) {
+        updateToastState({ message: "Card Updated", variant: "Success" });
+        setEditable(false);
+        setButtonLabel("Edit Card");
+        setLabel("Your Card");
+
+        window.location.replace(
+          `/credential/display/card?cardData=${encodeURIComponent(
+            JSON.stringify(data.cards[0])
+          )}`
+        );
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
+      }
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
+  };
+
   const handleButtonClick = () => {
     if (cardId !== null) {
       // Display Card present
@@ -52,10 +115,24 @@ const AddDisplayCreditCard = () => {
         setButtonLabel("Update Card");
         setLabel("Update Card Details");
       } else if (buttonLabel === "Update Card") {
-        // Update details for card
+        if (validateInput()) {
+          // Update details for card
+          const cardData = getCardData();
+          cardData.appId = cardId;
+          cardData.creationTime = card.creationTime;
+          addUpdateCardData(cardData);
+        }
       }
     } else {
-      // Add Card Data
+      if (validateInput()) {
+        // Add Card Data
+        const currentTimeMillis = new Date().getTime();
+
+        const cardData = getCardData();
+        cardData.appId = currentTimeMillis.toString();
+        cardData.creationTime = currentTimeMillis;
+        addUpdateCardData(cardData);
+      }
     }
   };
 
@@ -422,8 +499,8 @@ const AddDisplayCreditCard = () => {
                 value={cardHolderName}
                 onChange={(e) => setCardHolderName(e.target.value)}
                 required
-                // readonly={editable ? undefined : "readonly"}
-                readonly={editable ? undefined : "readonly"}
+                // readOnly={editable ? undefined : "readOnly"}
+                readOnly={editable ? undefined : "readOnly"}
               />
               {cardHolderNameError && (
                 <p
@@ -444,7 +521,7 @@ const AddDisplayCreditCard = () => {
                   }
                 }}
                 required
-                readonly={editable ? undefined : "readonly"}
+                readOnly={editable ? undefined : "readOnly"}
               />
               {cardNumberError && (
                 <p
@@ -477,7 +554,7 @@ const AddDisplayCreditCard = () => {
                 value={cardType}
                 onChange={(e) => setCardType(e.target.value)}
                 required
-                readonly={editable ? undefined : "readonly"}
+                readOnly={editable ? undefined : "readOnly"}
               >
                 <option value="">Select Issuer</option>
                 <option value="Master Card">Master Card</option>
@@ -500,7 +577,7 @@ const AddDisplayCreditCard = () => {
                 onChange={(e) => handleDateChange(e, setExpiryDate)}
                 maxLength={5}
                 required
-                readonly={editable ? undefined : "readonly"}
+                readOnly={editable ? undefined : "readOnly"}
               />
               <input
                 type="text"
@@ -510,7 +587,7 @@ const AddDisplayCreditCard = () => {
                 onChange={(e) => handleDateChange(e, setIssueDate)}
                 maxLength={5}
                 required
-                readonly={editable ? undefined : "readonly"}
+                readOnly={editable ? undefined : "readOnly"}
               />
               {dateError && (
                 <p
@@ -527,7 +604,7 @@ const AddDisplayCreditCard = () => {
                 value={cvv}
                 onChange={(e) => setCVV(e.target.value)}
                 required
-                readonly={editable ? undefined : "readonly"}
+                readOnly={editable ? undefined : "readOnly"}
               />
               <input
                 type="number"
@@ -536,7 +613,7 @@ const AddDisplayCreditCard = () => {
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 required
-                readonly={editable ? undefined : "readonly"}
+                readOnly={editable ? undefined : "readOnly"}
               />
               {securityKeyError && (
                 <p
