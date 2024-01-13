@@ -1,5 +1,7 @@
 import React from "react";
 import "./Sidebar.css";
+import { useNavigate } from "react-router-dom";
+import { getUser, getUserFullName } from "../utils/UserInfo";
 
 const DisplaySidebar = ({ onClick }) => {
   const styles = {
@@ -10,6 +12,11 @@ const DisplaySidebar = ({ onClick }) => {
     sizeFontAwesomeIcon: {
       fontSize: "1rem",
     },
+  };
+
+  const navigate = useNavigate();
+  const handleEditProfile = () => {
+    navigate("/authentication/edit/verification");
   };
   return (
     <div
@@ -110,6 +117,9 @@ const DisplaySidebar = ({ onClick }) => {
                     to="/"
                     className="sidebar-link"
                     style={styles.centerElement}
+                    onClick={() => {
+                      handleEditProfile();
+                    }}
                   >
                     <i
                       className="fas fa-user-plus pe-2 me-0 ms-4"
@@ -123,6 +133,10 @@ const DisplaySidebar = ({ onClick }) => {
                     to="/"
                     className="sidebar-link"
                     style={styles.centerElement}
+                    onClick={() => {
+                      localStorage.removeItem("UserData");
+                      navigate("/");
+                    }}
                   >
                     <i
                       className="fas fa-sign-out-alt pe-2 me-1 ms-4"
@@ -142,7 +156,7 @@ const DisplaySidebar = ({ onClick }) => {
               style={styles.sizeFontAwesomeIcon}
             ></i>
             <span>
-              <h6 className="mt-1 mb-0">Sandeep Mishra</h6>
+              <h6 className="mt-1 mb-0">{getUserFullName()}</h6>
             </span>
           </div>
         </div>

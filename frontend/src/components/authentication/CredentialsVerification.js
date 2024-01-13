@@ -74,13 +74,16 @@ const CredentialsVerification = ({ onSuccessValidation }) => {
       };
 
       const email = localStorage.getItem("EmailId");
+      const body = {
+        email,
+        loginPin,
+        appPin,
+      };
+
+      console.log(body);
       const { data } = await axios.post(
         `${BASE_URL}/${EndPoints.login}`,
-        {
-          email,
-          loginPin,
-          appPin,
-        },
+        body,
         headerConfig
       );
       console.log(data);

@@ -6,7 +6,7 @@ import Welcome from "./components/authentication/Welcome";
 import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ToastDisplay from "./components/utils/Toast";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import DisplayCredentialsPage from "./components/credentials/DisplayCredentialPage";
 import AddCardPage from "./components/credentials/Card/AddCardPage";
 import AddDisplayPasswordPage from "./components/credentials/Password/AddDisplayPasswordPage";
@@ -67,8 +67,6 @@ function App() {
                     // User logged in successfully!!
                     delete data["loginPin"];
                     delete data["appPin"];
-                    console.log("Dataaa");
-                    console.log(data);
 
                     if (localStorage.getItem("RememberMe")) {
                       localStorage.setItem("UserData", JSON.stringify(data));
@@ -90,7 +88,34 @@ function App() {
             }
           />
           <Route
+            path="/authentication/edit/verification"
+            element={
+              <CredentialsVerification
+                onSuccessValidation={(data) => {
+                  if (data.success) {
+                    updateToastState({
+                      message: "Login Successful",
+                      variant: "Success",
+                    });
+                    window.open(
+                      `/authentication/edit/profile?editable=${true}`
+                    );
+                  } else {
+                    updateToastState({
+                      message: data.error,
+                      variant: "Danger",
+                    });
+                  }
+                }}
+              />
+            }
+          />
+          <Route
             path="/authentication/registration"
+            element={<UserFormFillup />}
+          />
+          <Route
+            path="/authentication/edit/profile"
             element={<UserFormFillup />}
           />
           <Route

@@ -5,6 +5,7 @@ const EndPoints = {
   emailExist: "api/auth/emailExist",
   login: "api/auth/login",
   registerUser: "api/auth/register",
+  updateUser: "api/auth/update",
   verifyAppPin: "api/auth/verifyAppPin",
 
   // Cards
