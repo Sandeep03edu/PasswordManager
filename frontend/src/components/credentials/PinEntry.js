@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getUserToken } from "../utils/UserInfo";
 import axios from "axios";
 import { BASE_URL, EndPoints } from "../utils/NetworkEndPoints";
+import { useToastState } from "../context/ToastContext";
 
 const PinEntry = ({
   showModal,
@@ -12,6 +13,7 @@ const PinEntry = ({
   keyTitle,
   keyLimit,
 }) => {
+  const { updateToastState } = useToastState();
   const [pin, setPin] = useState("123456");
   const [verifyEnable, setVerifyEnable] = useState(true);
 
@@ -40,12 +42,15 @@ const PinEntry = ({
         body,
         config
       );
+      console.log(data);
       if (data.success) {
         handleResponse(setVerifyEnable, setPin);
       } else {
+        updateToastState({ message: data.error, variant: "Danger" });
         setVerifyEnable(true);
       }
     } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
       setVerifyEnable(true);
     }
   };

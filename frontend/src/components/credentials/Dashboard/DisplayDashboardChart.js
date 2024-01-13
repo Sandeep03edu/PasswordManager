@@ -5,10 +5,13 @@ import { useState } from "react";
 import { getUserToken } from "../../utils/UserInfo";
 import axios from "axios";
 import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
+import { useToastState } from "../../context/ToastContext";
 
 Chart.register(...registerables);
 
 const DisplayDashboardChart = ({ setComponentHeight }) => {
+  const { updateToastState} = useToastState
+
   const getDaysInCurrentMonth = () => {
     const currentDate = new Date();
     const year = currentDate.getFullYear();
@@ -59,7 +62,12 @@ const DisplayDashboardChart = ({ setComponentHeight }) => {
       if (data.success) {
         setDateWiseCredentialsCount(data.data);
       }
-    } catch (error) {}
+      else {
+        updateToastState({ message: data.error, variant: "Danger" });
+      }
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
   };
 
   useEffect(() => {

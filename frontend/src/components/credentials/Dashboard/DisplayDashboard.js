@@ -6,8 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { getUserToken } from "../../utils/UserInfo";
 import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
 import axios from "axios";
+import { useToastState } from "../../context/ToastContext";
 
 const DisplayDashboard = ({ onClick }) => {
+  const { updateToastState } = useToastState();
   const countData = [
     {
       count: 0,
@@ -41,8 +43,12 @@ const DisplayDashboard = ({ onClick }) => {
 
       if (data.success) {
         setCredentialCountArray(data.data);
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
       }
-    } catch (error) {}
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
   };
 
   useEffect(() => {

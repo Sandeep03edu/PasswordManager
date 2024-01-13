@@ -6,6 +6,7 @@ import axios from "axios";
 import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
 import { capitalizeWords } from "../../utils/ModiyText";
 import { convertToDateTime } from "../../utils/DateUtils";
+import { useToastState } from "../../context/ToastContext";
 
 const DisplayPasswords = () => {
   const [showPinEntryModal, setPinEntryShowModal] = useState(null);
@@ -13,6 +14,7 @@ const DisplayPasswords = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [passwords, setPasswords] = useState([]);
+  const { updateToastState } = useToastState();
 
   const fetchPasswordDetails = async (setVerifyEnable, setPin) => {
     const appId = showPinEntryModal;
@@ -34,7 +36,6 @@ const DisplayPasswords = () => {
         config
       );
 
-      console.log(data);
       setVerifyEnable(true);
       setPin("");
 
@@ -46,8 +47,12 @@ const DisplayPasswords = () => {
           )}`,
           "_blank"
         );
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
       }
-    } catch (error) {}
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
   };
 
   const handleRowClick = (id) => {
@@ -78,8 +83,12 @@ const DisplayPasswords = () => {
         setPasswords(data.passwords);
         setCurrentPage(data.currentPage);
         setTotalPages(data.totalPage);
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
       }
-    } catch (error) {}
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
   };
 
   useEffect(() => {

@@ -38,8 +38,6 @@ function App() {
               <EmailChecker
                 onSuccessVerification={(authResponse) => {
                   if (authResponse.success && authResponse.userExist) {
-                    // setToastMessage("Email Id registered!!");
-                    // setToastVariant("Success");
                     updateToastState({
                       message: "Email Id registered!!",
                       variant: "Success",
@@ -48,8 +46,6 @@ function App() {
                     localStorage.setItem("EmailId", authResponse.email);
                     navigate("/authentication/verification");
                   } else {
-                    // setToastMessage("User doesn't exist");
-                    // setToastVariant("Primary");
                     updateToastState({
                       message: "User doesn't exist",
                       variant: "Primary",
@@ -78,16 +74,12 @@ function App() {
                       localStorage.setItem("UserData", JSON.stringify(data));
                     }
                     // Move to display page
-                    // setToastMessage("Login Successful");
-                    // setToastVariant("Success");
                     updateToastState({
                       message: "Login Successful",
                       variant: "Success",
                     });
                     navigate("/credential/display");
                   } else {
-                    // setToastMessage(data.error);
-                    // setToastVariant("Danger");
                     updateToastState({
                       message: data.error,
                       variant: "Danger",

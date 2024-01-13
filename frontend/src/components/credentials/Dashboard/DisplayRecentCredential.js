@@ -4,6 +4,7 @@ import { getUserToken } from "../../utils/UserInfo";
 import axios from "axios";
 import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
 import { capitalizeWords } from "../../utils/ModiyText";
+import { useToastState } from "../../context/ToastContext";
 
 const DisplayRecentCredential = () => {
   const [recentCredentials, setRecentCredentials] = useState([]);
@@ -11,6 +12,8 @@ const DisplayRecentCredential = () => {
   const handleRowClick = (id) => {
     setPinEntryShowModal(true);
   };
+
+  const { updateToastState } = useToastState();
 
   const [showPinEntryModal, setPinEntryShowModal] = useState(false);
   const handleCloseModal = () => {
@@ -32,8 +35,12 @@ const DisplayRecentCredential = () => {
 
       if (data.success) {
         setRecentCredentials(data.data);
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
       }
-    } catch (error) {}
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
   };
 
   useEffect(() => {

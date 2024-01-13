@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getUserToken } from "../../utils/UserInfo";
 import axios from "axios";
 import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
+import { useToastState } from "../../context/ToastContext";
 
 const DisplayCards = () => {
   const [showPinModal, setPinEntryShowModal] = useState(null);
@@ -12,6 +13,8 @@ const DisplayCards = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [cards, setCards] = useState([]);
+
+  const { updateToastState } = useToastState();
 
   const fetchCardDetails = async (setVerifyEnable, setPin) => {
     const appId = showPinModal;
@@ -44,8 +47,12 @@ const DisplayCards = () => {
           )}`,
           "_blank"
         );
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
       }
-    } catch (error) {}
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
   };
 
   const fetchPaginatedCards = async () => {
@@ -65,8 +72,12 @@ const DisplayCards = () => {
         setCards(data.cards);
         setCurrentPage(data.currentPage);
         setTotalPages(data.totalPage);
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
       }
-    } catch (error) {}
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
   };
 
   useEffect(() => {
