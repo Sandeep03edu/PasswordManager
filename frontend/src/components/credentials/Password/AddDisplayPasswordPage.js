@@ -1,7 +1,36 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 
-const AddPasswordPage = () => {
-  const [selectedTags, setSelectedTags] = useState([]);
+const AddDisplayPasswordPage = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const passwordData = queryParams.get("passwordData");
+
+  const password = passwordData
+    ? JSON.parse(decodeURIComponent(passwordData))
+    : null;
+  const passwordId = password ? password._id : null;
+
+  const [editable, setEditable] = useState(passwordId === null);
+
+  const [buttonLabel, setButtonLabel] = useState(
+    passwordId !== null ? "Edit Password" : "Add Password"
+  );
+  const [label, setLabel] = useState(
+    passwordId !== null ? "Your Password" : "Add Password"
+  );
+
+  const [title, setTitle] = useState(password ? password.title : "");
+  const [url, setUrl] = useState(password ? password.url : "");
+  const [username, setUsername] = useState(password ? password.username : "");
+  const [email, setEmail] = useState(password ? password.email : "");
+  const [passwordInput, setPasswordInput] = useState(
+    password ? password.password : ""
+  );
+  const [pin, setPin] = useState(password ? password.pin : "");
+  const [selectedTags, setSelectedTags] = useState(
+    password ? password.tags : []
+  );
   const tags = ["Personal", "Work", "Browser", "Banking"];
 
   const handleTagClick = (e, tag) => {
@@ -15,6 +44,21 @@ const AddPasswordPage = () => {
     }
   };
 
+  const handleButtonClick = () => {
+    if (passwordId !== null) {
+      // Display Card present
+      if (buttonLabel === "Edit Password") {
+        setEditable(true);
+        setButtonLabel("Update Password");
+        setLabel("Update Password Details");
+      } else if (buttonLabel === "Update Password") {
+        // Update details for card
+      }
+    } else {
+      // Add Card Data
+    }
+  };
+
   const renderTags = () => {
     return tags.map((tag, index) => (
       <button
@@ -23,11 +67,20 @@ const AddPasswordPage = () => {
           selectedTags.includes(tag) ? "btn-info" : "btn-secondary"
         }`}
         style={{ borderRadius: "5px" }}
-        onClick={(e) => handleTagClick(e, tag)}
+        onClick={(e) => {
+          if (editable) {
+            handleTagClick(e, tag);
+          }
+        }}
       >
         {tag}
       </button>
     ));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
   };
 
   return (
@@ -52,8 +105,8 @@ const AddPasswordPage = () => {
         <div>
           <div className="card shadow" style={{ height: "100%" }}>
             <div className="card-body p-4" style={{ height: "100%" }}>
-              <h2 className="text-center mb-4">Add Password</h2>
-              <form>
+              <h2 className="text-center mb-4">{label}</h2>
+              <form onSubmit={handleSubmit}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="mb-4">
@@ -65,6 +118,9 @@ const AddPasswordPage = () => {
                           id="title"
                           placeholder="Enter title"
                           required
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                          readonly={editable ? undefined : "readonly"}
                         />
                         <label htmlFor="title">Title</label>
                       </div>
@@ -75,6 +131,9 @@ const AddPasswordPage = () => {
                           id="url"
                           placeholder="Enter URL"
                           required
+                          value={url}
+                          onChange={(e) => setUrl(e.target.value)}
+                          readonly={editable ? undefined : "readonly"}
                         />
                         <label htmlFor="url">URL</label>
                       </div>
@@ -85,6 +144,9 @@ const AddPasswordPage = () => {
                           id="username"
                           placeholder="Enter username"
                           required
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          readonly={editable ? undefined : "readonly"}
                         />
                         <label htmlFor="username">Username</label>
                       </div>
@@ -95,6 +157,9 @@ const AddPasswordPage = () => {
                           id="email"
                           placeholder="Enter email"
                           required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          readonly={editable ? undefined : "readonly"}
                         />
                         <label htmlFor="email">Email Id</label>
                       </div>
@@ -110,6 +175,9 @@ const AddPasswordPage = () => {
                           id="password"
                           placeholder="Enter password"
                           required
+                          value={passwordInput}
+                          onChange={(e) => setPasswordInput(e.target.value)}
+                          readonly={editable ? undefined : "readonly"}
                         />
                         <label htmlFor="password">Password</label>
                       </div>
@@ -120,6 +188,9 @@ const AddPasswordPage = () => {
                           id="pin"
                           placeholder="Enter pin"
                           required
+                          value={pin}
+                          onChange={(e) => setPin(e.target.value)}
+                          readonly={editable ? undefined : "readonly"}
                         />
                         <label htmlFor="pin">Pin</label>
                       </div>
@@ -139,8 +210,12 @@ const AddPasswordPage = () => {
                   onMouseOut={(e) =>
                     e.target.classList.remove("btn-primary-hover")
                   }
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleButtonClick();
+                  }}
                 >
-                  Submit
+                  {buttonLabel}
                 </button>
               </form>
             </div>
@@ -151,4 +226,4 @@ const AddPasswordPage = () => {
   );
 };
 
-export default AddPasswordPage;
+export default AddDisplayPasswordPage;

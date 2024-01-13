@@ -9,8 +9,9 @@ import ToastDisplay from "./components/utils/Toast";
 import { useEffect, useState } from "react";
 import DisplayCredentialsPage from "./components/credentials/DisplayCredentialPage";
 import AddCardPage from "./components/credentials/Card/AddCardPage";
-import AddPasswordPage from "./components/credentials/Password/AddPasswordPage";
+import AddDisplayPasswordPage from "./components/credentials/Password/AddDisplayPasswordPage";
 import DisplayFullCreditCard from "./components/credentials/Card/DisplayFullCreditCard";
+import DisplayFullPassword from "./components/credentials/Password/DisplayFullPassword";
 
 function App() {
   const navigate = useNavigate();
@@ -91,10 +92,14 @@ function App() {
             path="/credential/display/card"
             element={<DisplayFullCreditCard />}
           />
+          <Route
+            path="/credential/display/password"
+            element={<DisplayFullPassword />}
+          />
           <Route path="/credential/add/card" element={<AddCardPage />} />
           <Route
             path="/credential/add/password"
-            element={<AddPasswordPage />}
+            element={<AddDisplayPasswordPage />}
           />
         </Routes>
       </div>

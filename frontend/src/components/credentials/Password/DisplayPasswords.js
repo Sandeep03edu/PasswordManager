@@ -250,6 +250,13 @@ const DisplayPasswords = () => {
         keyLimit={6}
         handleResponse={() => {
           console.log("Response");
+          setPinEntryShowModal(null);
+          window.open(
+            `/credential/display/password?passwordData=${encodeURIComponent(
+              JSON.stringify(passwords[0])
+            )}`,
+            "_blank"
+          );
         }}
       />
     </div>
