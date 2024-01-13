@@ -5,10 +5,11 @@ const EndPoints = {
   emailExist: "api/auth/emailExist",
   login: "api/auth/login",
   registerUser: "api/auth/register",
+  verifyAppPin: "api/auth/verifyAppPin",
 
   // Cards
-  securePaginatedAllCard:
-    "api/credentials/securePaginatedAllCards?page=",
+  securePaginatedAllCard: "api/credentials/securePaginatedAllCards?page=",
+  fetchCardDetails: "api/credentials/fetchCardDetails",
 
   // Passwords
   securePaginatedAllPassword:

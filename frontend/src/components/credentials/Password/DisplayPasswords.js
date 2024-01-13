@@ -16,7 +16,6 @@ const DisplayPasswords = () => {
 
   const handleRowClick = (id) => {
     // Handle click action here based on the row ID
-    console.log(`Row clicked: ${id}`);
     setPinEntryShowModal(true);
   };
 

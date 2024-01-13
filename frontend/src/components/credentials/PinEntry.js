@@ -1,6 +1,9 @@
 import { Modal } from "react-bootstrap";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getUserToken } from "../utils/UserInfo";
+import axios from "axios";
+import { BASE_URL, EndPoints } from "../utils/NetworkEndPoints";
 
 const PinEntry = ({
   showModal,
@@ -9,7 +12,8 @@ const PinEntry = ({
   keyTitle,
   keyLimit,
 }) => {
-  const [pin, setPin] = useState("");
+  const [pin, setPin] = useState("123456");
+  const [verifyEnable, setVerifyEnable] = useState(true);
 
   const handlePinChange = (event) => {
     // Limit input to keyLimit digits
@@ -17,14 +21,42 @@ const PinEntry = ({
     setPin(newPin);
   };
 
-  const handleVerifyClick = () => {
-    // Add your verification logic here
-    console.log(`Verifying PIN: ${pin}`);
-    handleResponse();
+  const handleVerifyClick = async (e) => {
+    setVerifyEnable(false);
+    e.preventDefault();
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+        },
+      };
+
+      const body = {
+        appPin: pin,
+      };
+
+      const { data } = await axios.post(
+        `${BASE_URL}/${EndPoints.verifyAppPin}`,
+        body,
+        config
+      );
+      if (data.success) {
+        handleResponse(setVerifyEnable, setPin);
+      } else {
+        setVerifyEnable(true);
+      }
+    } catch (error) {
+      setVerifyEnable(true);
+    }
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
+    <Modal
+      show={showModal}
+      onHide={() => {
+        handleClose();
+      }}
+    >
       <Modal.Header closeButton className="bg-primary text-white px-3 py-2">
         <Modal.Title>Verification</Modal.Title>
       </Modal.Header>
@@ -57,21 +89,14 @@ const PinEntry = ({
               type="button"
               className="btn btn-primary "
               onClick={handleVerifyClick}
+              disabled={!verifyEnable}
             >
               Verify
             </button>
           </form>
         </div>
       </Modal.Body>
-      <Modal.Footer>
-        {/* <Button
-          variant="secondary"
-          onClick={handleClose}
-          className="text-danger"
-        >
-          Close
-        </Button> */}
-      </Modal.Footer>
+      <Modal.Footer></Modal.Footer>
     </Modal>
   );
 };

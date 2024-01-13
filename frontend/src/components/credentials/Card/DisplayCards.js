@@ -7,13 +7,48 @@ import axios from "axios";
 import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
 
 const DisplayCards = () => {
-  const [showPinModal, setPinEntryShowModal] = useState(false);
+  const [showPinModal, setPinEntryShowModal] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [cards, setCards] = useState([]);
 
-  const fetchPaginatedPasswords = async () => {
+  const fetchCardDetails = async (setVerifyEnable, setPin) => {
+    const appId = showPinModal;
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+          "Content-type": "application/json",
+        },
+      };
+
+      const body = {
+        appId: appId,
+      };
+
+      const { data } = await axios.post(
+        `${BASE_URL}/${EndPoints.fetchCardDetails}`,
+        body,
+        config
+      );
+
+      setVerifyEnable(true);
+      setPin("");
+
+      if (data.success) {
+        setPinEntryShowModal(null);
+        window.open(
+          `/credential/display/card?cardData=${encodeURIComponent(
+            JSON.stringify(data.cards[0])
+          )}`,
+          "_blank"
+        );
+      }
+    } catch (error) {}
+  };
+
+  const fetchPaginatedCards = async () => {
     try {
       const config = {
         headers: {
@@ -26,8 +61,6 @@ const DisplayCards = () => {
         config
       );
 
-      console.log(data);
-
       if (data.success) {
         setCards(data.cards);
         setCurrentPage(data.currentPage);
@@ -37,7 +70,7 @@ const DisplayCards = () => {
   };
 
   useEffect(() => {
-    fetchPaginatedPasswords();
+    fetchPaginatedCards();
   }, [currentPage]);
 
   const styles = {
@@ -47,13 +80,12 @@ const DisplayCards = () => {
   };
 
   const handlePinEntryCloseModal = () => {
-    setPinEntryShowModal(false);
+    setPinEntryShowModal(null);
   };
 
   const handlePinEntryCardClick = (id) => {
     // Handle click action here based on the row ID
-    console.log(`Row clicked: ${id}`);
-    setPinEntryShowModal(true);
+    setPinEntryShowModal(id);
   };
 
   const navigate = useNavigate();
@@ -113,7 +145,7 @@ const DisplayCards = () => {
                     cursor: "pointer",
                   }}
                   onClick={() => {
-                    handlePinEntryCardClick(card._id);
+                    handlePinEntryCardClick(card.appId);
                   }}
                 >
                   <DisplayUpperCreditCard card={card} />
@@ -158,20 +190,16 @@ const DisplayCards = () => {
           )}
         </div>
       </div>
+
       <PinEntry
-        showModal={showPinModal}
-        handleClose={handlePinEntryCloseModal}
+        showModal={showPinModal !== null}
+        handleClose={() => {
+          handlePinEntryCloseModal();
+        }}
         keyTitle={"App Pin"}
         keyLimit={6}
-        handleResponse={() => {
-          console.log("Response");
-          setPinEntryShowModal(false);
-          window.open(
-            `/credential/display/card?cardData=${encodeURIComponent(
-              JSON.stringify(cards[0])
-            )}`,
-            "_blank"
-          );
+        handleResponse={(setVerifyEnable, setPin) => {
+          fetchCardDetails(setVerifyEnable, setPin);
         }}
       />
     </div>

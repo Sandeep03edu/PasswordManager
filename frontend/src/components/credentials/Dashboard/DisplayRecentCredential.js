@@ -9,7 +9,6 @@ const DisplayRecentCredential = () => {
   const [recentCredentials, setRecentCredentials] = useState([]);
 
   const handleRowClick = (id) => {
-    console.log(`Row clicked: ${id}`);
     setPinEntryShowModal(true);
   };
 
