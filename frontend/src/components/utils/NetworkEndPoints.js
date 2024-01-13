@@ -14,6 +14,7 @@ const EndPoints = {
   // Passwords
   securePaginatedAllPassword:
     "api/credentials/securePaginatedAllPasswords?page=",
+  fetchPasswordDetails: "api/credentials/fetchPasswordDetails",
 
   // Credentials
   fetchCredentialCount: "api/credentials/fetchCredentialCount",

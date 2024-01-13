@@ -8,19 +8,55 @@ import { capitalizeWords } from "../../utils/ModiyText";
 import { convertToDateTime } from "../../utils/DateUtils";
 
 const DisplayPasswords = () => {
-  const [showPinEntryModal, setPinEntryShowModal] = useState(false);
+  const [showPinEntryModal, setPinEntryShowModal] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [passwords, setPasswords] = useState([]);
 
+  const fetchPasswordDetails = async (setVerifyEnable, setPin) => {
+    const appId = showPinEntryModal;
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+          "Content-type": "application/json",
+        },
+      };
+
+      const body = {
+        appId: appId,
+      };
+
+      const { data } = await axios.post(
+        `${BASE_URL}/${EndPoints.fetchPasswordDetails}`,
+        body,
+        config
+      );
+
+      console.log(data);
+      setVerifyEnable(true);
+      setPin("");
+
+      if (data.success) {
+        setPinEntryShowModal(null);
+        window.open(
+          `/credential/display/password?passwordData=${encodeURIComponent(
+            JSON.stringify(data.passwords[0])
+          )}`,
+          "_blank"
+        );
+      }
+    } catch (error) {}
+  };
+
   const handleRowClick = (id) => {
     // Handle click action here based on the row ID
-    setPinEntryShowModal(true);
+    setPinEntryShowModal(id);
   };
 
   const handleCloseModal = () => {
-    setPinEntryShowModal(false);
+    setPinEntryShowModal(null);
   };
 
   const fetchPaginatedPasswords = async () => {
@@ -123,8 +159,8 @@ const DisplayPasswords = () => {
                 <tbody>
                   {passwords.map((data) => (
                     <tr
-                      key={data.id}
-                      onClick={() => handleRowClick(data.id)}
+                      key={data.appId}
+                      onClick={() => handleRowClick(data.appId)}
                       style={{
                         textDecoration: "none",
                         color: "inherit",
@@ -244,19 +280,12 @@ const DisplayPasswords = () => {
       </div>
 
       <PinEntry
-        showModal={showPinEntryModal}
+        showModal={showPinEntryModal !== null}
         handleClose={handleCloseModal}
         keyTitle={"App Pin"}
         keyLimit={6}
-        handleResponse={() => {
-          console.log("Response");
-          setPinEntryShowModal(null);
-          window.open(
-            `/credential/display/password?passwordData=${encodeURIComponent(
-              JSON.stringify(passwords[0])
-            )}`,
-            "_blank"
-          );
+        handleResponse={(setVerifyEnable, setPin) => {
+          fetchPasswordDetails(setVerifyEnable, setPin);
         }}
       />
     </div>

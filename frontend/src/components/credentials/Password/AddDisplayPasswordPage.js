@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
 import { useLocation } from "react-router-dom";
 
 const AddDisplayPasswordPage = () => {
@@ -19,6 +22,15 @@ const AddDisplayPasswordPage = () => {
   const [label, setLabel] = useState(
     passwordId !== null ? "Your Password" : "Add Password"
   );
+
+  const [showPassword, setShowPassword] = useState(!editable);
+  const [showPin, setShowPin] = useState(!editable);
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+  const togglePinVisibility = () => {
+    setShowPin((prevShowPassword) => !prevShowPassword);
+  };
 
   const [title, setTitle] = useState(password ? password.title : "");
   const [url, setUrl] = useState(password ? password.url : "");
@@ -168,22 +180,47 @@ const AddDisplayPasswordPage = () => {
                   <div className="col-md-6">
                     <div className="mb-4">
                       <h4 className="fw-bold mb-3">Security Keys</h4>
-                      <div className="form-floating mb-3">
+                      <div
+                        className="form-floating mb-3"
+                        style={{ position: "relative" }}
+                      >
                         <input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           className="form-control"
                           id="password"
                           placeholder="Enter password"
                           required
                           value={passwordInput}
                           onChange={(e) => setPasswordInput(e.target.value)}
-                          readonly={editable ? undefined : "readonly"}
+                          readOnly={editable ? undefined : "readonly"}
+                          style={{ paddingRight: "40px" }} // Adjust the padding to leave space for the button
                         />
                         <label htmlFor="password">Password</label>
+                        {editable && (
+                          <div
+                            className="px-2"
+                            onClick={togglePasswordVisibility}
+                            style={{
+                              position: "absolute",
+                              right: "10px", // Adjust the right positioning as needed
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              zIndex: "1",
+                            }}
+                          >
+                            <FontAwesomeIcon
+                              icon={showPassword ? faEye : faEyeSlash}
+                            />
+                          </div>
+                        )}
                       </div>
-                      <div className="form-floating mb-3">
+
+                      <div
+                        className="form-floating mb-3"
+                        style={{ position: "relative" }}
+                      >
                         <input
-                          type="password"
+                          type={showPin ? "text" : "password"}
                           className="form-control"
                           id="pin"
                           placeholder="Enter pin"
@@ -191,9 +228,28 @@ const AddDisplayPasswordPage = () => {
                           value={pin}
                           onChange={(e) => setPin(e.target.value)}
                           readonly={editable ? undefined : "readonly"}
+                          style={{ paddingRight: "40px" }} // Adjust the padding to leave space for the button
                         />
                         <label htmlFor="pin">Pin</label>
+                        {editable && (
+                          <div
+                            className="px-2"
+                            onClick={togglePinVisibility}
+                            style={{
+                              position: "absolute",
+                              right: "10px", // Adjust the right positioning as needed
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              zIndex: "1",
+                            }}
+                          >
+                            <FontAwesomeIcon
+                              icon={showPin ? faEye : faEyeSlash}
+                            />
+                          </div>
+                        )}
                       </div>
+
                       <div className="mb-4">
                         <h4 className="fw-bold mb-3">Tags</h4>
                         <div className="d-flex flex-wrap">{renderTags()}</div>
