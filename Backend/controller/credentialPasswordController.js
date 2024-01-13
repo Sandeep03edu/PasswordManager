@@ -46,7 +46,7 @@ const addUpdatePassword = asyncHandler(async (req, res) => {
   );
 
   if (validatePassword.length !== 0) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: validatePassword,
     });
@@ -89,7 +89,7 @@ const addUpdatePassword = asyncHandler(async (req, res) => {
         ],
       });
     } else {
-      return res.status(400).json({
+      return res.status(201).json({
         success: false,
         error: "An internal error occurred!!",
       });
@@ -169,7 +169,7 @@ const getPasswordDetails = asyncHandler(async (req, res) => {
 
   const { appId } = req.body;
   if (!appId) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "AppId Missing",
     });
@@ -195,7 +195,7 @@ const getPasswordDetails = asyncHandler(async (req, res) => {
       passwords: userPassword,
     });
   } else {
-    res.status(400).json({
+    res.status(201).json({
       success: false,
       error: "Password does not exist!!",
     });
@@ -214,7 +214,7 @@ const deletePasswordById = asyncHandler(async (req, res) => {
 
   const { appId } = req.body;
   if (!appId) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "AppId Missing",
     });
@@ -269,7 +269,7 @@ const securePaginatedAllPasswords = asyncHandler(async (req, res) => {
     const totalPages = Math.ceil(totalItems / pageSize);
 
     if (page < 1 || page > totalPages) {
-      return res.status(400).json({
+      return res.status(201).json({
         success: false,
         error: "Invalid page number",
       });
@@ -307,7 +307,7 @@ const securePaginatedAllPasswords = asyncHandler(async (req, res) => {
       totalPage: totalPages,
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: error,
     });

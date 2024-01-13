@@ -8,28 +8,28 @@ const registerUser = asyncHandler(async (req, res) => {
   const { email, firstName, lastName, loginPin, appPin } = req.body;
 
   if (!email) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "Email id missing!!",
     });
   }
 
   if (!firstName || firstName.length < 4) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "First Name should contain atleast 4 characters!!",
     });
   }
 
   if (!loginPin || loginPin.length != 4) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "Login pin should contain 4 digits",
     });
   }
 
   if (!appPin || appPin.length != 6) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "App pin should contain 6 digits",
     });
@@ -66,13 +66,13 @@ const registerUser = asyncHandler(async (req, res) => {
         token: generateJWT(newUser._id),
       });
     } else {
-      return res.status(400).json({
+      return res.status(201).json({
         success: false,
         error: "An internal error occurred!!",
       });
     }
   } else {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "User already registered!!",
     });
@@ -84,21 +84,21 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // Handling Errors
   if (!email) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "Email id missing!!",
     });
   }
 
   if (!loginPin || loginPin.length != 4) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "Login pin should contain 4 digits",
     });
   }
 
   if (!appPin || appPin.length != 6) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "App pin should contain 6 digits",
     });
@@ -129,13 +129,13 @@ const loginUser = asyncHandler(async (req, res) => {
         token: generateJWT(userExist._id),
       });
     } else {
-      return res.status(400).json({
+      return res.status(201).json({
         success: false,
         error: "Invalid Credentials!!",
       });
     }
   } else {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "No user found!!",
     });
@@ -155,28 +155,28 @@ const updateUser = asyncHandler(async (req, res) => {
   const { email, firstName, lastName, loginPin, appPin } = req.body;
 
   if (!email) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "Email id missing!!",
     });
   }
 
   if (!firstName || firstName.trim().length < 4) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "First Name should contain atleast 4 characters!!",
     });
   }
 
   if (!loginPin || loginPin.trim().length != 4) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "Login pin should contain 4 digits",
     });
   }
 
   if (!appPin || appPin.trim().length != 6) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "App pin should contain 6 digits",
     });
@@ -219,13 +219,13 @@ const updateUser = asyncHandler(async (req, res) => {
         token: generateJWT(updateUser._id),
       });
     } else {
-      return res.status(400).json({
+      return res.status(201).json({
         success: false,
         error: "An internal error occurred!!",
       });
     }
   } else {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "User doesn't exist!!",
     });
@@ -237,7 +237,7 @@ const userEmailExist = asyncHandler(async (req, res) => {
 
   // Handling Errors
   if (!email) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "Email id missing!!",
     });
@@ -253,7 +253,7 @@ const userEmailExist = asyncHandler(async (req, res) => {
       email: email,
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "An internal Error occurred!! ",
     });
@@ -275,7 +275,7 @@ const verifyAppPin = asyncHandler(async (req, res) => {
   if (!appPin) {
     return res.status(201).json({
       success: false,
-      errror: "Invalid Login Pin",
+      error: "Invalid Login Pin",
     });
   }
   const hashedAppPin = hashString(appPin);
@@ -287,7 +287,7 @@ const verifyAppPin = asyncHandler(async (req, res) => {
   } else {
     return res.status(201).json({
       success: false,
-      errror: "Invalid Login Pin",
+      error: "Invalid Login Pin",
     });
   }
 });

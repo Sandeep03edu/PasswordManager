@@ -100,7 +100,7 @@ const fetchRecentEncryptedCredentials = asyncHandler(async (req, res) => {
       data: selectedFields,
     });
   } catch (err) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: err,
     });
@@ -184,7 +184,7 @@ const fetchMonthlyCredentialsData = asyncHandler(async (req, res) => {
       month: monthName + " " + year,
     });
   } catch (error) {
-    res.status(400).json({
+    res.status(201).json({
       success: false,
       error: error,
     });
@@ -231,7 +231,7 @@ const fetchCredentialCount = asyncHandler(async (req, res) => {
       ],
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: error,
     });

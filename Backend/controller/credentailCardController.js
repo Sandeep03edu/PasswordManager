@@ -49,7 +49,7 @@ const addUpdateCard = asyncHandler(async (req, res) => {
   );
 
   if (validateCard.length !== 0) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: validateCard,
     });
@@ -87,7 +87,7 @@ const addUpdateCard = asyncHandler(async (req, res) => {
         cards: [decryptCard(card, card.createdBy, card.appId)],
       });
     } else {
-      return res.status(400).json({
+      return res.status(201).json({
         success: false,
         error: "An internal error occurred!!",
       });
@@ -159,7 +159,7 @@ const getCardDetails = asyncHandler(async (req, res) => {
 
   const { appId } = req.body;
   if (!appId) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "AppId Missing",
     });
@@ -181,7 +181,7 @@ const getCardDetails = asyncHandler(async (req, res) => {
       cards: userCard,
     });
   } else {
-    res.status(400).json({
+    res.status(201).json({
       success: false,
       error: "Card does not exist!!",
     });
@@ -200,7 +200,7 @@ const deleteCardById = asyncHandler(async (req, res) => {
 
   const { appId } = req.body;
   if (!appId) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: "AppId Missing",
     });
@@ -255,7 +255,7 @@ const securePaginatedAllCards = asyncHandler(async (req, res) => {
     const totalPages = Math.ceil(totalItems / pageSize);
 
     if (page < 1 || page > totalPages) {
-      return res.status(400).json({
+      return res.status(201).json({
         success: false,
         error: "Invalid page number",
       });
@@ -284,7 +284,7 @@ const securePaginatedAllCards = asyncHandler(async (req, res) => {
       totalPage: totalPages,
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(201).json({
       success: false,
       error: error,
     });
