@@ -3,16 +3,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL, EndPoints } from "../../utils/NetworkEndPoints";
+import { useToastState } from "../../context/ToastContext";
+import { getUserToken } from "../../utils/UserInfo";
 
 const AddDisplayPasswordPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const passwordData = queryParams.get("passwordData");
 
+  const { updateToastState } = useToastState();
+
   const password = passwordData
     ? JSON.parse(decodeURIComponent(passwordData))
     : null;
-  const passwordId = password ? password._id : null;
+  const passwordId = password ? password.appId : null;
 
   const [editable, setEditable] = useState(passwordId === null);
 
@@ -45,6 +51,34 @@ const AddDisplayPasswordPage = () => {
   );
   const tags = ["Personal", "Work", "Browser", "Banking"];
 
+  const [titleError, setTitleError] = useState("");
+  const [urlError, setUrlError] = useState("");
+  const [userDetailsError, setUserDetailsError] = useState("");
+  const [securityError, setSecurityError] = useState("");
+  const [tagsError, setTagsError] = useState("");
+
+  const getPasswordData = () => {
+    return {
+      title,
+      url,
+      username,
+      email,
+      password: passwordInput,
+      pin,
+      tags: selectedTags,
+    };
+  };
+
+  const validateInput = () => {
+    return (
+      titleError === "" &&
+      urlError === "" &&
+      userDetailsError === "" &&
+      securityError === "" &&
+      tagsError === ""
+    );
+  };
+
   const handleTagClick = (e, tag) => {
     e.preventDefault();
     if (selectedTags.includes(tag)) {
@@ -56,18 +90,70 @@ const AddDisplayPasswordPage = () => {
     }
   };
 
+  const addUpdatePassword = async (password) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+          "Content-type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        `${BASE_URL}/${EndPoints.addUpdatePassword}`,
+        password,
+        config
+      );
+
+      console.log(data);
+
+      if (data.success) {
+        updateToastState({ message: "Password Updated", variant: "Success" });
+        setEditable(false);
+        setButtonLabel("Edit Password");
+        setLabel("Your Password");
+
+        window.location.replace(
+          `/credential/display/password?passwordData=${encodeURIComponent(
+            JSON.stringify(data.passwords[0])
+          )}`
+        );
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
+      }
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
+  };
+
   const handleButtonClick = () => {
     if (passwordId !== null) {
-      // Display Card present
+      // Display Password present
       if (buttonLabel === "Edit Password") {
         setEditable(true);
         setButtonLabel("Update Password");
         setLabel("Update Password Details");
       } else if (buttonLabel === "Update Password") {
-        // Update details for card
+        // Update details for Password
+        if (validateInput()) {
+          const passwordData = getPasswordData();
+          passwordData.appId = passwordId;
+          passwordData.creationTime = password.creationTime;
+
+          addUpdatePassword(passwordData);
+        }
       }
     } else {
-      // Add Card Data
+      // Add Password Data
+      if (validateInput()) {
+        const currentTimeMillis = new Date().getTime();
+
+        const passwordData = getPasswordData();
+        passwordData.appId = currentTimeMillis.toString();
+        passwordData.creationTime = currentTimeMillis;
+
+        addUpdatePassword(passwordData);
+      }
     }
   };
 
@@ -88,6 +174,45 @@ const AddDisplayPasswordPage = () => {
         {tag}
       </button>
     ));
+  };
+
+  const validatePassword = () => {
+    // Reset errors to empty initially
+    setTitleError("");
+    setUrlError("");
+    setUserDetailsError("");
+    setSecurityError("");
+    setTagsError("");
+
+    // Check conditions and update errors accordingly
+    if (title.trim() === "" || title.length < 3) {
+      setTitleError(
+        "Title must not be empty and should have at least 3 characters"
+      );
+    }
+
+    if (url.trim() === "" || url.length < 3) {
+      setUrlError(
+        "URL must not be empty and should have at least 3 characters"
+      );
+    }
+
+    if (
+      (username.trim() === "" || username.length < 3) &&
+      (email.trim() === "" || email.length < 3)
+    ) {
+      setUserDetailsError(
+        "Username and Email must not both be empty and should have at least 3 characters"
+      );
+    }
+
+    if (pin.trim() === "" && passwordInput.trim() === "") {
+      setSecurityError("Both Pin and Password must not be empty");
+    }
+
+    if (selectedTags.length === 0) {
+      setTagsError("Please select at least one tag");
+    }
   };
 
   const handleSubmit = (e) => {
@@ -118,7 +243,13 @@ const AddDisplayPasswordPage = () => {
           <div className="card shadow" style={{ height: "100%" }}>
             <div className="card-body p-4" style={{ height: "100%" }}>
               <h2 className="text-center mb-4">{label}</h2>
-              <form onSubmit={handleSubmit}>
+              <form
+                onSubmit={handleSubmit}
+                onClick={(e) => {
+                  e.preventDefault();
+                  validatePassword();
+                }}
+              >
                 <div className="row">
                   <div className="col-md-6">
                     <div className="mb-4">
@@ -135,6 +266,17 @@ const AddDisplayPasswordPage = () => {
                           readOnly={editable ? undefined : "readOnly"}
                         />
                         <label htmlFor="title">Title</label>
+                        {titleError && (
+                          <p
+                            className="text-danger mx-2 my-1"
+                            style={{
+                              fontSize: "0.9rem",
+                              width: "100%",
+                            }}
+                          >
+                            {titleError}
+                          </p>
+                        )}
                       </div>
                       <div className="form-floating mb-3">
                         <input
@@ -148,6 +290,17 @@ const AddDisplayPasswordPage = () => {
                           readOnly={editable ? undefined : "readOnly"}
                         />
                         <label htmlFor="url">URL</label>
+                        {urlError && (
+                          <p
+                            className="text-danger mx-2 my-1"
+                            style={{
+                              fontSize: "0.9rem",
+                              width: "100%",
+                            }}
+                          >
+                            {urlError}
+                          </p>
+                        )}
                       </div>
                       <div className="form-floating mb-3">
                         <input
@@ -174,6 +327,18 @@ const AddDisplayPasswordPage = () => {
                           readOnly={editable ? undefined : "readOnly"}
                         />
                         <label htmlFor="email">Email Id</label>
+
+                        {userDetailsError && (
+                          <p
+                            className="text-danger mx-2 my-1"
+                            style={{
+                              fontSize: "0.9rem",
+                              width: "100%",
+                            }}
+                          >
+                            {userDetailsError}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -248,11 +413,34 @@ const AddDisplayPasswordPage = () => {
                             />
                           </div>
                         )}
+
+                        {securityError && (
+                          <p
+                            className="text-danger mx-2 my-1"
+                            style={{
+                              fontSize: "0.9rem",
+                              width: "100%",
+                            }}
+                          >
+                            {securityError}
+                          </p>
+                        )}
                       </div>
 
                       <div className="mb-4">
                         <h4 className="fw-bold mb-3">Tags</h4>
                         <div className="d-flex flex-wrap">{renderTags()}</div>
+                        {tagsError && (
+                          <p
+                            className="text-danger mx-2 my-1"
+                            style={{
+                              fontSize: "0.9rem",
+                              width: "100%",
+                            }}
+                          >
+                            {tagsError}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
