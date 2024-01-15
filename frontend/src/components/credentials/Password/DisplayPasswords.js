@@ -16,6 +16,46 @@ const DisplayPasswords = () => {
   const [passwords, setPasswords] = useState([]);
   const { updateToastState } = useToastState();
 
+  const [editClicked, setEditClicked] = useState(false);
+  const [deleteClicked, setDeleteClicked] = useState(false);
+
+  const deletePasswordDetails = async (setVerifyEnable, setPin) => {
+    const appId = showPinEntryModal;
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+          "Content-type": "application/json",
+        },
+      };
+
+      const body = {
+        appId: appId,
+      };
+
+      const { data } = await axios.delete(
+        `${BASE_URL}/${EndPoints.deletePassword}`,
+        body,
+        config
+      );
+
+      setVerifyEnable(true);
+      setPin("");
+
+      if (data.success) {
+        setPinEntryShowModal(null);
+        const restPasswords = passwords.filter(
+          (password) => password.appId !== appId
+        );
+        setPasswords(restPasswords);
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
+      }
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
+  };
+
   const fetchPasswordDetails = async (setVerifyEnable, setPin) => {
     const appId = showPinEntryModal;
     try {
@@ -41,12 +81,18 @@ const DisplayPasswords = () => {
 
       if (data.success) {
         setPinEntryShowModal(null);
-        window.open(
-          `/credential/display/password?passwordData=${encodeURIComponent(
-            JSON.stringify(data.passwords[0])
-          )}`,
-          "_blank"
-        );
+        if (data.passwords[0]) {
+          var pass = data.passwords[0];
+          if (editClicked) {
+            pass.editable = true;
+          }
+          window.open(
+            `/credential/display/password?passwordData=${encodeURIComponent(
+              JSON.stringify(pass)
+            )}`,
+            "_blank"
+          );
+        }
       } else {
         updateToastState({ message: data.error, variant: "Danger" });
       }
@@ -58,6 +104,8 @@ const DisplayPasswords = () => {
   const handleRowClick = (id) => {
     // Handle click action here based on the row ID
     setPinEntryShowModal(id);
+    setEditClicked(false);
+    setDeleteClicked(false);
   };
 
   const handleCloseModal = () => {
@@ -169,7 +217,6 @@ const DisplayPasswords = () => {
                   {passwords.map((data) => (
                     <tr
                       key={data.appId}
-                      onClick={() => handleRowClick(data.appId)}
                       style={{
                         textDecoration: "none",
                         color: "inherit",
@@ -184,12 +231,16 @@ const DisplayPasswords = () => {
                         e.currentTarget.style.backgroundColor = "transparent";
                       }}
                     >
-                      <td style={styles.dataFont}>
+                      <td
+                        style={styles.dataFont}
+                        onClick={() => handleRowClick(data.appId)}
+                      >
                         {capitalizeWords(data.title) || "N/A"}
                       </td>
                       <td
                         style={styles.dataFont}
                         className="custom-url-container"
+                        onClick={() => handleRowClick(data.appId)}
                       >
                         {data.url ? (
                           <a
@@ -204,20 +255,42 @@ const DisplayPasswords = () => {
                           "N/A"
                         )}
                       </td>
-                      <td style={styles.dataFont}>{data.username || "N/A"}</td>
-                      <td style={styles.dataFont}>{data.email || "N/A"}</td>
+                      <td
+                        style={styles.dataFont}
+                        onClick={() => handleRowClick(data.appId)}
+                      >
+                        {data.username || "N/A"}
+                      </td>
+                      <td
+                        style={styles.dataFont}
+                        onClick={() => handleRowClick(data.appId)}
+                      >
+                        {data.email || "N/A"}
+                      </td>
                       {/* <td style={styles.dataFont}>{data.password || "N/A"}</td>
                       <td style={styles.dataFont}>{data.pin || "N/A"}</td> */}
-                      <td style={styles.dataFont}>
+                      <td
+                        style={styles.dataFont}
+                        onClick={() => handleRowClick(data.appId)}
+                      >
                         {`[${data.tags}]` || "N/A"}
                       </td>
-                      <td style={styles.dataFont}>
+                      <td
+                        style={styles.dataFont}
+                        onClick={() => handleRowClick(data.appId)}
+                      >
                         {`${convertToDateTime(data.creationTime)}` || "N/A"}
                       </td>
                       <td style={styles.centerElements}>
                         <button
                           className="btn btn-link text-decoration-none me-1"
                           style={{ display: "flex", alignItems: "center" }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPinEntryShowModal(data.appId);
+                            setEditClicked(true);
+                            setDeleteClicked(false);
+                          }}
                         >
                           <i
                             className="fas fa-pencil-alt  me-1"
@@ -233,6 +306,12 @@ const DisplayPasswords = () => {
                             color: "#ff0000",
                             display: "flex",
                             alignItems: "center",
+                          }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPinEntryShowModal(data.appId);
+                            setDeleteClicked(true);
+                            setEditClicked(false);
                           }}
                         >
                           <i
@@ -294,7 +373,11 @@ const DisplayPasswords = () => {
         keyTitle={"App Pin"}
         keyLimit={6}
         handleResponse={(setVerifyEnable, setPin) => {
-          fetchPasswordDetails(setVerifyEnable, setPin);
+          if (deleteClicked) {
+            deletePasswordDetails(setVerifyEnable, setPin);
+          } else {
+            fetchPasswordDetails(setVerifyEnable, setPin);
+          }
         }}
       />
     </div>

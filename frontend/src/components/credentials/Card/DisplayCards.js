@@ -16,6 +16,44 @@ const DisplayCards = () => {
 
   const { updateToastState } = useToastState();
 
+  const [editClicked, setEditClicked] = useState(false);
+  const [deleteClicked, setDeleteClicked] = useState(false);
+
+  const deleteCardDetails = async (setVerifyEnable, setPin) => {
+    const appId = showPinModal;
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+          "Content-type": "application/json",
+        },
+      };
+
+      const body = {
+        appId: appId,
+      };
+
+      const { data } = await axios.delete(
+        `${BASE_URL}/${EndPoints.deleteCard}`,
+        body,
+        config
+      );
+
+      setVerifyEnable(true);
+      setPin("");
+
+      if (data.success) {
+        setPinEntryShowModal(null);
+        const restCards = cards.filter((card) => card.appId !== appId);
+        setCards(restCards);
+      } else {
+        updateToastState({ message: data.error, variant: "Danger" });
+      }
+    } catch (error) {
+      updateToastState({ message: error, variant: "Danger" });
+    }
+  };
+
   const fetchCardDetails = async (setVerifyEnable, setPin) => {
     const appId = showPinModal;
     try {
@@ -41,12 +79,18 @@ const DisplayCards = () => {
 
       if (data.success) {
         setPinEntryShowModal(null);
-        window.open(
-          `/credential/display/card?cardData=${encodeURIComponent(
-            JSON.stringify(data.cards[0])
-          )}`,
-          "_blank"
-        );
+        if (data.cards[0]) {
+          var card = data.cards[0];
+          if (editClicked) {
+            card.editable = true;
+          }
+          window.open(
+            `/credential/display/card?cardData=${encodeURIComponent(
+              JSON.stringify(card)
+            )}`,
+            "_blank"
+          );
+        }
       } else {
         updateToastState({ message: data.error, variant: "Danger" });
       }
@@ -97,6 +141,8 @@ const DisplayCards = () => {
   const handlePinEntryCardClick = (id) => {
     // Handle click action here based on the row ID
     setPinEntryShowModal(id);
+    setEditClicked(false);
+    setDeleteClicked(false);
   };
 
   const navigate = useNavigate();
@@ -155,11 +201,23 @@ const DisplayCards = () => {
                     maxWidth: "250px",
                     cursor: "pointer",
                   }}
-                  onClick={() => {
-                    handlePinEntryCardClick(card.appId);
-                  }}
                 >
-                  <DisplayUpperCreditCard card={card} />
+                  <DisplayUpperCreditCard
+                    card={card}
+                    onClick={() => {
+                      handlePinEntryCardClick(card.appId);
+                    }}
+                    onEdit={() => {
+                      setPinEntryShowModal(card.appId);
+                      setEditClicked(true);
+                      setDeleteClicked(false);
+                    }}
+                    onDelete={() => {
+                      setPinEntryShowModal(card.appId);
+                      setEditClicked(false);
+                      setDeleteClicked(true);
+                    }}
+                  />
                 </div>
               );
             })}
@@ -210,7 +268,11 @@ const DisplayCards = () => {
         keyTitle={"App Pin"}
         keyLimit={6}
         handleResponse={(setVerifyEnable, setPin) => {
-          fetchCardDetails(setVerifyEnable, setPin);
+          if (deleteClicked) {
+            deleteCardDetails(setVerifyEnable, setPin);
+          } else {
+            fetchCardDetails(setVerifyEnable, setPin);
+          }
         }}
       />
     </div>

@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { capitalizeWords } from "./ModiyText";
 
-const DisplayUpperCreditCard = ({ card, onClick }) => {
+const DisplayUpperCreditCard = ({ card, onClick, onEdit, onDelete }) => {
   const styles = {
     creditCard: {
       position: "relative",
@@ -34,6 +34,9 @@ const DisplayUpperCreditCard = ({ card, onClick }) => {
       height: "200px",
       borderRadius: "50%",
       background: "rgba(255, 255, 255, 0.1)",
+    },
+    dataFont: {
+      fontSize: "0.9rem",
     },
 
     number: {
@@ -87,6 +90,8 @@ const DisplayUpperCreditCard = ({ card, onClick }) => {
     },
   };
 
+  const [isHovered, setIsHovered] = useState(false);
+
   const formattedCardNumber = (cardNumber) => {
     if (!cardNumber) return "";
     var cardNum = cardNumber;
@@ -97,8 +102,12 @@ const DisplayUpperCreditCard = ({ card, onClick }) => {
   };
 
   return (
-    <div style={{ width: "fit-content" }} onClick={() => onClick}>
-      <div style={styles.creditCard}>
+    <div
+      style={{ width: "fit-content" }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div style={styles.creditCard} onClick={() => onClick()}>
         <div style={styles.backgroundCircle}></div>
         <div style={styles.creditCardDetails}>
           <div>
@@ -131,6 +140,47 @@ const DisplayUpperCreditCard = ({ card, onClick }) => {
               </span>
             </div>
           </div>
+        </div>
+      </div>
+      <div style={!isHovered ? { opacity: "0" } : {}} className="hover-button">
+        <div
+          className="py-1 px-2"
+          style={{
+            display: "flex",
+            minWidth: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <button
+            className="btn btn-link text-decoration-none me-1"
+            style={{ display: "flex", alignItems: "center" }}
+            onClick={(e) => {
+              e.preventDefault();
+              onEdit();
+            }}
+          >
+            <i className="fas fa-pencil-alt  me-1" style={styles.dataFont}></i>
+            <p className="m-0 p-0" style={styles.dataFont}>
+              Edit
+            </p>
+          </button>
+          <button
+            className="btn btn-link text-decoration-none"
+            style={{
+              color: "#ff0000",
+              display: "flex",
+              alignItems: "center",
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              onDelete();
+            }}
+          >
+            <i className="fas fa-trash me-1" style={styles.dataFont}></i>
+            <div className="m-0 p-0" style={styles.dataFont}>
+              Delete
+            </div>
+          </button>
         </div>
       </div>
     </div>

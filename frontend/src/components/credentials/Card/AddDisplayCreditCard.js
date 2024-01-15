@@ -15,13 +15,17 @@ const AddDisplayCreditCard = () => {
   const card = cardData ? JSON.parse(decodeURIComponent(cardData)) : null;
   const cardId = card ? card.appId : null;
 
-  const [editable, setEditable] = useState(cardId === null);
+  const [editable, setEditable] = useState(card && card.editable);
 
   const [buttonLabel, setButtonLabel] = useState(
-    cardId !== null ? "Edit Card" : "Add Card"
+    editable ? "Update Card" : cardId !== null ? "Edit Card" : "Add Card"
   );
   const [label, setLabel] = useState(
-    cardId !== null ? "Your Card" : "Add Card"
+    editable
+      ? "Update Card Details"
+      : cardId !== null
+      ? "Your Card"
+      : "Add Card"
   );
 
   const [cardHolderName, setCardHolderName] = useState(

@@ -12,12 +12,14 @@ const EndPoints = {
   securePaginatedAllCard: "api/credentials/securePaginatedAllCards?page=",
   fetchCardDetails: "api/credentials/fetchCardDetails",
   addUpdateCard: "api/credentials/addUpdateCard",
+  deleteCard: "api/credentials/deleteCardById",
 
   // Passwords
   securePaginatedAllPassword:
     "api/credentials/securePaginatedAllPasswords?page=",
   fetchPasswordDetails: "api/credentials/fetchPasswordDetails",
   addUpdatePassword: "api/credentials/addUpdatePassword",
+  deletePassword: "api/credentials/deletePasswordById",
 
   // Credentials
   fetchCredentialCount: "api/credentials/fetchCredentialCount",

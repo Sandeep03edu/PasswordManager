@@ -20,13 +20,21 @@ const AddDisplayPasswordPage = () => {
     : null;
   const passwordId = password ? password.appId : null;
 
-  const [editable, setEditable] = useState(passwordId === null);
+  const [editable, setEditable] = useState(password && password.editable);
 
   const [buttonLabel, setButtonLabel] = useState(
-    passwordId !== null ? "Edit Password" : "Add Password"
+    editable
+      ? "Update Password"
+      : passwordId !== null
+      ? "Edit Password"
+      : "Add Password"
   );
   const [label, setLabel] = useState(
-    passwordId !== null ? "Your Password" : "Add Password"
+    editable
+      ? "Update Password Details"
+      : passwordId !== null
+      ? "Your Password"
+      : "Add Password"
   );
 
   const [showPassword, setShowPassword] = useState(!editable);
