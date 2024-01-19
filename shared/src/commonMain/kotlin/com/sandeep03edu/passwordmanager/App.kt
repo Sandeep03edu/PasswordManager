@@ -54,7 +54,6 @@ fun App(
     dynamicColor: Boolean,
     appModule: AppModule,
 ) {
-
     Navigator(
         AppHomeLayout(darkTheme, dynamicColor, appModule),
     )

@@ -63,7 +63,7 @@ fun PinAuthentication(
     }
 
     var list: MutableList<Int> = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
-//    list = list.shuffled().toMutableList()
+    list = list.shuffled().toMutableList()
 
     val lastElem = list.get(9)
     list[9] = -2
