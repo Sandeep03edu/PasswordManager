@@ -29,23 +29,15 @@ const AddDisplayCreditCard = () => {
   );
 
   const [cardHolderName, setCardHolderName] = useState(
-    card ? card.cardHolderName : "Sandeep Mishra"
+    card ? card.cardHolderName : ""
   );
-  const [cardNumber, setCardNumber] = useState(
-    card ? card.cardNumber : "1234567812345678"
-  );
-  const [issuerName, setIssuerName] = useState(
-    card ? card.issuerName : "State Bank of India"
-  );
-  const [cardType, setCardType] = useState(
-    card ? card.cardType : "Master Card"
-  );
-  const [expiryDate, setExpiryDate] = useState(
-    card ? card.expiryDate : "12/26"
-  );
-  const [issueDate, setIssueDate] = useState(card ? card.issueDate : "04/20");
-  const [cvv, setCVV] = useState(card ? card.cvv : "123");
-  const [pin, setPin] = useState(card ? card.pin : "1234");
+  const [cardNumber, setCardNumber] = useState(card ? card.cardNumber : "");
+  const [issuerName, setIssuerName] = useState(card ? card.issuerName : "");
+  const [cardType, setCardType] = useState(card ? card.cardType : "");
+  const [expiryDate, setExpiryDate] = useState(card ? card.expiryDate : "");
+  const [issueDate, setIssueDate] = useState(card ? card.issueDate : "");
+  const [cvv, setCVV] = useState(card ? card.cvv : "");
+  const [pin, setPin] = useState(card ? card.pin : "");
 
   const [issuerNameError, setIssuerNameError] = useState("");
   const [cardHolderNameError, setCardHolderNameError] = useState("");

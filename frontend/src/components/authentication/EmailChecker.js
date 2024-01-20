@@ -83,7 +83,7 @@ const EmailChecker = ({ onSuccessVerification }) => {
   }, []);
 
   const [rememberMe, setRememberMe] = useState(false);
-  const [email, setEmail] = useState("Test9@gmail.com");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const handleRememberMeChange = () => {
     setRememberMe(!rememberMe);

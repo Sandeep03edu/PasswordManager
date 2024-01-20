@@ -14,7 +14,7 @@ const PinEntry = ({
   keyLimit,
 }) => {
   const { updateToastState } = useToastState();
-  const [pin, setPin] = useState("123456");
+  const [pin, setPin] = useState("");
   const [verifyEnable, setVerifyEnable] = useState(true);
 
   const handlePinChange = (event) => {
