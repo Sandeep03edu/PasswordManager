@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import emailCheckerBkg from "../../images/emailCheckerBkg.jpeg";
 import { BASE_URL, EndPoints } from "../utils/NetworkEndPoints";
+import { useToastState } from "../context/ToastContext";
 
 const EmailChecker = ({ onSuccessVerification }) => {
   // Define styles as objects
+
+  const { updateToastState } = useToastState();
 
   const styles = {
     fullHeight: {
@@ -17,8 +20,8 @@ const EmailChecker = ({ onSuccessVerification }) => {
       backgroundColor: "#FFCAB8", // Background color for form column
     },
     image: {
-      width: "100vh",
-      height: "100vh",
+      width: "100%",
+      height: "100%",
       //   objectFit: "cover",
       backgroundSize: "100%",
     },
@@ -45,8 +48,6 @@ const EmailChecker = ({ onSuccessVerification }) => {
   const checkEmail = async (e) => {
     e.preventDefault();
     if (!email) {
-      // TODO : Toast Message
-      // Check pattern
       return;
     }
 
@@ -60,19 +61,17 @@ const EmailChecker = ({ onSuccessVerification }) => {
       };
 
       const { data } = await axios.post(
-        
         `${BASE_URL}/${EndPoints.emailExist}`,
         {
           email,
         },
         headerConfig
       );
-      console.log(data);
       localStorage.setItem("RememberMe", rememberMe);
       setLoading(false);
       onSuccessVerification(data);
     } catch (error) {
-      console.log(error);
+      updateToastState({ message: error.toString(), variant: "Danger" });
       setLoading(false);
     }
   };
@@ -138,6 +137,15 @@ const EmailChecker = ({ onSuccessVerification }) => {
                   disabled={loading}
                 >
                   Continue
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-danger my-2"
+                  style={{ width: "100%" }}
+                  disabled={loading}
+                >
+                  Guest Login
                 </button>
               </form>
             </div>
