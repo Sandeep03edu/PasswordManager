@@ -10,7 +10,7 @@ import { useToastState } from "../../context/ToastContext";
 Chart.register(...registerables);
 
 const DisplayDashboardChart = ({ setComponentHeight }) => {
-  const { updateToastState} = useToastState
+  const { updateToastState } = useToastState();
 
   const getDaysInCurrentMonth = () => {
     const currentDate = new Date();
@@ -61,12 +61,13 @@ const DisplayDashboardChart = ({ setComponentHeight }) => {
 
       if (data.success) {
         setDateWiseCredentialsCount(data.data);
-      }
-      else {
-        updateToastState({ message: data.error, variant: "Danger" });
+      } else {
+        updateToastState({ message: data.error.toString(), variant: "Danger" });
       }
     } catch (error) {
-      updateToastState({ message: error, variant: "Danger" });
+      console.log("Errorrr: ", error);
+
+      updateToastState({ message: error.toString(), variant: "Danger" });
     }
   };
 

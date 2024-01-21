@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://password-manager-sandeep03edu-backend.onrender.com";
 
 const EndPoints = {
   // Authentication

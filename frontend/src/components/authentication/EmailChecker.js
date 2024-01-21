@@ -3,11 +3,14 @@ import axios from "axios";
 import emailCheckerBkg from "../../images/emailCheckerBkg.jpeg";
 import { BASE_URL, EndPoints } from "../utils/NetworkEndPoints";
 import { useToastState } from "../context/ToastContext";
+import { useNavigate } from "react-router-dom";
 
 const EmailChecker = ({ onSuccessVerification }) => {
   // Define styles as objects
 
   const { updateToastState } = useToastState();
+
+  const navigate = useNavigate();
 
   const styles = {
     fullHeight: {
@@ -20,8 +23,9 @@ const EmailChecker = ({ onSuccessVerification }) => {
       backgroundColor: "#FFCAB8", // Background color for form column
     },
     image: {
-      width: "100%",
-      height: "100%",
+      maxWidth: "100%",
+      width: "auto",
+      height: "100vh",
       //   objectFit: "cover",
       backgroundSize: "100%",
     },
@@ -43,6 +47,15 @@ const EmailChecker = ({ onSuccessVerification }) => {
       marginBottom: "30px",
       fontWeight: "300",
     },
+  };
+
+  const guestLogin = (e) => {
+    e.preventDefault();
+    const guestUser =
+      '{"success":true,"_id":"657b58c0f476ce0f6934fc30","email":"test1@gmail.com","firstName":"Sandeep","lastName":"Mishra","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2I1OGMwZjQ3NmNlMGY2OTM0ZmMzMCIsImlhdCI6MTcwNTc1MTIwMSwiZXhwIjoxNzA4MzQzMjAxfQ._rjLPylFK454a3xyesXz9zPDXFPdG8-2NnSy3JBYLvY"}';
+
+    localStorage.setItem("UserData", guestUser);
+    navigate("/credential/display");
   };
 
   const checkEmail = async (e) => {
@@ -144,6 +157,7 @@ const EmailChecker = ({ onSuccessVerification }) => {
                   className="btn btn-danger my-2"
                   style={{ width: "100%" }}
                   disabled={loading}
+                  onClick={guestLogin}
                 >
                   Guest Login
                 </button>

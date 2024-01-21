@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,15 +25,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
 import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
+import com.sandeep03edu.passwordmanager.manager.utils.data.getPrivacyPolicyDescription
+import com.sandeep03edu.passwordmanager.manager.utils.presentation.AlertDialogBox
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CardButton
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CountryCodePicker
@@ -48,7 +56,8 @@ fun UserAuthentication(
     var emailId: String by rememberSaveable { mutableStateOf("") }
     var isEmailIdValid: Boolean by remember { mutableStateOf(isValidEmail(emailId)) }
     var isLoading by remember { mutableStateOf(loading) }
-
+    var checkBoxChecked by remember { mutableStateOf(false) }
+    var showPrivacyAlertBox by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -101,11 +110,60 @@ fun UserAuthentication(
             enabled = !isLoading
         )
 
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = checkBoxChecked,
+                onCheckedChange = {
+                    checkBoxChecked = it
+                }
+            )
+
+            val pvp = "privacy policy"
+            val privacyPolicyString = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontSize = 16.sp)) {
+                    append("I accept the ")
+                }
+
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 16.sp
+                    )
+                ) {
+                    pushStringAnnotation(tag = pvp, annotation = pvp)
+                    append(pvp)
+                }
+            }
+
+            ClickableText(text = privacyPolicyString, onClick = { offset ->
+                privacyPolicyString.getStringAnnotations(offset, offset)
+                    .firstOrNull()?.let { span ->
+                        showPrivacyAlertBox = true
+                    }
+            })
+            if (showPrivacyAlertBox) {
+                Dialog(
+                    content = {
+                        AlertDialogBox(
+                            title = "",
+                            description = getPrivacyPolicyDescription()
+                        )
+                    },
+                    onDismissRequest = { showPrivacyAlertBox = false }
+                )
+
+            }
+        }
+
         space(8)
 
         CardButton(
             text = "Proceed",
-            clickEnabled = !isLoading && isEmailIdValid,
+            clickEnabled = isProceedButtonEnable(isLoading, isEmailIdValid, checkBoxChecked),
             onClick = {
                 isLoading = true
                 getAuthResult(
@@ -117,7 +175,7 @@ fun UserAuthentication(
                     onResponse(it)
                 }
             },
-            backgroundColor = if (isEmailIdValid) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+            backgroundColor = if (isProceedButtonEnable(isLoading, isEmailIdValid, checkBoxChecked)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
         )
 
         space(8)
@@ -125,7 +183,14 @@ fun UserAuthentication(
     }
 }
 
+fun isProceedButtonEnable(isLoading : Boolean, isEmailIdValid : Boolean, checkBoxChecked : Boolean): Boolean {
+    return !isLoading && isEmailIdValid && checkBoxChecked
+}
+
 fun isValidEmail(email: String): Boolean {
+    if(email.trim().isEmpty()){
+        return false
+    }
     val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
     return email.matches(emailRegex.toRegex())
 }

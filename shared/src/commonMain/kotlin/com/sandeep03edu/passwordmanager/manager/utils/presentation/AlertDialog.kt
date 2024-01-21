@@ -45,8 +45,8 @@ fun AlertDialogBox(
 ) {
 
     OutlinedCard  (
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.background),
-        shape = RoundedCornerShape(10),
+//        border = BorderStroke(1.dp, MaterialTheme.colorScheme.background),
+//        shape = RoundedCornerShape(10),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
     ) {
         LazyColumn(
