@@ -117,7 +117,7 @@ data class AppHomeLayout(
                                 } else {
                                     // User DNE
                                     // Move to registration page
-                                    navigator.replace(
+                                    navigator.push(
                                         UserFormFillUpClass(
                                             url = NetworkEndPoints.registerUser,
                                             labelList = mutableListOf("Sign", "Up"),
