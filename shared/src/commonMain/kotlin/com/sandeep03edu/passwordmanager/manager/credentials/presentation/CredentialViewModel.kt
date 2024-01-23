@@ -10,6 +10,7 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.CardValidator
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.CredentialDataSource
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.PasswordValidator
+import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -242,6 +243,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
                         cardValidator.securityKeyError,
                     )
 
+                    card.createdBy = getLoggedInUserId()
                     println("$TAG New Card errors: $errors")
 
                     if (errors.isEmpty()) {
@@ -302,6 +304,7 @@ class CredentialViewModel(private val credentialDataSource: CredentialDataSource
                         passwordValidator.userDetailError,
                         passwordValidator.tagsError
                     )
+                    password.createdBy = getLoggedInUserId()
 
                     if (errors.isEmpty()) {
                         _state.update {

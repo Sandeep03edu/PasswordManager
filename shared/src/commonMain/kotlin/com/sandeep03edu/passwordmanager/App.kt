@@ -267,7 +267,9 @@ fun launchLoggedUserDisplayPage(
                 delay(1000L)
             }
 
-            deleteLoggedInUser()
+            deleteLoggedInUser(appModule)
+
+
             navigator.popUntilRoot()
             navigator.replace(
                 AppHomeLayout(

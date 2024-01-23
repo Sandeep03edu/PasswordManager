@@ -1,6 +1,7 @@
 package com.sandeep03edu.passwordmanager.manager.utils.data
 
 import com.russhwolf.settings.Settings
+import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.utils.domain.hashString
 
@@ -41,9 +42,11 @@ fun saveLoggedInUser(userState: UserState) {
     val settings = Settings()
     settings.putString("UserState", userState.toJson())
 }
-fun deleteLoggedInUser() {
+fun deleteLoggedInUser(appModule: AppModule) {
     val settings = Settings()
     settings.remove("UserState")
+    appModule.credentialDataSource.deleteAllCards()
+    appModule.credentialDataSource.deleteAllPasswords()
 }
 
 fun checkLoginPin(

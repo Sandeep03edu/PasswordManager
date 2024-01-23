@@ -7,6 +7,7 @@ import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.profile.domain.AuthResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.CredentialResponse
 import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
+import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserId
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserToken
 import io.ktor.client.HttpClient
 import io.ktor.client.request.bearerAuth
@@ -164,7 +165,8 @@ fun updateServerPasswords(appModule: AppModule) {
         result = {
             println("${com.sandeep03edu.passwordmanager.TAG} Cred Passwords Resp:: ${it.passwords}")
             MainScope().launch {
-                appModule.credentialDataSource.deleteAllPasswords()
+//                appModule.credentialDataSource.deleteAllPasswords()
+                appModule.credentialDataSource.deleteAllUserPasswords(getLoggedInUserId())
 
                 it.let {
                     it.passwords.let { passwords ->
@@ -182,7 +184,7 @@ fun updateServerCards(appModule: AppModule) {
         result = {
             println("${com.sandeep03edu.passwordmanager.TAG} Cred Resp:: ${it.cards}")
             MainScope().launch {
-                appModule.credentialDataSource.deleteAllCards()
+                appModule.credentialDataSource.deleteAllUserCards(getLoggedInUserId())
 
                 it.let {
                     it.cards.let { cards ->

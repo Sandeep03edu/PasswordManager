@@ -130,6 +130,7 @@ class SqlDelightCredentialDataSource(
 
         cardQueries.insertCard(
             appId = encryptedCard.appId,
+            createdBy = encryptedCard.createdBy,
             issuerName = encryptedCard.issuerName,
             cardHolderName = encryptedCard.cardHolderName,
             cardType = encryptedCard.cardType,
@@ -148,6 +149,7 @@ class SqlDelightCredentialDataSource(
         val encryptedPassword = password.toEncryptedPassword()
         passwordQueries.insertPassword(
             appId = encryptedPassword.appId,
+            createdBy = encryptedPassword.createdBy,
             title = encryptedPassword.title,
             url = encryptedPassword.url,
             username = encryptedPassword.username,
@@ -168,6 +170,15 @@ class SqlDelightCredentialDataSource(
     override fun deleteAllPasswords() {
         passwordQueries.deleteAllPasswords()
     }
+
+    override fun deleteAllUserCards(userId: String) {
+        cardQueries.deleteAllUserCards(userId)
+    }
+
+    override fun deleteAllUserPasswords(userId: String) {
+        passwordQueries.deleteAllUserPasswords(userId)
+    }
+
 
     override fun deletePasswordById(appId: String) {
         passwordQueries.deletePasswordById(appId)

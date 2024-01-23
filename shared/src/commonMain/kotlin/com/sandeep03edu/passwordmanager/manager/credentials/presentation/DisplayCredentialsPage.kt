@@ -32,6 +32,7 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.sandeep03edu.passwordmanager.manager.authentication.data.getCredentialPostResponse
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.tabs.DisplayCredentialTab
@@ -42,6 +43,7 @@ import dev.materii.pullrefresh.pullRefresh
 import dev.materii.pullrefresh.rememberPullRefreshState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -63,18 +65,42 @@ data class DisplayPageDisplayClass(
         }
 
         var pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = {
-            println("$TAG Refreshing Display Credential Tab")
             isRefreshing = true
-            println("$TAG onRefresh IsRefreshing: $isRefreshing")
 
             MainScope().launch {
-                delay(3000)
-                isRefreshing = false
-                println("$TAG onRefresh after delay IsRefreshing: $isRefreshing")
+                try {
+                    getCredentialPostResponse(
+                        "/api/credentials/fetchAllCards",
+                        result = { cardsResponse ->
+                            getCredentialPostResponse(
+                                "/api/credentials/fetchAllPasswords",
+                                result = { passwordResponse ->
+                                    println("$TAG Card Response: ${cardsResponse.cards}")
+                                    println("$TAG Pass Response: ${passwordResponse.passwords}")
+                                    cardsResponse.let {
+                                        it.cards.let { cards ->
+                                            cards.forEach { card ->
+                                                appModule.credentialDataSource.addCard(card)
+                                            }
+                                        }
+                                    }
+
+                                    passwordResponse.let {
+                                        it.passwords.let { passwords ->
+                                            passwords.forEach { password ->
+                                                appModule.credentialDataSource.addPassword(password)
+                                            }
+                                        }
+                                    }
+                                })
+                            isRefreshing = false
+                        })
+
+                } catch (e: Exception) {
+                    isRefreshing = false
+                }
             }
         })
-
-        println("$TAG IsRefreshing: $isRefreshing")
 
 
         val displayCredentialTab =

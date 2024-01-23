@@ -2,6 +2,7 @@
 CREATE TABLE cardEntity (
 --     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     appId TEXT NOT NULL PRIMARY KEY,
+    createdBy TEXT NOT NULL,
     issuerName TEXT NOT NULL,
     cardHolderName TEXT NOT NULL,
     cardType TEXT NOT NULL,
@@ -26,6 +27,7 @@ INSERT OR REPLACE
 INTO cardEntity(
 --     id,
     appId,
+    createdBy,
     issuerName,
     cardHolderName,
     cardType,
@@ -37,7 +39,7 @@ INTO cardEntity(
     creationTime,
     isSynced,
     updatedAt
-) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
+) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
 
 
 getCardById:
@@ -51,3 +53,7 @@ WHERE appId=:appId;
 
 deleteAllCards:
 DELETE FROM cardEntity;
+
+deleteAllUserCards:
+DELETE FROM cardEntity
+WHERE createdBy!=:createdBy;

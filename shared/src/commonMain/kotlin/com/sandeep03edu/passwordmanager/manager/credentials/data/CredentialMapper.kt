@@ -10,6 +10,7 @@ import database.PasswordEntity
 fun CardEntity.toCard(): Card {
     return Card(
         appId = appId,
+        createdBy = createdBy,
         issuerName = issuerName,
         cardHolderName = cardHolderName,
         cardType = cardType,
@@ -26,6 +27,7 @@ fun CardEntity.toCard(): Card {
 fun PasswordEntity.toPassword(): Password {
     return Password(
         appId = appId,
+        createdBy = createdBy,
         title = title,
         url = url,
         username = username,
