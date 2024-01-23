@@ -119,6 +119,9 @@ kotlin {
 
                 // ModalBottomSheet
                 implementation("com.github.skydoves:flexible-bottomsheet-material3:0.1.1")
+
+                // Pull Refresh
+                implementation("dev.materii.pullrefresh:pullrefresh:1.2.0")
             }
         }
         val commonTest by getting {

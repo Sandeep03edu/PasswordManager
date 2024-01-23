@@ -95,6 +95,7 @@ data class AppHomeLayout(
                         UserAuthentication(
                             onResponse = {
                                 userAuth = it
+                                println("$TAG UserAuth: $it")
                             })
 
                         if (userAuth != null) {
@@ -365,8 +366,11 @@ fun validateUser(
                                         )
                                     } else {
                                         // Credentials not matched!!
-                                        // TODO : Show error message
-
+                                        DisplaySnackbarToast(
+                                            snackbarHostState = snackbarHostState,
+                                            coroutineScope = coroutineScope,
+                                            message = authResponse.error
+                                        )
                                     }
                                 }
                             )

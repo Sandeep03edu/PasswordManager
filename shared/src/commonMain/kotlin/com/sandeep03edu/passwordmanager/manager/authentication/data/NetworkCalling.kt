@@ -160,7 +160,7 @@ fun getCredentialDeleteResponse(
 }
 
 fun updateServerPasswords(appModule: AppModule) {
-    getCredentialGetResult("/api/credentials/fetchAllPasswords",
+    getCredentialPostResponse("/api/credentials/fetchAllPasswords",
         result = {
             println("${com.sandeep03edu.passwordmanager.TAG} Cred Passwords Resp:: ${it.passwords}")
             MainScope().launch {
@@ -178,7 +178,7 @@ fun updateServerPasswords(appModule: AppModule) {
 }
 
 fun updateServerCards(appModule: AppModule) {
-    getCredentialGetResult("/api/credentials/fetchAllCards",
+    getCredentialPostResponse("/api/credentials/fetchAllCards",
         result = {
             println("${com.sandeep03edu.passwordmanager.TAG} Cred Resp:: ${it.cards}")
             MainScope().launch {
@@ -192,8 +192,6 @@ fun updateServerCards(appModule: AppModule) {
                         }
                     }
                 }
-
             }
-
         })
 }
