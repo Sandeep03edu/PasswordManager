@@ -130,15 +130,7 @@ fun DisplayPageDisplay(
     onCardItemClicked: (Card) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    var toastMessage by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
-
-    if (toastMessage.isNotEmpty()) {
-        scope.launch {
-            snackbarHostState.showSnackbar(message = toastMessage)
-            toastMessage = ""
-        }
-    }
 
 
     Scaffold(
@@ -171,6 +163,7 @@ fun DisplayPageDisplay(
             }
         }
     ) {
+
 
         var selectedCard: Card? by remember { mutableStateOf(null) }
         var selectedPassword: Password? by remember { mutableStateOf(null) }
@@ -232,7 +225,6 @@ fun DisplayPageDisplay(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
