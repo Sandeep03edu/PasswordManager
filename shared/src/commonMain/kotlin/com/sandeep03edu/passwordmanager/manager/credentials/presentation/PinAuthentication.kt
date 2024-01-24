@@ -28,6 +28,7 @@ data class PinAuthenticationDisplayClass(
         ){
             PinAuthenticationDisplay(
                 pinLength, label, onComplete = {
+                    println("$TAG Got Pin:: $it")
                     onComplete(it, snackbarHostState, coroutineScope)
                 }
             )

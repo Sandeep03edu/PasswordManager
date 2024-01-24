@@ -122,6 +122,9 @@ kotlin {
 
                 // Pull Refresh
                 implementation("dev.materii.pullrefresh:pullrefresh:1.2.0")
+
+                // WindowSize Multi Platform
+                implementation("dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.3.1")
             }
         }
         val commonTest by getting {

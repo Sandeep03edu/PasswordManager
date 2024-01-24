@@ -166,7 +166,9 @@ data class AppHomeLayout(
                                 label = "Login pin",
                                 pinLength = 4,
                                 onComplete = { it, snackbarHostState, coroutineScope ->
+                                    println("$TAG Got login pin verification as $it")
                                     if (checkLoginPin(it)) {
+                                        println("$TAG Login Pin $it verified!!")
                                         navigator.replace(
                                             launchLoggedUserDisplayPage(
                                                 navigator,

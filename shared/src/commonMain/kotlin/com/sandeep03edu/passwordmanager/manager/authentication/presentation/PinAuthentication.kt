@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,12 +25,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,17 +53,52 @@ import com.sandeep03edu.passwordmanager.paintResource
 
 val TAG = "PinAuthenticationTag"
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun PinAuthentication(
     pinLength: Int = 6,
     label: String,
     onComplete: (String) -> Unit,
 ) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        val windowSizeClass = calculateWindowSizeClass()
 
+        when (windowSizeClass.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> {
+                ColumnPinAuthentication(label, pinLength, onComplete = {
+                    onComplete(it)
+                })
+            }
+
+            WindowWidthSizeClass.Medium -> {
+                RowPinAuthentication(label, pinLength, onComplete = {
+                    onComplete(it)
+                })
+            }
+
+            WindowWidthSizeClass.Expanded -> {
+                RowPinAuthentication(label, pinLength, onComplete = {
+                    onComplete(it)
+                })
+            }
+        }
+    }
+}
+
+@Composable
+private fun RowPinAuthentication(
+    label: String,
+    pinLength: Int,
+
+    onComplete: (String) -> Unit,
+) {
     var currentIndex by remember { mutableStateOf(0) }
 
     val values = remember { mutableStateListOf<Int>() }
-    while(values.size<pinLength) {
+    while (values.size < pinLength) {
         values.add(-1)
     }
 
@@ -70,13 +110,13 @@ fun PinAuthentication(
     list.add(lastElem)
     list.add(-1)
 
-
-    Box(
+    Row(
         modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxHeight()
+                .fillMaxWidth(0.5f)
         ) {
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -124,6 +164,13 @@ fun PinAuthentication(
                     .weight(0.1f),
             )
 
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxHeight()
+                .fillMaxWidth(1f)
+        ) {
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -174,6 +221,129 @@ fun PinAuthentication(
 
             Spacer(modifier = Modifier.height(48.dp))
         }
+    }
+}
+
+
+@Composable
+private fun ColumnPinAuthentication(
+    label: String,
+    pinLength: Int,
+    onComplete: (String) -> Unit,
+) {
+    var currentIndex by remember { mutableStateOf(0) }
+
+    val values = remember { mutableStateListOf<Int>() }
+    while (values.size < pinLength) {
+        values.add(-1)
+    }
+
+    var list: MutableList<Int> = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
+//    list = list.shuffled().toMutableList()
+
+    val lastElem = list.get(9)
+    list[9] = -2
+    list.add(lastElem)
+    list.add(-1)
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // TODO : Remove with app logo
+        CircularImage(
+            painter = paintResource(SharedRes.images.avatar),
+            modifier = Modifier
+                .size(100.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.1f),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Enter your $label",
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontFamily = FontFamily.SansSerif,
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+                .weight(0.1f),
+            verticalAlignment = Alignment.Top,
+        ) {
+            repeat(pinLength) {
+                CircularDot(it, values)
+            }
+        }
+
+        Spacer(
+            modifier = Modifier.fillMaxWidth()
+                .weight(0.1f),
+        )
+
+        LazyVerticalGrid(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.6f),
+            columns = GridCells.Fixed(3),
+            content = {
+                items(list.size) {
+                    CircularNumber(list.get(it), onClick = {
+                        if (values.size != 0) {
+
+                            if (it == -1) {
+                                if (currentIndex != 0) {
+                                    currentIndex--;
+                                    values.set(currentIndex, -1)
+                                }
+                            } else if (currentIndex < pinLength) {
+                                values.set(currentIndex, it)
+                                currentIndex++
+                            }
+
+                            println("$TAG Values:: ${values.toList()}")
+
+                            if (currentIndex == pinLength) {
+                                var ans = ""
+                                var i = 0
+
+                                println("$TAG Complete Values:: ${values.toList()} || Curr:: $currentIndex || pinLength:: $pinLength")
+
+                                repeat(pinLength) {
+                                    ans += values[i].toString()
+                                    values[i] = -1;
+                                    i++;
+                                }
+
+//                                    values.clear()
+
+                                currentIndex = 0
+
+                                onComplete(ans)
+
+                            }
+                        }
+                    })
+                }
+            },
+            verticalArrangement = Arrangement.Bottom,
+        )
+
+        Spacer(modifier = Modifier.height(48.dp))
     }
 }
 
