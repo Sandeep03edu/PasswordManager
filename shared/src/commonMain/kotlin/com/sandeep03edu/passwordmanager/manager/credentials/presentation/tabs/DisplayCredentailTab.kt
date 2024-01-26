@@ -230,36 +230,14 @@ fun DisplayPageDisplay(
                 modifier = Modifier.fillMaxSize()
                     .padding(horizontal = 10.dp, vertical = 5.dp)
             ) {
-
                 item {
-                    Text(
-                        text = "Welcome ${getLoggedInUserName()}!",
-                        style = TextStyle(
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            fontStyle = FontStyle.Italic,
-                            fontSynthesis = FontSynthesis.Style
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp, start = 5.dp, end = 5.dp)
-                    )
+                    Header()
+                }
+                item {
+                    CardHeader()
                 }
 
-                item {
-                    space(8)
-
-                    Text(
-                        text = "Your Cards",
-                        style = TextStyle(
-                            fontSize = 20.sp
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(horizontal = 5.dp)
-                    )
-
-                    space(4)
-
+                item{
                     if (state.cards.isNotEmpty()) {
                         // Display all cards
                         LazyRow(
@@ -288,64 +266,17 @@ fun DisplayPageDisplay(
                         }
                     } else {
                         // Display Add card option
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.7f)
-                                    .aspectRatio(1.75f)
-                                    .padding(5.dp)
-                                    .dashedBorder(2.dp, Color.Red, 8.dp),
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier.fillMaxSize()
-                                        .clickable {
-                                            onEvent(
-                                                CredentialEvent.OnDisplayAddEditNewDataClick(
-                                                    null,
-                                                    Card()
-                                                )
-                                            )
-                                        }
-                                ) {
-                                    Image(
-                                        imageVector = Icons.Default.AddCircle,
-                                        contentDescription = null
-                                    )
-
-                                    space(8)
-
-                                    Text(
-                                        text = "Add your card here!!",
-                                        style = TextStyle(
-                                            fontSize = 22.sp,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-                                    )
-                                }
-                            }
-                        }
+                        AddNewCard(onEvent)
                     }
-
                     space(16)
                 }
 
+
                 item {
-                    Text(
-                        text = "Manage Passwords",
-                        style = TextStyle(
-                            fontSize = 20.sp
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(horizontal = 5.dp)
-                    )
+                    ManagePasswordHeader()
+                }
 
-                    space(4)
-
+                item{
                     val passwordTags = getPasswordTagsWithIcons()
                     LazyRow(
                         modifier = Modifier
@@ -375,24 +306,7 @@ fun DisplayPageDisplay(
                 }
 
                 item {
-                    val text: String
-                    if (selectedPasswordTag != null) {
-                        text = "$selectedPasswordTag Passwords"
-
-                    } else {
-                        text = "All Passwords"
-                    }
-
-                    Text(
-                        text = text,
-                        style = TextStyle(
-                            fontSize = 20.sp
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(horizontal = 5.dp)
-                    )
-
-                    space(8)
+                    FilterPasswordDisplayHeader(selectedPasswordTag)
                 }
 
                 var list = state.passwords
@@ -421,49 +335,7 @@ fun DisplayPageDisplay(
                 } else {
                     item {
                         // Display Add new password option
-                        Card(
-                            modifier = Modifier.fillMaxWidth()
-                                .aspectRatio(5.5f)
-                                .background(MaterialTheme.colorScheme.background)
-                                .padding(8.dp)
-                                .dashedBorder(2.dp, Color.Red, 8.dp)
-                                .clickable {
-                                    onEvent(
-                                        CredentialEvent.OnDisplayAddEditNewDataClick(
-                                            Password(),
-                                            null
-                                        )
-                                    )
-                                },
-                            shape = RoundedCornerShape(10.dp),
-                            elevation = CardDefaults.cardElevation(
-                                defaultElevation = 10.dp
-                            ),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surface
-                            )
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxSize(),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    imageVector = Icons.Default.AddCircle,
-                                    contentDescription = null
-                                )
-
-                                space(width = 8)
-
-                                Text(
-                                    text = "Add your Password here!!",
-                                    style = TextStyle(
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                )
-                            }
-                        }
+                        AddNewPasswordDisplay(onEvent)
                     }
                 }
 
@@ -478,6 +350,165 @@ fun DisplayPageDisplay(
         )
 
     }
+}
+
+@Composable
+private fun AddNewPasswordDisplay(onEvent: (event: CredentialEvent) -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+            .aspectRatio(5.5f)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(8.dp)
+            .dashedBorder(2.dp, Color.Red, 8.dp)
+            .clickable {
+                onEvent(
+                    CredentialEvent.OnDisplayAddEditNewDataClick(
+                        Password(),
+                        null
+                    )
+                )
+            },
+        shape = RoundedCornerShape(10.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                imageVector = Icons.Default.AddCircle,
+                contentDescription = null
+            )
+
+            space(width = 8)
+
+            Text(
+                text = "Add your Password here!!",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun FilterPasswordDisplayHeader(selectedPasswordTag: String?) {
+    val text: String
+    if (selectedPasswordTag != null) {
+        text = "$selectedPasswordTag Passwords"
+
+    } else {
+        text = "All Passwords"
+    }
+
+    Text(
+        text = text,
+        style = TextStyle(
+            fontSize = 20.sp
+        ),
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 5.dp)
+    )
+
+    space(8)
+}
+
+@Composable
+private fun ManagePasswordHeader() {
+    Text(
+        text = "Manage Passwords",
+        style = TextStyle(
+            fontSize = 20.sp
+        ),
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 5.dp)
+    )
+
+    space(4)
+}
+
+@Composable
+private fun AddNewCard(onEvent: (event: CredentialEvent) -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .aspectRatio(1.75f)
+                .padding(5.dp)
+                .dashedBorder(2.dp, Color.Red, 8.dp),
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
+                    .clickable {
+                        onEvent(
+                            CredentialEvent.OnDisplayAddEditNewDataClick(
+                                null,
+                                Card()
+                            )
+                        )
+                    }
+            ) {
+                Image(
+                    imageVector = Icons.Default.AddCircle,
+                    contentDescription = null
+                )
+
+                space(8)
+
+                Text(
+                    text = "Add your card here!!",
+                    style = TextStyle(
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CardHeader() {
+    Text(
+        text = "Your Cards",
+        style = TextStyle(
+            fontSize = 20.sp
+        ),
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 5.dp)
+    )
+
+    space(4)
+}
+
+@Composable
+private fun Header() {
+    Text(
+        text = "Welcome ${getLoggedInUserName()}!",
+        style = TextStyle(
+            fontSize = 24.sp,
+            fontWeight = FontWeight.SemiBold,
+            fontStyle = FontStyle.Italic,
+            fontSynthesis = FontSynthesis.Style
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp, start = 5.dp, end = 5.dp)
+    )
+    space(8)
 }
 
 fun Modifier.dashedBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp) = composed(

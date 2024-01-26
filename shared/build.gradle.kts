@@ -99,7 +99,10 @@ kotlin {
 
 
                 // Multiplatform Navigation
-                val voyagerVersion = "1.0.0-rc10"
+                val voyagerVersion = "1.1.0-alpha02"
+
+                // ScreenModel
+                implementation("cafe.adriel.voyager:voyager-screenmodel:$voyagerVersion")
                 // Navigator
                 implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
                 // BottomSheetNavigator

@@ -10,14 +10,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
+import cafe.adriel.voyager.core.lifecycle.LocalNavigatorScreenLifecycleProvider
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
@@ -55,7 +63,7 @@ fun App(
     appModule: AppModule,
 ) {
     Navigator(
-        AppHomeLayout(darkTheme, dynamicColor, appModule),
+        rememberSaveable { AppHomeLayout(darkTheme, dynamicColor, appModule) }
     )
 }
 
@@ -64,13 +72,19 @@ data class AppHomeLayout(
     val dynamicColor: Boolean,
     val appModule: AppModule,
 ) : Screen {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, InternalVoyagerApi::class)
     @Composable
     override fun Content() {
-
 //        updateServerCards(appModule)
 //        updateServerPasswords(appModule)
 
+        val windowSizeClass = calculateWindowSizeClass()
+        println("$TAG SIzeClass :: $windowSizeClass")
+
         val navigator = LocalNavigator.currentOrThrow
+        println("$TAG Key:: ${navigator.key}")
+        val navigator1 = navigator
+
 
         val coroutineScope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
@@ -84,6 +98,7 @@ data class AppHomeLayout(
                 Box(
                     modifier = Modifier.fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.background)
+
                 ) {
 
                     val currUser: UserState? = getLoggedInUser()
@@ -166,15 +181,17 @@ data class AppHomeLayout(
                                 label = "Login pin",
                                 pinLength = 4,
                                 onComplete = { it, snackbarHostState, coroutineScope ->
-                                    println("$TAG Got login pin verification as $it")
+
                                     if (checkLoginPin(it)) {
-                                        println("$TAG Login Pin $it verified!!")
+                                        println("$TAG Login Pin Key:: ${navigator.key}")
                                         navigator.replace(
                                             launchLoggedUserDisplayPage(
                                                 navigator,
                                                 appModule
                                             )
                                         )
+
+
                                     } else {
                                         println("$TAG Wrong Login Pin!!")
                                         DisplaySnackbarToast(
@@ -193,7 +210,6 @@ data class AppHomeLayout(
         }
     }
 }
-
 
 fun launchLoggedUserDisplayPage(
     navigator: Navigator,
@@ -247,8 +263,7 @@ fun launchLoggedUserDisplayPage(
                                         selectedCard
                                     )
                                 )
-                            }
-                            else{
+                            } else {
                                 DisplaySnackbarToast(
                                     snackbarHostState = snackbarHostState,
                                     coroutineScope = coroutineScope,
@@ -259,7 +274,7 @@ fun launchLoggedUserDisplayPage(
                 )
             }
         },
-        onLogoutUser = {snackbarHostState, coroutineScope->
+        onLogoutUser = { snackbarHostState, coroutineScope ->
             DisplaySnackbarToast(
                 snackbarHostState = snackbarHostState,
                 coroutineScope = coroutineScope,
@@ -282,7 +297,7 @@ fun launchLoggedUserDisplayPage(
             )
 
         },
-        onEditProfile = {snackbarHostState, coroutineScope->
+        onEditProfile = { snackbarHostState, coroutineScope ->
             val userState = getLoggedInUser()!!
             userState.loginPin = ""
             userState.appPin = ""
