@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,6 +76,7 @@ import com.sandeep03edu.passwordmanager.space
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class DisplayCredentialTab(
@@ -90,6 +92,17 @@ class DisplayCredentialTab(
 
         println("$TAG Class State Cards: ${state.cards}")
 
+        var selectedCard: Card? by remember { mutableStateOf(null) }
+        var selectedPassword: Password? by remember { mutableStateOf(null) }
+        var isBottomSheetVisible by remember { mutableStateOf(selectedCard != null || selectedPassword != null) }
+        var selectedPasswordTag: String? by remember {
+            mutableStateOf(null)
+        }
+
+
+
+
+
         DisplayPageDisplay(
             appModule,
             state,
@@ -98,7 +111,23 @@ class DisplayCredentialTab(
             viewModel.newPassword,
             viewModel,
             onPasswordItemClicked,
-            onCardItemClicked
+            onCardItemClicked,
+            selectedCard,
+            selectedPassword,
+            isBottomSheetVisible,
+            selectedPasswordTag,
+            onSelectedCardChange = {
+                selectedCard = it
+            },
+            onSelectedPasswordChange = {
+                selectedPassword = it
+            },
+            onBottomSheetVisibleChange = {
+                isBottomSheetVisible = it
+            },
+            onSelectedPasswordTagChanged = {
+                selectedPasswordTag = it
+            }
         )
     }
 
@@ -128,6 +157,14 @@ fun DisplayPageDisplay(
     viewModel: CredentialViewModel,
     onPasswordItemClicked: (Password) -> Unit,
     onCardItemClicked: (Card) -> Unit,
+    selectedCard: Card?,
+    selectedPassword: Password?,
+    isBottomSheetVisible: Boolean,
+    selectedPasswordTag: String?,
+    onSelectedCardChange: (Card?) -> Unit,
+    onSelectedPasswordChange: (Password?) -> Unit,
+    onBottomSheetVisibleChange: (Boolean) -> Unit,
+    onSelectedPasswordTagChanged: (String?) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -165,16 +202,12 @@ fun DisplayPageDisplay(
     ) {
 
 
-        var selectedCard: Card? by remember { mutableStateOf(null) }
-        var selectedPassword: Password? by remember { mutableStateOf(null) }
-        var isBottomSheetVisible by remember { mutableStateOf(selectedCard != null || selectedPassword != null) }
-
         if (isBottomSheetVisible) {
             FlexibleBottomSheet(
                 onDismissRequest = {
-                    selectedCard = null
-                    selectedPassword = null
-                    isBottomSheetVisible = false
+                    onSelectedCardChange(null)
+                    onSelectedPasswordChange(null)
+                    onBottomSheetVisibleChange(false)
                 },
                 sheetState = rememberFlexibleBottomSheetState(
                     isModal = true,
@@ -207,7 +240,7 @@ fun DisplayPageDisplay(
                             loadingLabel = it
                         },
                         onComplete = {
-                            isBottomSheetVisible = false
+                            onBottomSheetVisibleChange(false)
                         }
                     )
 
@@ -216,9 +249,6 @@ fun DisplayPageDisplay(
         }
 
 
-        var selectedPasswordTag: String? by remember {
-            mutableStateOf(null)
-        }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -233,111 +263,18 @@ fun DisplayPageDisplay(
                 item {
                     Header()
                 }
-                item {
-                    CardHeader()
-                }
-
-                item{
-                    if (state.cards.isNotEmpty()) {
-                        // Display all cards
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            items(state.cards) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillParentMaxWidth(0.7f)
-                                ) {
-                                    SecureHalfCardDisplay(it,
-
-                                        onCardItemClicked = { card ->
-                                            onCardItemClicked(card)
-                                        },
-                                        onCardItemLongClicked = { card ->
-                                            scope.launch {
-                                                selectedCard = card
-                                                selectedPassword = null
-                                                isBottomSheetVisible = true
-                                            }
-                                        })
-                                }
-                            }
-                        }
-                    } else {
-                        // Display Add card option
-                        AddNewCard(onEvent)
-                    }
-                    space(16)
-                }
-
-
-                item {
-                    ManagePasswordHeader()
-                }
-
-                item{
-                    val passwordTags = getPasswordTagsWithIcons()
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(3f)
-                    ) {
-                        items(passwordTags) {
-                            Box(
-                                modifier = Modifier
-                                    .fillParentMaxWidth(0.3f)
-                                    .fillParentMaxHeight(1f)
-                            ) {
-                                PasswordTagCard(it, selectedPasswordTag) {
-                                    // onClick
-                                    if (selectedPasswordTag == null || selectedPasswordTag != it.first) {
-                                        selectedPasswordTag = it.first
-                                        onEvent(CredentialEvent.OnFilterChange(it.first))
-                                    } else {
-                                        selectedPasswordTag = null
-                                        onEvent(CredentialEvent.OnFilterChange("N/A"))
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    space(8)
-                }
-
-                item {
-                    FilterPasswordDisplayHeader(selectedPasswordTag)
-                }
-
-                var list = state.passwords
-                if (selectedPasswordTag != null && state.filteredPasswords != null) {
-                    list = state.filteredPasswords
-                }
-
-                if (state.passwords.isNotEmpty()) {
-                    items(list) {
-                        // Password -> it
-                        PasswordSecureHalfDisplay(password = it,
-                            onPasswordItemClicked = {
-                                // onClick
-                                println("$TAG Clicked $it")
-                                onPasswordItemClicked(it)
-                            },
-                            onPasswordItemLongClicked = {
-                                scope.launch {
-                                    selectedPassword = it
-                                    selectedCard = null
-                                    isBottomSheetVisible = true
-                                }
-                            }
-                        )
-                    }
-                } else {
-                    item {
-                        // Display Add new password option
-                        AddNewPasswordDisplay(onEvent)
-                    }
-                }
+                DisplayCompactColumnView(
+                    state,
+                    scope,
+                    onCardItemClicked,
+                    onSelectedCardChange,
+                    onSelectedPasswordChange,
+                    onBottomSheetVisibleChange,
+                    onEvent,
+                    selectedPasswordTag,
+                    onSelectedPasswordTagChanged,
+                    onPasswordItemClicked
+                )
 
             }
         }
@@ -349,6 +286,176 @@ fun DisplayPageDisplay(
             newPassword = newPassword
         )
 
+    }
+}
+
+private fun LazyListScope.DisplayCompactColumnView(
+    state: CredentialState,
+    scope: CoroutineScope,
+    onCardItemClicked: (Card) -> Unit,
+    onSelectedCardChange: (Card?) -> Unit,
+    onSelectedPasswordChange: (Password?) -> Unit,
+    onBottomSheetVisibleChange: (Boolean) -> Unit,
+    onEvent: (event: CredentialEvent) -> Unit,
+    selectedPasswordTag: String?,
+    onSelectedPasswordTagChanged: (String?) -> Unit,
+    onPasswordItemClicked: (Password) -> Unit,
+) {
+    item {
+        CardHeader()
+    }
+
+    item {
+        if (state.cards.isNotEmpty()) {
+            // Display all cards
+            DisplayRowCards(
+                state,
+                scope,
+                onCardItemClicked,
+                onSelectedCardChange,
+                onSelectedPasswordChange,
+                onBottomSheetVisibleChange,
+            )
+        } else {
+            // Display Add card option
+            AddNewCard(onEvent)
+        }
+        space(16)
+    }
+
+
+    item {
+        ManagePasswordHeader()
+    }
+
+    item {
+        DisplayRowPasswordTags(
+            selectedPasswordTag,
+            onEvent,
+            onSelectedPasswordTagChanged
+        )
+    }
+
+    item {
+        FilterPasswordDisplayHeader(selectedPasswordTag)
+    }
+
+    var list = state.passwords
+    if (selectedPasswordTag != null && state.filteredPasswords != null) {
+        list = state.filteredPasswords
+    }
+
+    if (state.passwords.isNotEmpty()) {
+        items(list) {
+            // Password -> it
+            PasswordItemDisplay(
+                it,
+                onPasswordItemClicked,
+                scope,
+                onSelectedPasswordChange,
+                onSelectedCardChange,
+                onBottomSheetVisibleChange
+            )
+        }
+    } else {
+        item {
+            // Display Add new password option
+            AddNewPasswordDisplay(onEvent)
+        }
+    }
+}
+
+@Composable
+private fun PasswordItemDisplay(
+    it: Password,
+    onPasswordItemClicked: (Password) -> Unit,
+    scope: CoroutineScope,
+    onSelectedPasswordChange: (Password?) -> Unit,
+    onSelectedCardChange: (Card?) -> Unit,
+    onBottomSheetVisibleChange: (Boolean) -> Unit,
+) {
+    PasswordSecureHalfDisplay(password = it,
+        onPasswordItemClicked = {
+            // onClick
+            println("$TAG Clicked $it")
+            onPasswordItemClicked(it)
+        },
+        onPasswordItemLongClicked = {
+            scope.launch {
+                onSelectedPasswordChange(it)
+                onSelectedCardChange(null)
+                onBottomSheetVisibleChange(true)
+            }
+        }
+    )
+}
+
+@Composable
+private fun DisplayRowPasswordTags(
+    selectedPasswordTag: String?,
+    onEvent: (event: CredentialEvent) -> Unit,
+    onSelectedPasswordTagChanged: (String?) -> Unit,
+) {
+    val passwordTags = getPasswordTagsWithIcons()
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(3f)
+    ) {
+        items(passwordTags) {
+            Box(
+                modifier = Modifier
+                    .fillParentMaxWidth(0.3f)
+                    .fillParentMaxHeight(1f)
+            ) {
+                PasswordTagCard(it, selectedPasswordTag) {
+                    // onClick
+                    if (selectedPasswordTag == null || selectedPasswordTag != it.first) {
+                        onSelectedPasswordTagChanged(it.first)
+                        onEvent(CredentialEvent.OnFilterChange(it.first))
+                    } else {
+                        onSelectedPasswordTagChanged(null)
+                        onEvent(CredentialEvent.OnFilterChange("N/A"))
+                    }
+                }
+            }
+        }
+    }
+    space(8)
+}
+
+@Composable
+private fun DisplayRowCards(
+    state: CredentialState,
+    scope: CoroutineScope,
+    onCardItemClicked: (Card) -> Unit,
+    onSelectedCardChange: (Card?) -> Unit,
+    onSelectedPasswordChange: (Password?) -> Unit,
+    onBottomSheetVisibleChange: (Boolean) -> Unit,
+) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        items(state.cards) {
+            Box(
+                modifier = Modifier
+                    .fillParentMaxWidth(0.7f)
+            ) {
+                SecureHalfCardDisplay(it,
+
+                    onCardItemClicked = { card ->
+                        onCardItemClicked(card)
+                    },
+                    onCardItemLongClicked = { card ->
+                        scope.launch {
+                            onSelectedCardChange(card)
+                            onSelectedPasswordChange(null)
+                            onBottomSheetVisibleChange(true)
+                        }
+                    })
+            }
+        }
     }
 }
 
