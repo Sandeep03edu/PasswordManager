@@ -8,10 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,6 +19,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -28,14 +30,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
@@ -45,6 +42,7 @@ import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerLogoList
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerNameList
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypesList
 import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTags
+import com.sandeep03edu.passwordmanager.manager.utils.presentation.BuildDesignedTitle
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CardButton
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconDropDownField
@@ -55,6 +53,7 @@ import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
 
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun AddDataSheet(
     state: CredentialState,
@@ -72,133 +71,293 @@ fun AddDataSheet(
                 .padding(8.dp),
             contentAlignment = Alignment.Center,
         ) {
-            Column(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                var isCardUpdate: Boolean? by remember { mutableStateOf(null) }
-                val dropDownItems = listOf("Card", "Password")
-                var selectedDropDownItem by remember { mutableStateOf("") }
+            var isCardUpdate: Boolean? by remember { mutableStateOf(null) }
+            val dropDownItems = listOf("Card", "Password")
+            var selectedDropDownItem by remember { mutableStateOf("") }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clickable {
-                                onEvent(CredentialEvent.OnDismissAddEditNewDataClick)
-                            }
-                    )
+            val windowSizeClass = calculateWindowSizeClass()
 
-                    space(width = 16)
-
-                    Text(
-                        buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontSize = 40.sp
-                                )
-                            ) {
-                                append("A")
-                            }
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 36.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            ) {
-                                append("dd ")
-                            }
-
-                            withStyle(
-                                style = SpanStyle(
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontSize = 40.sp
-                                )
-                            ) {
-                                append("C")
-                            }
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 36.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            ) {
-                                append("redentials")
-                            }
-                        }
-                    )
-
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                // TODO : Change with app logo
-                CircularImage(
-                    painter = paintResource(SharedRes.images.avatar),
-                    modifier = Modifier.size(100.dp),
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                if ((newCard == null && newPassword == null) || (newCard != null && newPassword != null)) {
-                    // Add new data will display drop down
-                    IconDropDownField(
-                        imageVector = Icons.Rounded.Person,
-                        label = "Select Type",
-                        text = selectedDropDownItem,
-                        dropDownItems = dropDownItems,
-                        onSelectedItem = {
+            when (windowSizeClass.widthSizeClass) {
+                WindowWidthSizeClass.Compact -> {
+                    DisplayCompactColumnView(
+                        onEvent,
+                        newCard,
+                        newPassword,
+                        selectedDropDownItem,
+                        dropDownItems,
+                        isCardUpdate,
+                        state,
+                        onSelectedDropDownItemChange = {
                             selectedDropDownItem = it
-                            isCardUpdate = selectedDropDownItem == "Card"
                         },
+                        onCardUpdateChange = {
+                            isCardUpdate = it
+                        }
                     )
-                } else {
-                    // Edit data will display drop down
-                    isCardUpdate = newCard != null
                 }
 
-                LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top,
-                    modifier = Modifier.weight(5f)
-                ) {
-
-                    item {
-                        if (isCardUpdate == true) {
-                            DisplayAddCardForm(newCard, onEvent, state)
-                        } else if (isCardUpdate == false) {
-                            DisplayAddPasswordForm(newPassword, onEvent, state)
+                WindowWidthSizeClass.Medium -> {
+                    DisplayMediumGridView(
+                        onEvent,
+                        newCard,
+                        newPassword,
+                        selectedDropDownItem,
+                        dropDownItems,
+                        isCardUpdate,
+                        state,
+                        onSelectedDropDownItemChange = {
+                            selectedDropDownItem = it
+                        },
+                        onCardUpdateChange = {
+                            isCardUpdate = it
                         }
-                    }
-
+                    )
                 }
 
-                space(16)
-
-                CardButton(
-                    backgroundColor = MaterialTheme.colorScheme.secondary,
-                    text = "Submit",
-                    onClick = {
-                        if (isCardUpdate == true) {
-                            onEvent(CredentialEvent.SaveCard)
-                        } else if (isCardUpdate == false) {
-                            onEvent(CredentialEvent.SavePassword)
+                WindowWidthSizeClass.Expanded -> {
+                    DisplayMediumGridView(
+                        onEvent,
+                        newCard,
+                        newPassword,
+                        selectedDropDownItem,
+                        dropDownItems,
+                        isCardUpdate,
+                        state,
+                        onSelectedDropDownItemChange = {
+                            selectedDropDownItem = it
+                        },
+                        onCardUpdateChange = {
+                            isCardUpdate = it
                         }
+                    )
+                }
+            }
+
+        }
+    }
+}
+
+@Composable
+private fun DisplayCompactColumnView(
+    onEvent: (event: CredentialEvent) -> Unit,
+    newCard: Card?,
+    newPassword: Password?,
+    selectedDropDownItem: String,
+    dropDownItems: List<String>,
+    isCardUpdate: Boolean?,
+    state: CredentialState,
+    onSelectedDropDownItemChange: (String) -> Unit,
+    onCardUpdateChange: (Boolean) -> Unit,
+) {
+    val headerList: MutableList<String> =
+        if ((newCard == null && newPassword == null) || (newCard != null && newPassword != null)) {
+            mutableListOf("A", "dd ", "C", "redentials")
+        } else {
+            mutableListOf("E", "dit ", "C", "redentials")
+        }
+    LazyColumn(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        item {
+            AddCredentialHeader(
+                onEvent,
+                headerList = headerList
+            )
+        }
+
+        item {
+            // TODO : Change with app logo
+            AddCredentialLogo()
+        }
+
+        item {
+            if ((newCard == null && newPassword == null) || (newCard != null && newPassword != null)) {
+                // Add new data will display drop down
+                IconDropDownField(
+                    imageVector = Icons.Rounded.Person,
+                    label = "Select Type",
+                    text = selectedDropDownItem,
+                    dropDownItems = dropDownItems,
+                    onSelectedItem = {
+                        onSelectedDropDownItemChange(it)
+                        onCardUpdateChange(it == "Card")
                     },
                 )
+            } else {
+                // Edit data will display drop down
+                onCardUpdateChange(newCard != null)
+            }
+        }
+
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top,
+            ) {
+                if (isCardUpdate == true) {
+                    DisplayAddCardForm(newCard, onEvent, state)
+                } else if (isCardUpdate == false) {
+                    DisplayAddPasswordForm(newPassword, onEvent, state)
+                }
+            }
+            space(16)
+        }
+
+        item {
+            SubmitButton(isCardUpdate, onEvent)
+        }
+    }
+}
+
+@Composable
+private fun DisplayMediumGridView(
+    onEvent: (event: CredentialEvent) -> Unit,
+    newCard: Card?,
+    newPassword: Password?,
+    selectedDropDownItem: String,
+    dropDownItems: List<String>,
+    isCardUpdate: Boolean?,
+    state: CredentialState,
+    onSelectedDropDownItemChange: (String) -> Unit,
+    onCardUpdateChange: (Boolean) -> Unit,
+) {
+    val headerList: MutableList<String> =
+        if ((newCard == null && newPassword == null) || (newCard != null && newPassword != null)) {
+            mutableListOf("A", "dd ", "C", "redentials")
+        } else {
+            mutableListOf("E", "dit ", "C", "redentials")
+        }
+
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        LazyColumn(
+            modifier = Modifier.weight(1f)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    AddCredentialHeader(
+                        onEvent,
+                        headerList = headerList
+                    )
+
+                    // TODO : Change with app logo
+                    AddCredentialLogo()
+                }
+            }
+        }
 
 
+        LazyColumn(
+            modifier = Modifier.weight(1f)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if ((newCard == null && newPassword == null) || (newCard != null && newPassword != null)) {
+                        // Add new data will display drop down
+                        IconDropDownField(
+                            imageVector = Icons.Rounded.Person,
+                            label = "Select Type",
+                            text = selectedDropDownItem,
+                            dropDownItems = dropDownItems,
+                            onSelectedItem = {
+                                onSelectedDropDownItemChange(it)
+                                onCardUpdateChange(it == "Card")
+                            },
+                        )
+                        space(8)
+                    } else {
+                        // Edit data will display drop down
+                        onCardUpdateChange(newCard != null)
+                    }
+
+
+                    if (isCardUpdate == true) {
+                        DisplayAddCardForm(newCard, onEvent, state)
+                    } else if (isCardUpdate == false) {
+                        DisplayAddPasswordForm(newPassword, onEvent, state)
+                    }
+
+                    space(16)
+
+                    SubmitButton(isCardUpdate, onEvent)
+                }
             }
         }
     }
+}
+
+@Composable
+private fun SubmitButton(
+    isCardUpdate: Boolean?,
+    onEvent: (event: CredentialEvent) -> Unit,
+) {
+    CardButton(
+        backgroundColor = MaterialTheme.colorScheme.secondary,
+        text = "Submit",
+        onClick = {
+            if (isCardUpdate == true) {
+                onEvent(CredentialEvent.SaveCard)
+            } else if (isCardUpdate == false) {
+                onEvent(CredentialEvent.SavePassword)
+            }
+        },
+    )
+}
+
+@Composable
+private fun AddCredentialLogo() {
+    CircularImage(
+        painter = paintResource(SharedRes.images.avatar),
+        modifier = Modifier.size(100.dp),
+    )
+
+    space(16)
+}
+
+@Composable
+private fun AddCredentialHeader(
+    onEvent: (event: CredentialEvent) -> Unit,
+    headerList: MutableList<String>,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            imageVector = Icons.Default.Close,
+            contentDescription = null,
+            modifier = Modifier
+                .clickable {
+                    onEvent(CredentialEvent.OnDismissAddEditNewDataClick)
+                }
+        )
+
+        space(width = 16)
+
+        BuildDesignedTitle(headerList)
+    }
+
+    space(32)
 }
 
 @Composable
