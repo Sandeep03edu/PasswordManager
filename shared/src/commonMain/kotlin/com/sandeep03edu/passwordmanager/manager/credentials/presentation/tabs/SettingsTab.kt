@@ -17,6 +17,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sandeep03edu.passwordmanager.SharedRes
@@ -44,14 +46,31 @@ import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
 
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class SettingTab(
     var appModule: AppModule,
     var onLogoutUser: () -> Unit,
     var onEditProfile: () -> Unit,
 ) : Tab {
+
     @Composable
     override fun Content() {
-        SettingPageDisplay(appModule, onLogoutUser, onEditProfile)
+        val windowSizeClass = calculateWindowSizeClass()
+
+        when (windowSizeClass.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> {
+                SettingPageCompactDisplay(appModule, onLogoutUser, onEditProfile)
+            }
+
+            WindowWidthSizeClass.Medium -> {
+                SettingPageMediumExpandedDisplay(appModule, onLogoutUser, onEditProfile)
+            }
+
+            WindowWidthSizeClass.Expanded -> {
+                SettingPageMediumExpandedDisplay(appModule, onLogoutUser, onEditProfile)
+            }
+        }
+
     }
 
 
@@ -72,7 +91,11 @@ class SettingTab(
 
 
 @Composable
-fun SettingPageDisplay(appModule: AppModule, onLogoutUser: () -> Unit, onEditProfile: () -> Unit) {
+fun SettingPageCompactDisplay(
+    appModule: AppModule,
+    onLogoutUser: () -> Unit,
+    onEditProfile: () -> Unit,
+) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -149,9 +172,113 @@ fun SettingPageDisplay(appModule: AppModule, onLogoutUser: () -> Unit, onEditPro
                         displayLogoutDialog = false
                     },
 
-                )
+                    )
             }
             space(8)
+        }
+    }
+}
+
+@Composable
+fun SettingPageMediumExpandedDisplay(
+    appModule: AppModule,
+    onLogoutUser: () -> Unit,
+    onEditProfile: () -> Unit,
+) {
+
+    Row(
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(10.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        LazyColumn (
+            modifier = Modifier.weight(1f)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ){
+            item {
+                space(16)
+            }
+            item {
+                CircularImage(
+                    painter = paintResource(SharedRes.images.avatar),
+                    modifier = Modifier.size(150.dp)
+                )
+                space(4)
+            }
+
+            item {
+                Text(
+                    text = getLoggedInUserName(),
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+                space(4)
+            }
+
+            item {
+                Text(
+                    text = getLoggedInUserEmail(),
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                    )
+                )
+                space(16)
+            }
+        }
+
+        LazyColumn(
+            modifier = Modifier.weight(1f)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            item {
+                SettingOptions(Icons.Default.Person, "Edit Profile") {
+                    onEditProfile()
+                }
+                space(8)
+            }
+
+            item {
+                SettingOptions(Icons.Default.Person, "Privacy Policy") {
+                    // TODO : Display Dialog with Privacy Policy
+                }
+                space(8)
+            }
+            item {
+                var displayLogoutDialog by remember { mutableStateOf(false) }
+                SettingOptions(Icons.Default.Person, "Logout") {
+                    displayLogoutDialog = true
+                }
+
+                if (displayLogoutDialog) {
+                    Dialog(
+                        content = {
+                            AlertDialogBox(
+                                title = "Do you want to logout?",
+                                onYesClick = {
+                                    onLogoutUser()
+                                    displayLogoutDialog = false
+                                },
+                                onNoClick = {
+                                    displayLogoutDialog = false
+                                }
+                            )
+                        },
+                        onDismissRequest = {
+                            displayLogoutDialog = false
+                        },
+
+                        )
+                }
+                space(8)
+            }
         }
     }
 }
