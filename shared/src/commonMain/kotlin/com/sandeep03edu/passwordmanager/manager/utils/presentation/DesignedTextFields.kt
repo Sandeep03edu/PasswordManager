@@ -11,11 +11,11 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun BuildDesignedHeader(
-    list: MutableList<String> = mutableListOf()
+    list: MutableList<String> = mutableListOf(),
 ) {
     Text(
         buildAnnotatedString {
-            list.forEach {currentLabel->
+            list.forEach { currentLabel ->
                 withStyle(
                     style = SpanStyle(
                         fontWeight = FontWeight.ExtraBold,
@@ -32,9 +32,47 @@ fun BuildDesignedHeader(
                         fontWeight = FontWeight.Bold,
                     )
                 ) {
-                    append("${currentLabel.subSequence(startIndex = 1, endIndex = currentLabel.length)} ")
+                    append(
+                        "${
+                            currentLabel.subSequence(
+                                startIndex = 1,
+                                endIndex = currentLabel.length
+                            )
+                        } "
+                    )
+                }
+            }
+        }
+    )
+
+}
+
+@Composable
+fun BuildDesignedTitle(
+    list: MutableList<String> = mutableListOf(),
+) {
+    val mainColor = MaterialTheme.colorScheme.primary
+    Text(
+        buildAnnotatedString {
+            list.chunked(2) {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = mainColor,
+                        fontSize = 40.sp
+                    )
+                ) {
+                    append(it[0])
                 }
 
+                withStyle(
+                    style = SpanStyle(
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                ) {
+                    append(it[1])
+                }
             }
         }
     )

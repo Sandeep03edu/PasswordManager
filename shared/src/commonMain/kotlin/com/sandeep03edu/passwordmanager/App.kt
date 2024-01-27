@@ -72,19 +72,11 @@ data class AppHomeLayout(
     val dynamicColor: Boolean,
     val appModule: AppModule,
 ) : Screen {
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, InternalVoyagerApi::class)
     @Composable
     override fun Content() {
-//        updateServerCards(appModule)
-//        updateServerPasswords(appModule)
 
-        val windowSizeClass = calculateWindowSizeClass()
-        println("$TAG SIzeClass :: $windowSizeClass")
 
         val navigator = LocalNavigator.currentOrThrow
-        println("$TAG Key:: ${navigator.key}")
-        val navigator1 = navigator
-
 
         val coroutineScope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
@@ -183,7 +175,6 @@ data class AppHomeLayout(
                                 onComplete = { it, snackbarHostState, coroutineScope ->
 
                                     if (checkLoginPin(it)) {
-                                        println("$TAG Login Pin Key:: ${navigator.key}")
                                         navigator.replace(
                                             launchLoggedUserDisplayPage(
                                                 navigator,
