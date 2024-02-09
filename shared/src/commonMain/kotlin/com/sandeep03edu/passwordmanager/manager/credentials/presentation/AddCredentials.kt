@@ -20,6 +20,7 @@ import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -77,6 +78,7 @@ fun AddDataSheet(
 
             val windowSizeClass = calculateWindowSizeClass()
 
+/*
             when (windowSizeClass.widthSizeClass) {
                 WindowWidthSizeClass.Compact -> {
                     DisplayCompactColumnView(
@@ -96,7 +98,7 @@ fun AddDataSheet(
                     )
                 }
 
-                WindowWidthSizeClass.Medium -> {
+                WindowWidthSizeClass.Medium , WindowWidthSizeClass.Expanded-> {
                     DisplayMediumGridView(
                         onEvent,
                         newCard,
@@ -113,9 +115,29 @@ fun AddDataSheet(
                         }
                     )
                 }
+            }
+*/
 
-                WindowWidthSizeClass.Expanded -> {
+            when(windowSizeClass.heightSizeClass){
+                WindowHeightSizeClass.Compact->{
                     DisplayMediumGridView(
+                        onEvent,
+                        newCard,
+                        newPassword,
+                        selectedDropDownItem,
+                        dropDownItems,
+                        isCardUpdate,
+                        state,
+                        onSelectedDropDownItemChange = {
+                            selectedDropDownItem = it
+                        },
+                        onCardUpdateChange = {
+                            isCardUpdate = it
+                        }
+                    )
+                }
+                WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded->{
+                    DisplayCompactColumnView(
                         onEvent,
                         newCard,
                         newPassword,

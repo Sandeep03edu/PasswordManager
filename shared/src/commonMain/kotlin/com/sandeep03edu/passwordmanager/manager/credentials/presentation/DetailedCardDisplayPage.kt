@@ -16,6 +16,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -118,17 +119,24 @@ fun DetailedCardDisplayPage(
                 list = mutableListOf("Ca", "rd"),
             )
 
+/*
             when (windowSizeClass.widthSizeClass) {
                 WindowWidthSizeClass.Compact -> {
                     CompactColumnView(card)
                 }
 
-                WindowWidthSizeClass.Medium -> {
+                WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
                     MediumExpandedRowView(card)
                 }
+            }
+*/
 
-                WindowWidthSizeClass.Expanded -> {
+            when(windowSizeClass.heightSizeClass){
+                WindowHeightSizeClass.Compact->{
                     MediumExpandedRowView(card)
+                }
+                WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded->{
+                    CompactColumnView(card)
                 }
             }
 

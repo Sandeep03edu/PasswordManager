@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -66,6 +67,7 @@ fun PinAuthentication(
     ) {
         val windowSizeClass = calculateWindowSizeClass()
 
+/*
         when (windowSizeClass.widthSizeClass) {
             WindowWidthSizeClass.Compact -> {
                 ColumnPinAuthentication(label, pinLength, onComplete = {
@@ -73,14 +75,22 @@ fun PinAuthentication(
                 })
             }
 
-            WindowWidthSizeClass.Medium -> {
+            WindowWidthSizeClass.Medium , WindowWidthSizeClass.Expanded-> {
                 RowPinAuthentication(label, pinLength, onComplete = {
                     onComplete(it)
                 })
             }
+        }
+*/
 
-            WindowWidthSizeClass.Expanded -> {
+        when(windowSizeClass.heightSizeClass){
+            WindowHeightSizeClass.Compact->{
                 RowPinAuthentication(label, pinLength, onComplete = {
+                    onComplete(it)
+                })
+            }
+            WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded->{
+                ColumnPinAuthentication(label, pinLength, onComplete = {
                     onComplete(it)
                 })
             }

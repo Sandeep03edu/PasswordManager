@@ -18,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -57,6 +58,7 @@ class SettingTab(
     override fun Content() {
         val windowSizeClass = calculateWindowSizeClass()
 
+/*
         when (windowSizeClass.widthSizeClass) {
             WindowWidthSizeClass.Compact -> {
                 SettingPageCompactDisplay(appModule, onLogoutUser, onEditProfile)
@@ -70,8 +72,19 @@ class SettingTab(
                 SettingPageMediumExpandedDisplay(appModule, onLogoutUser, onEditProfile)
             }
         }
+*/
 
+        when(windowSizeClass.heightSizeClass){
+            WindowHeightSizeClass.Compact->{
+                SettingPageMediumExpandedDisplay(appModule, onLogoutUser, onEditProfile)
+            }
+             WindowHeightSizeClass.Medium,WindowHeightSizeClass.Expanded->{
+                SettingPageCompactDisplay(appModule, onLogoutUser, onEditProfile)
+            }
+        }
     }
+
+
 
 
     override val options: TabOptions
