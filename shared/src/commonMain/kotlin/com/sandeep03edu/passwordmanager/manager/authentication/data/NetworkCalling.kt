@@ -54,6 +54,27 @@ fun getAuthResult(
     }
 }
 
+fun restartApiCall(
+    url: String,
+){
+    println("$TAG Restart API Call started!!")
+    val client = HttpClient()
+    val scope = CoroutineScope(Background)
+
+    scope.launch {
+        try {
+            val response = client.get(urlString = "${BASE_URL}${url}")
+            {
+                contentType(ContentType.Application.Json)
+            }
+
+            val bodyText: String = response.bodyAsText()
+        } catch (err: Exception) {
+            println("$TAG Exception : $err")
+        }
+    }
+}
+
 fun getCredentialGetResult(
     url: String,
     card: Card? = null,

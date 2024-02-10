@@ -32,6 +32,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
+import com.sandeep03edu.passwordmanager.manager.authentication.data.restartApiCall
 import com.sandeep03edu.passwordmanager.manager.authentication.data.updateServerCards
 import com.sandeep03edu.passwordmanager.manager.authentication.data.updateServerPasswords
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserAuthentication
@@ -96,6 +97,9 @@ data class AppHomeLayout(
                     val currUser: UserState? = getLoggedInUser()
 
                     if (currUser == null) {
+                        // Restart API Call to activate the server!!
+                        restartApiCall(NetworkEndPoints.restartApi)
+
                         // User is not logged in
                         var userAuth: AuthResponse? by remember { mutableStateOf(null) }
 
@@ -200,6 +204,8 @@ data class AppHomeLayout(
             }
         }
     }
+
+
 }
 
 fun launchLoggedUserDisplayPage(

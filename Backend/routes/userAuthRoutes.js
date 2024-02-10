@@ -5,6 +5,7 @@ const {
   userEmailExist,
   updateUser,
   verifyAppPin,
+  restartApi,
 } = require("../controller/userAuthController");
 
 const { protectUser } = require("../middleware/protectUser");
@@ -20,5 +21,7 @@ router.post("/update", protectUser, updateUser);
 router.post("/emailExist", userEmailExist);
 
 router.post("/verifyAppPin", protectUser, verifyAppPin);
+
+router.get("/restart", restartApi);
 
 module.exports = router;

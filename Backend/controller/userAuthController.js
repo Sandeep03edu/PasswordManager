@@ -4,6 +4,19 @@ const generateJWT = require("../config/generateJWT");
 const { hashString } = require("../config/encryptionAlgorithm");
 const User = require("../models/user");
 
+const restartApi = asyncHandler(async (req, res) => {
+  try {
+    return res.status(201).json({
+      success: true,
+    });
+  } catch (error) {
+    return res.status(201).json({
+      success: false,
+      error: "An error occurred!!",
+    });
+  }
+});
+
 const registerUser = asyncHandler(async (req, res) => {
   const { email, firstName, lastName, loginPin, appPin } = req.body;
 
@@ -298,4 +311,5 @@ module.exports = {
   updateUser,
   userEmailExist,
   verifyAppPin,
+  restartApi,
 };
