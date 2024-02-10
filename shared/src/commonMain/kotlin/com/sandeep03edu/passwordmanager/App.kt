@@ -97,9 +97,6 @@ data class AppHomeLayout(
                     val currUser: UserState? = getLoggedInUser()
 
                     if (currUser == null) {
-                        // Restart API Call to activate the server!!
-                        restartApiCall(NetworkEndPoints.restartApi)
-
                         // User is not logged in
                         var userAuth: AuthResponse? by remember { mutableStateOf(null) }
 

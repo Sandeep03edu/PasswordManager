@@ -10,6 +10,8 @@ import com.sandeep03edu.passwordmanager.manager.profile.domain.UserState
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserId
 import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserToken
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.timeout
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -24,7 +26,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 val TAG = "NetworkCallingTag"
-//val BASE_URL = "http://192.168.1.4:5000"
+
+//val BASE_URL = "http://10.35.2.6:5000"
 val BASE_URL = "https://password-manager-sandeep03edu-backend.onrender.com"
 
 fun getAuthResult(
@@ -32,7 +35,11 @@ fun getAuthResult(
     userState: UserState = UserState(),
     result: (AuthResponse) -> Unit,
 ) {
-    val client = HttpClient()
+    val client = HttpClient() {
+        install(
+            HttpTimeout
+        )
+    }
     val scope = CoroutineScope(Background)
 
     scope.launch {
@@ -42,6 +49,9 @@ fun getAuthResult(
                 contentType(ContentType.Application.Json)
                 setBody(userState.toJson())
                 bearerAuth(getLoggedInUserToken())
+                timeout {
+                    socketTimeoutMillis = 300 * 1000
+                }
             }
 
             val bodyText: String = response.bodyAsText()
@@ -56,9 +66,13 @@ fun getAuthResult(
 
 fun restartApiCall(
     url: String,
-){
+) {
     println("$TAG Restart API Call started!!")
-    val client = HttpClient()
+    val client = HttpClient() {
+        install(
+            HttpTimeout
+        )
+    }
     val scope = CoroutineScope(Background)
 
     scope.launch {
@@ -66,6 +80,9 @@ fun restartApiCall(
             val response = client.get(urlString = "${BASE_URL}${url}")
             {
                 contentType(ContentType.Application.Json)
+                timeout {
+                    socketTimeoutMillis = 300 * 1000
+                }
             }
 
             val bodyText: String = response.bodyAsText()
@@ -81,7 +98,11 @@ fun getCredentialGetResult(
     password: Password? = null,
     result: (CredentialResponse) -> Unit,
 ) {
-    val client = HttpClient()
+    val client = HttpClient() {
+        install(
+            HttpTimeout
+        )
+    }
     val scope = CoroutineScope(Background)
 
     scope.launch {
@@ -98,6 +119,9 @@ fun getCredentialGetResult(
                     contentType(ContentType.Application.Json)
                     bearerAuth(getLoggedInUserToken())
                     setBody(body)
+                    timeout {
+                        socketTimeoutMillis = 300 * 1000
+                    }
                 }
 
             val bodyText: String = response.bodyAsText()
@@ -115,7 +139,11 @@ fun getCredentialPostResponse(
     password: Password? = null,
     result: (CredentialResponse) -> Unit,
 ) {
-    val client = HttpClient()
+    val client = HttpClient() {
+        install(
+            HttpTimeout
+        )
+    }
     val scope = CoroutineScope(Background)
 
     scope.launch {
@@ -134,6 +162,9 @@ fun getCredentialPostResponse(
                 contentType(ContentType.Application.Json)
                 bearerAuth(getLoggedInUserToken())
                 setBody(body)
+                timeout {
+                    socketTimeoutMillis = 300 * 1000
+                }
             }
 
             val bodyText: String = response.bodyAsText()
@@ -151,7 +182,11 @@ fun getCredentialDeleteResponse(
     password: Password? = null,
     result: (CredentialResponse) -> Unit,
 ) {
-    val client = HttpClient()
+    val client = HttpClient() {
+        install(
+            HttpTimeout
+        )
+    }
     val scope = CoroutineScope(Background)
 
     scope.launch {
@@ -170,6 +205,9 @@ fun getCredentialDeleteResponse(
                 contentType(ContentType.Application.Json)
                 bearerAuth(getLoggedInUserToken())
                 setBody(body)
+                timeout {
+                    socketTimeoutMillis = 300 * 1000
+                }
             }
 
             val bodyText: String = response.bodyAsText()
