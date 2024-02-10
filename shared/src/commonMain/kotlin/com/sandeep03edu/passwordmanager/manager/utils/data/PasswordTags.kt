@@ -7,11 +7,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 fun getPasswordTagsWithIcons(): List<Pair<String, ImageVector>> {
     val mutableList: MutableList<Pair<String, ImageVector>> = mutableListOf()
-    mutableList.add(Pair("Educational", Icons.Default.Person))
     mutableList.add(Pair("Personal", Icons.Default.Person))
     mutableList.add(Pair("Browser", Icons.Default.Person))
     mutableList.add(Pair("Banking", Icons.Default.Person))
     mutableList.add(Pair("Social Media", Icons.Default.Person))
+    mutableList.add(Pair("Educational", Icons.Default.Person))
     mutableList.add(Pair("Work", Icons.Default.Person))
     return mutableList
 }

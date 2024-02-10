@@ -34,7 +34,9 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -84,7 +86,7 @@ import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass as calculateWindowSizeClass1
+
 
 class DisplayCredentialTab(
     val appModule: AppModule,
@@ -252,7 +254,7 @@ fun DisplayPageDisplay(
             }
         }
 
-        val windowSizeClass = calculateWindowSizeClass1()
+        val windowSizeClass = calculateWindowSizeClass()
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -261,6 +263,7 @@ fun DisplayPageDisplay(
         ) {
 
 
+/*
             when (windowSizeClass.widthSizeClass) {
                 WindowWidthSizeClass.Compact -> {
                     DisplayCompactColumnView(
@@ -294,6 +297,38 @@ fun DisplayPageDisplay(
 
                 WindowWidthSizeClass.Expanded -> {
                     DisplayExpandedColumnView(
+                        state,
+                        scope,
+                        onCardItemClicked,
+                        onSelectedCardChange,
+                        onSelectedPasswordChange,
+                        onBottomSheetVisibleChange,
+                        onEvent,
+                        selectedPasswordTag,
+                        onSelectedPasswordTagChanged,
+                        onPasswordItemClicked
+                    )
+                }
+            }
+*/
+            when (windowSizeClass.heightSizeClass) {
+                WindowHeightSizeClass.Compact -> {
+                    DisplayMediumColumnView(
+                        state,
+                        scope,
+                        onCardItemClicked,
+                        onSelectedCardChange,
+                        onSelectedPasswordChange,
+                        onBottomSheetVisibleChange,
+                        onEvent,
+                        selectedPasswordTag,
+                        onSelectedPasswordTagChanged,
+                        onPasswordItemClicked
+                    )
+                }
+
+                WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded -> {
+                    DisplayCompactColumnView(
                         state,
                         scope,
                         onCardItemClicked,

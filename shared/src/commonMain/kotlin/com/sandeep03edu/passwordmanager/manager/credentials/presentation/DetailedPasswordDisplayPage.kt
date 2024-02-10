@@ -89,7 +89,7 @@ fun DetailedPasswordDisplayPage(
             modifier = Modifier.fillMaxSize()
                 .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Center
         )  {
             item {
                 Text(
