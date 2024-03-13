@@ -98,6 +98,10 @@ fun PinAuthentication(
     }
 }
 
+fun generateShuffledList(): MutableList<Int> {
+    val list: MutableList<Int> = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
+    return list.shuffled().toMutableList()
+}
 @Composable
 private fun RowPinAuthentication(
     label: String,
@@ -112,13 +116,14 @@ private fun RowPinAuthentication(
         values.add(-1)
     }
 
-    var list: MutableList<Int> = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
-    list = list.shuffled().toMutableList()
+    val list by remember { mutableStateOf(generateShuffledList()) }
 
     val lastElem = list.get(9)
     list[9] = -2
     list.add(lastElem)
     list.add(-1)
+
+    println("$TAG Listt:: $list")
 
     Row(
         modifier = Modifier.fillMaxSize()
@@ -248,8 +253,7 @@ private fun ColumnPinAuthentication(
         values.add(-1)
     }
 
-    var list: MutableList<Int> = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
-    list = list.shuffled().toMutableList()
+    val list by remember { mutableStateOf(generateShuffledList()) }
 
     val lastElem = list.get(9)
     list[9] = -2
