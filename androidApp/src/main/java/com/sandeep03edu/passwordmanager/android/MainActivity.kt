@@ -7,6 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.ui.platform.LocalContext
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 import com.sandeep03edu.passwordmanager.App
@@ -18,6 +20,8 @@ class MainActivity : ComponentActivity() {
 
         Firebase.initialize(this)
         setContent {
+
+
 
             App(
                 darkTheme = isSystemInDarkTheme(),

@@ -12,6 +12,8 @@ plugins {
     // Sqldelight
     id("app.cash.sqldelight")
 
+    // Chaquo python
+    id("com.chaquo.python")
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -149,6 +151,11 @@ kotlin {
 //                implementation("io.ktor:ktor-client-okhttp:2.2.1")
                 implementation(libs.ktor.client.okhttp)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")
+
+
+                // Chaquo Python
+                implementation("com.chaquo.python:android:9.0.0")
+
             }
         }
 
@@ -171,6 +178,11 @@ android {
     compileSdk = 34
     defaultConfig {
         minSdk = 26
+
+        ndk {
+            // On Apple silicon, you can omit x86_64.
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

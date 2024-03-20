@@ -4,6 +4,7 @@ plugins {
 
     // Firebase
     id("com.google.gms.google-services")
+    id("com.chaquo.python")
 }
 
 
@@ -14,8 +15,13 @@ android {
         applicationId = "com.sandeep03edu.passwordmanager.android"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "1.01"
+
+        ndk {
+            // On Apple silicon, you can omit x86_64.
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
     }
     buildFeatures {
         compose = true
