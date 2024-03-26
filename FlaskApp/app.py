@@ -8,7 +8,7 @@ from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
 # import Constants
-from waitress import serve
+# from waitress import serve
 
 
 app = Flask(__name__)
@@ -58,6 +58,7 @@ def process_request():
     response = process_query(user_input)
     return jsonify({"response": response})
 
-if __name__ == '__main__':
-    # app.run(debug=True)
-    serve(app, host="0.0.0.0", port=8080)
+# Development phase use case only
+# if __name__ == '__main__':
+#     # app.run(debug=True)
+#     serve(app, host="0.0.0.0", port=8080)

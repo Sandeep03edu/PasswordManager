@@ -3,3 +3,4 @@ langchain_community==0.0.28
 flask==3.0.2
 sentence-transformers==2.6.0
 waitress==3.0.0
+gunicorn ==21.2.0
