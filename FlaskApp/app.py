@@ -7,7 +7,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
-import Constants
+# import Constants
 
 app = Flask(__name__)
 
@@ -22,7 +22,7 @@ def process_query(query):
 
     loader = TextLoader("./data/app.txt")
     document = loader.load()
-    os.environ["HUGGINGFACEHUB_API_TOKEN"] = Constants.TOKEN
+    # os.environ["HUGGINGFACEHUB_API_TOKEN"] = Constants.TOKEN
 
 
     wrapped_text = wrap_text_preserve_new_lines(str(document[0]))
