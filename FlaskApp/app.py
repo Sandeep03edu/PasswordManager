@@ -8,7 +8,6 @@ from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
 # import Constants
-# from waitress import serve
 
 
 app = Flask(__name__)
@@ -28,7 +27,6 @@ def process_query(query):
         document = loader.load()
         # os.environ["HUGGINGFACEHUB_API_TOKEN"] = Constants.TOKEN
 
-
         wrapped_text = wrap_text_preserve_new_lines(str(document[0]))
 
         # Split the document into chunks
@@ -36,7 +34,7 @@ def process_query(query):
         docs = text_splitter.split_documents(document)
 
         # Create embeddings
-        embedding = HuggingFaceEmbeddings()
+        embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers\\all-mpnet-base-v2")
         db = FAISS.from_documents(docs, embedding)
 
         # Load the Question-Answering chain
@@ -60,5 +58,4 @@ def process_request():
 
 # Development phase use case only
 # if __name__ == '__main__':
-#     # app.run(debug=True)
-#     serve(app, host="0.0.0.0", port=8080)
+#     app.run(debug=True)
