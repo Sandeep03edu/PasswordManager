@@ -34,7 +34,7 @@ def process_query(query):
         docs = text_splitter.split_documents(document)
 
         # Create embeddings
-        embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers\\all-mpnet-base-v2")
+        embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers/all-mpnet-base-v2")
         db = FAISS.from_documents(docs, embedding)
 
         # Load the Question-Answering chain
@@ -56,6 +56,6 @@ def process_request():
     response = process_query(user_input)
     return jsonify({"response": response})
 
-# Development phase use case only
+## Development phase use case only
 # if __name__ == '__main__':
 #     app.run(debug=True)
