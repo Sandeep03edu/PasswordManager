@@ -47,7 +47,8 @@ def process_query(query):
         res = chain.run(input_documents = querySimilarDocs, question = query)
 
         return res
-    except:
+    except Exception as e:
+        print("Error: ", e)
         return "An Error occurred!!"
 
 @app.route('/query', methods=['POST'])
