@@ -33,7 +33,7 @@ const fetchQueryResult = asyncHandler(async (req, res) => {
 // Function to run the Python script
 function runPythonScript(query) {
   return new Promise((resolve, reject) => {
-    const pythonProcess = spawn("python", ["controller\\chatbot.py"]);
+    const pythonProcess = spawn("python", ["controller//chatbot.py"]);
 
     // Send query to Python script
     pythonProcess.stdin.write(

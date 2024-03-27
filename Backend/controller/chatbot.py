@@ -20,7 +20,7 @@ try:
             tokens = line.split('#080819082709#')
 
             # Load the text document
-            loader = TextLoader("controller\\data\\app.txt")
+            loader = TextLoader("controller//data//app.txt")
             document = loader.load()
             os.environ["HUGGINGFACEHUB_API_TOKEN"] = tokens[1].strip()
 
