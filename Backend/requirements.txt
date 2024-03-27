@@ -1,0 +1,8 @@
+langchain==0.1.12
+langchain_community==0.0.28
+flask==3.0.2
+sentence-transformers==2.6.0
+waitress==3.0.0
+gunicorn ==21.2.0
+gevent==24.2.1
+huggingface_hub==0.22.1
