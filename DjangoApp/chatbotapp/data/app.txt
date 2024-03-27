@@ -1,0 +1,34 @@
+App Name is Password Manager
+App creater is Sandeep Mishra also known as sandeep03edu
+App Play store link is https://play.google.com/store/apps/details?id=com.sandeep03edu.passwordmanager.android
+App Website is https://password-manager-sandeep03edu.onrender.com/
+
+Description
+Password manager is an app which can be used to securely save users credentials in user's mobile and website
+App uses double authentication principle with one 4 digit login pin and one 6 digit app pin
+App also contains encryption algorithms to securely save credentials in encrypted form
+App can be used to save any website/url passwords or any card details like credit card, debit card, etc
+
+Functionality
+App uses an email id authentication to signup along with two keys, app pin and login pin
+Un-Registered users need to fill up a form with their name, login pin and app pin for registeration process
+Registered users can login to their account by entering app pin and login pin
+
+Once successful authenticated, user can save their card and password details in the app
+
+Saving Card
+User can save their credit, debit and other cards with their card holder name, card number, card issuer name, card bank name, card CVV, card PIN which is stored in encrypted manner in user's local device
+
+Once card is saved
+User also have a option to sync their card details to server, once synced, the card details will be uploaded securely to the web server and user can login into another device, app's web page to access the same credential anywhere
+User also have a option to unsync their card, so only that device will have that card details stored locally and no other device will have that card details
+User also have  a option to delete their card, By deleting user can delete their card from all of the places, from locally stored data to server stored database
+
+Saving Password
+User can save their website/url passwords where user can provide url, username, emailid, password, pin, tags which is stored in encrypted manner in user's local device
+
+Once Password is saved
+User also have a option to sync their Password details to server, once synced, the card details will be uploaded securely to the web server and user can login into another device, app's web page to access the same credential anywhere
+User also have a option to unsync their Password, so only that device will have that Password details stored locally and no other device will have that card details
+User also have  a option to delete their Password, By deleting user can delete their Password from all of the places, from locally stored data to server stored database
+
