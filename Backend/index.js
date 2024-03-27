@@ -10,6 +10,7 @@ const {
 } = require("./config/encryptionAlgorithm");
 const userAuthRoutes = require("./routes/userAuthRoutes.js");
 const credentialRoutes = require("./routes/credentialRoutes,js");
+const chatBotRoutes = require("./routes/chatBotRoutes.js");
 
 // Configuring dotenv
 dotenv.config();
@@ -34,3 +35,6 @@ app.use("/api/auth", userAuthRoutes);
 
 // Credentials API
 app.use("/api/credentials", credentialRoutes);
+
+// ChatBot API
+app.use("/api/chatbot", chatBotRoutes);

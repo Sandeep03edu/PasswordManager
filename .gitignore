@@ -16,6 +16,9 @@ xcuserdata
 /Backend/.pnp
 /Backend/.pnp.js
 
+# Python Token
+/Backend/controller/Constants.py
+
 # testing
 /Backend/frontend/coverage
 
