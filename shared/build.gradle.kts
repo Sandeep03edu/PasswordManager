@@ -13,7 +13,7 @@ plugins {
     id("app.cash.sqldelight")
 
     // Chaquo python
-    id("com.chaquo.python")
+//    id("com.chaquo.python")
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -154,7 +154,7 @@ kotlin {
 
 
                 // Chaquo Python
-                implementation("com.chaquo.python:android:9.0.0")
+//                implementation("com.chaquo.python:android:9.0.0")
 
             }
         }

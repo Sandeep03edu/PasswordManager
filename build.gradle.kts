@@ -9,7 +9,7 @@ plugins {
     id("com.google.gms.google-services") version "4.4.0" apply false
 
     // Chaquo Android
-    id("com.chaquo.python") version "15.0.1" apply false
+//    id("com.chaquo.python") version "15.0.1" apply false
 }
 
 buildscript {
@@ -22,16 +22,16 @@ buildscript {
         classpath("org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.17.3")
 
         // Chaquo Dependency
-        classpath("com.chaquo.python:gradle:15.0.1")
+//        classpath("com.chaquo.python:gradle:15.0.1")
     }
     repositories {
         mavenCentral()
         maven {
             url = uri("https://repo.repsy.io/mvn/chrynan/public")
         }
-        maven {
-            url = uri("https://chaquo.com/maven")
-        }
+//        maven {
+//            url = uri("https://chaquo.com/maven")
+//        }
 
     }
 }

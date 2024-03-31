@@ -18,6 +18,10 @@ xcuserdata
 
 # Python Token
 /Backend/controller/Constants.py
+FlaskHuggingFaceHub/password_manager_chatbot/Constants.py
+FlaskApp/Constants.py
+DjangoApp/contants.py
+
 
 # testing
 /Backend/frontend/coverage
@@ -47,3 +51,7 @@ xcuserdata
 /frontend/npm-debug.log*
 /frontend/yarn-debug.log*
 /frontend/yarn-error.log*
+
+
+# Django app 
+DjangoApp/contants.py

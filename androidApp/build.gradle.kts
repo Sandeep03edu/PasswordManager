@@ -4,7 +4,7 @@ plugins {
 
     // Firebase
     id("com.google.gms.google-services")
-    id("com.chaquo.python")
+//    id("com.chaquo.python")
 }
 
 
