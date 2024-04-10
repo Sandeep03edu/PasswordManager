@@ -1,3 +1,4 @@
+# MultiplatformMobile
 *.iml
 MultiplatformMobile/.gradle
 MultiplatformMobile/.idea
@@ -9,6 +10,28 @@ MultiplatformMobile/.cxx
 MultiplatformMobile/local.properties
 MultiplatformMobile/xcuserdata
 /PlayStoreStuff
+
+
+# MultiplatformMobileDesktop
+*.iml
+MultiplatformMobileDesktop/.gradle
+MultiplatformMobileDesktop/.fleet
+MultiplatformMobileDesktop/build
+**/build/
+MultiplatformMobileDesktop/xcuserdata
+MultiplatformMobileDesktop/!src/**/build/
+MultiplatformMobileDesktop/local.properties
+MultiplatformMobileDesktop/.idea
+MultiplatformMobileDesktop/.DS_Store
+MultiplatformMobileDesktop/captures
+MultiplatformMobileDesktop/.externalNativeBuild
+MultiplatformMobileDesktop/.cxx
+MultiplatformMobileDesktop/*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
 
 
 # dependencies
