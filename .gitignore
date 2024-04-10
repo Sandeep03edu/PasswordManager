@@ -1,13 +1,13 @@
 *.iml
-.gradle
-.idea
-.DS_Store
-build
-captures
-.externalNativeBuild
-.cxx
-local.properties
-xcuserdata
+MultiplatformMobile/.gradle
+MultiplatformMobile/.idea
+MultiplatformMobile/.DS_Store
+MultiplatformMobile/build
+MultiplatformMobile/captures
+MultiplatformMobile/.externalNativeBuild
+MultiplatformMobile/.cxx
+MultiplatformMobile/local.properties
+MultiplatformMobile/xcuserdata
 /PlayStoreStuff
 
 
