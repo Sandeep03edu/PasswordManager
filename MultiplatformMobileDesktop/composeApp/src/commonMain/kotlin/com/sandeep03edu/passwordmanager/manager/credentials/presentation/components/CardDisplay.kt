@@ -57,7 +57,7 @@ fun SecureHalfCardDisplay(
 ) {
     Box  (
         modifier = Modifier
-            .fillMaxWidth(1f)
+            .fillMaxSize(1f)
             .padding(5.dp)
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
@@ -73,7 +73,9 @@ fun SecureHalfCardDisplay(
             .padding(10.dp),
     ) {
 
-        Column(horizontalAlignment = Alignment.Start) {
+        Column(horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxSize()) {
             space(4)
 
             Image(

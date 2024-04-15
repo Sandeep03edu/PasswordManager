@@ -6,11 +6,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -100,6 +104,7 @@ class DisplayCredentialTab(
         val onEvent = viewModel::onEvent
 
         println("$TAG Class State Cards: ${state.cards}")
+        println("$TAG Class State Passwords: ${state.passwords}")
 
         var selectedCard: Card? by remember { mutableStateOf(null) }
         var selectedPassword: Password? by remember { mutableStateOf(null) }
@@ -774,11 +779,12 @@ private fun DisplayRowCards(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
+            .aspectRatio(2f)
     ) {
         items(state.cards) {
             Box(
                 modifier = Modifier
-                    .fillParentMaxWidth(0.7f)
+                    .width(300.dp)
             ) {
                 SecureHalfCardDisplay(it,
 
@@ -900,7 +906,8 @@ private fun AddNewCard(onEvent: (event: CredentialEvent) -> Unit) {
     ) {
         Card(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
+//                .fillMaxWidth(0.7f)
+                .width(300.dp)
                 .aspectRatio(1.75f)
                 .padding(5.dp)
                 .dashedBorder(2.dp, Color.Red, 8.dp),

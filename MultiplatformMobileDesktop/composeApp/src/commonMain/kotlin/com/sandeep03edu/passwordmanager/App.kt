@@ -168,34 +168,45 @@ data class AppHomeLayout(
                             }
                         }
                     } else {
-                        // Move to display page for logged in user
-                        navigator.push(
-                            PinAuthenticationDisplayClass(
-                                label = "Login pin",
-                                pinLength = 4,
-                                onComplete = { it, snackbarHostState, coroutineScope ->
-
-                                    if (checkLoginPin(it)) {
-                                        navigator.replace(
-                                            launchLoggedUserDisplayPage(
-                                                navigator,
-                                                appModule
-                                            )
-                                        )
-
-
-                                    } else {
-                                        println("$TAG Wrong Login Pin!!")
-                                        DisplaySnackbarToast(
-                                            snackbarHostState,
-                                            coroutineScope,
-                                            "Wrong Login Pin!!"
-                                        )
-                                    }
-
-                                }
+                        // TODO : Remove verification skip
+                        if(1==1) {
+                            navigator.replace(
+                                launchLoggedUserDisplayPage(
+                                    navigator,
+                                    appModule
+                                )
                             )
-                        )
+                        }
+                        else {
+                            // Move to display page for logged in user
+                            navigator.push(
+                                PinAuthenticationDisplayClass(
+                                    label = "Login pin",
+                                    pinLength = 4,
+                                    onComplete = { it, snackbarHostState, coroutineScope ->
+
+                                        if (checkLoginPin(it)) {
+                                            navigator.replace(
+                                                launchLoggedUserDisplayPage(
+                                                    navigator,
+                                                    appModule
+                                                )
+                                            )
+
+
+                                        } else {
+                                            println("$TAG Wrong Login Pin!!")
+                                            DisplaySnackbarToast(
+                                                snackbarHostState,
+                                                coroutineScope,
+                                                "Wrong Login Pin!!"
+                                            )
+                                        }
+
+                                    }
+                                )
+                            )
+                        }
                     }
                 }
             }
