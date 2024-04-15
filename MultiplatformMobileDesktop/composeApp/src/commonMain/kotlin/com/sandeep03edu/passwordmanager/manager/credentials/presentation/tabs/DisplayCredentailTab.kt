@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -742,14 +745,13 @@ private fun DisplayRowPasswordTags(
     val passwordTags = getPasswordTagsWithIcons()
     LazyRow(
         modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(3f)
+            .fillMaxSize()
+            .wrapContentSize(align = Alignment.CenterStart)
     ) {
         items(passwordTags) {
             Box(
                 modifier = Modifier
-                    .fillParentMaxWidth(0.3f)
-                    .fillParentMaxHeight(1f)
+                    .aspectRatio(1f)
             ) {
                 PasswordTagCard(it, selectedPasswordTag) {
                     // onClick
@@ -779,12 +781,16 @@ private fun DisplayRowCards(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(2f)
+//            .aspectRatio(2f)
+//            .background(Color.Red)
     ) {
         items(state.cards) {
             Box(
                 modifier = Modifier
                     .width(300.dp)
+                    .aspectRatio(1.75f)
+                    .wrapContentSize()
+
             ) {
                 SecureHalfCardDisplay(it,
 

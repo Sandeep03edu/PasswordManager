@@ -37,7 +37,8 @@ fun PasswordTagCard(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(5.dp)
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
@@ -45,7 +46,7 @@ fun PasswordTagCard(
             .clickable {
                 onClick()
             }
-            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .padding(horizontal = 20.dp, vertical = 25.dp)
     ) {
         Text(
             text = tag,
