@@ -52,29 +52,21 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
-fun getCardBackgroundColor(
-    isDark: Boolean,
-): Color {
-    if (isDark) {
-        return Color(0xff282727)
-    }
-    return Color(0xffffffff)
-}
 
 fun getCardColorShades(
     isDark: Boolean,
 ): List<Color> {
     val list = mutableListOf<Color>()
 
-    if (isDark) {
+    if (!isDark) {
         Color(0xff000000)
         list.add(Color(0xff131c1f))
         list.add(Color(0x51000000))
         list.add(Color(0x86000000))
     } else {
-        list.add(Color(0xffa1b5ff))
-        list.add(Color(0xff90d8ff))
-        list.add(Color(0xff90d8ff))
+        list.add(Color(0xffefefef))
+        list.add(Color(0x41d5fdf7))
+        list.add(Color(0x34ddfcf7))
     }
     return list
 }
@@ -82,7 +74,7 @@ fun getCardColorShades(
 fun getCardTextColor(
     isDark: Boolean,
 ): Color {
-    if (isDark) {
+    if (!isDark) {
         return Color(0xffffffff)
     }
     return Color(0xff000000)
