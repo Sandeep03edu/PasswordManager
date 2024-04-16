@@ -82,11 +82,15 @@ import com.sandeep03edu.passwordmanager.manager.utils.data.getLoggedInUserName
 import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTagsWithIcons
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.bottomDialogModifier
 import com.sandeep03edu.passwordmanager.space
+import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
 import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
 var cardWidth = 280.dp
 
 class DisplayCredentialTab(
@@ -99,14 +103,16 @@ class DisplayCredentialTab(
     override fun Content() {
 
         val windowSizeClass = calculateWindowSizeClass()
-        when (windowSizeClass.widthSizeClass){
-            WindowWidthSizeClass.Compact ->{
+        when (windowSizeClass.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> {
                 cardWidth = 280.dp
             }
-            WindowWidthSizeClass.Medium->{
+
+            WindowWidthSizeClass.Medium -> {
                 cardWidth = 300.dp
             }
-            WindowWidthSizeClass.Expanded->{
+
+            WindowWidthSizeClass.Expanded -> {
                 cardWidth = 320.dp
             }
         }
@@ -275,10 +281,12 @@ fun DisplayPageDisplay(
         val windowSizeClass = calculateWindowSizeClass()
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .background(getBackgroundColor()),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            horizontalAlignment = Alignment.CenterHorizontally,
+
+            ) {
 
 
 /*
@@ -836,7 +844,7 @@ private fun AddNewPasswordDisplay(onEvent: (event: CredentialEvent) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth()
             .aspectRatio(5.5f)
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color.Transparent)
             .padding(8.dp)
             .dashedBorder(2.dp, Color.Red, 8.dp)
             .clickable {
@@ -852,7 +860,7 @@ private fun AddNewPasswordDisplay(onEvent: (event: CredentialEvent) -> Unit) {
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = getTextColor()
         )
     ) {
         Row(
@@ -872,7 +880,8 @@ private fun AddNewPasswordDisplay(onEvent: (event: CredentialEvent) -> Unit) {
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold
-                )
+                ),
+                color = getTextColorInverse()
             )
         }
     }
@@ -893,6 +902,7 @@ private fun FilterPasswordDisplayHeader(selectedPasswordTag: String?) {
         style = TextStyle(
             fontSize = 20.sp
         ),
+        color = getTextColor(),
         modifier = Modifier.fillMaxWidth()
             .padding(horizontal = 5.dp)
     )
@@ -907,6 +917,7 @@ private fun ManagePasswordHeader() {
         style = TextStyle(
             fontSize = 20.sp
         ),
+        color = getTextColor(),
         modifier = Modifier.fillMaxWidth()
             .padding(horizontal = 5.dp)
     )
@@ -953,7 +964,8 @@ private fun AddNewCard(onEvent: (event: CredentialEvent) -> Unit) {
                     style = TextStyle(
                         fontSize = 22.sp,
                         fontWeight = FontWeight.SemiBold
-                    )
+                    ),
+                    color = getTextColorInverse()
                 )
             }
         }
@@ -967,6 +979,7 @@ private fun CardHeader() {
         style = TextStyle(
             fontSize = 20.sp
         ),
+        color = getTextColor(),
         modifier = Modifier.fillMaxWidth()
             .padding(horizontal = 5.dp)
     )
@@ -986,7 +999,8 @@ private fun Header() {
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp, start = 5.dp, end = 5.dp)
+            .padding(top = 10.dp, start = 5.dp, end = 5.dp),
+        color = getTextColor()
     )
     space(8)
 }

@@ -3,10 +3,8 @@ package com.sandeep03edu.passwordmanager.manager.credentials.presentation.compon
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +28,6 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -41,14 +38,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.TAG
-import com.sandeep03edu.passwordmanager.manager.credentials.presentation.tabs.dashedBorder
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypeLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCredentialUploadImage
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
 import com.sandeep03edu.passwordmanager.ui.theme.getCardColorShades
-import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 import dev.icerock.moko.resources.ImageResource
 import kotlin.math.ceil
 import kotlin.math.max
@@ -153,7 +149,7 @@ fun SecureHalfCardDisplay(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
                         ),
-                        color = getTextColor()
+                        color = getTextColorInverse()
                     )
 
                     space(width = 15)
@@ -172,7 +168,7 @@ fun SecureHalfCardDisplay(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     ),
-                    color = getTextColor()
+                    color = getTextColorInverse()
                 )
 
             }
@@ -189,7 +185,7 @@ fun SecureHalfCardDisplay(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
                     ),
-                    color = getTextColor()
+                    color = getTextColorInverse()
                 )
 
                 println("$TAG Card:: $card")

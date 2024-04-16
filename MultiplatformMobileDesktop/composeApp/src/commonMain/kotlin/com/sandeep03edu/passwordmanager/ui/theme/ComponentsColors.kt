@@ -28,7 +28,36 @@ fun getCardColorShades(
     White color in light theme
  */
 @Composable
+fun getTextColorInverse(
+): Color {
+    val isDark = isSystemInDarkTheme()
+    if (!isDark) {
+        return Color(0xffffffff)
+    }
+    return Color(0xff000000)
+}
+
+/*
+    Black color in light theme
+    White color in dark theme
+ */
+@Composable
 fun getTextColor(
+): Color {
+    val isDark = isSystemInDarkTheme()
+    if (isDark) {
+        return Color(0xffffffff)
+    }
+    return Color(0xff000000)
+}
+
+
+/*
+    Black color in dark theme
+    White color in light theme
+ */
+@Composable
+fun getBackgroundColor(
 ): Color {
     val isDark = isSystemInDarkTheme()
     if (!isDark) {
