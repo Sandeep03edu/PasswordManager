@@ -6,20 +6,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -93,15 +87,31 @@ import com.skydoves.flexible.core.FlexibleSheetSize
 import com.skydoves.flexible.core.rememberFlexibleBottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
+var cardWidth = 280.dp
 
 class DisplayCredentialTab(
     val appModule: AppModule,
     val onPasswordItemClicked: (Password) -> Unit,
     val onCardItemClicked: (Card) -> Unit,
 ) : Tab {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Composable
     override fun Content() {
+
+        val windowSizeClass = calculateWindowSizeClass()
+        when (windowSizeClass.widthSizeClass){
+            WindowWidthSizeClass.Compact ->{
+                cardWidth = 280.dp
+            }
+            WindowWidthSizeClass.Medium->{
+                cardWidth = 300.dp
+            }
+            WindowWidthSizeClass.Expanded->{
+                cardWidth = 320.dp
+            }
+        }
+
+
         val viewModel = rememberScreenModel { CredentialViewModel(appModule.credentialDataSource) }
         val state by viewModel.state.collectAsState()
         val onEvent = viewModel::onEvent
@@ -787,7 +797,7 @@ private fun DisplayRowCards(
         items(state.cards) {
             Box(
                 modifier = Modifier
-                    .width(300.dp)
+                    .width(cardWidth)
                     .aspectRatio(1.75f)
                     .wrapContentSize()
 
@@ -913,7 +923,7 @@ private fun AddNewCard(onEvent: (event: CredentialEvent) -> Unit) {
         Card(
             modifier = Modifier
 //                .fillMaxWidth(0.7f)
-                .width(300.dp)
+                .width(cardWidth)
                 .aspectRatio(1.75f)
                 .padding(5.dp)
                 .dashedBorder(2.dp, Color.Red, 8.dp),

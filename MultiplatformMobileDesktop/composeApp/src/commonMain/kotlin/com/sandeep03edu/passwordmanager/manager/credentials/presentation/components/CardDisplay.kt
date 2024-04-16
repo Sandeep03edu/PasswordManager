@@ -1,11 +1,12 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation.components
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,8 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -38,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.TAG
+import com.sandeep03edu.passwordmanager.manager.credentials.presentation.tabs.dashedBorder
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypeLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCredentialUploadImage
@@ -48,6 +52,42 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
+fun getCardBackgroundColor(
+    isDark: Boolean,
+): Color {
+    if (isDark) {
+        return Color(0xff282727)
+    }
+    return Color(0xffffffff)
+}
+
+fun getCardColorShades(
+    isDark: Boolean,
+): List<Color> {
+    val list = mutableListOf<Color>()
+
+    if (isDark) {
+        Color(0xff000000)
+        list.add(Color(0xff131c1f))
+        list.add(Color(0x51000000))
+        list.add(Color(0x86000000))
+    } else {
+        list.add(Color(0xffa1b5ff))
+        list.add(Color(0xff90d8ff))
+        list.add(Color(0xff90d8ff))
+    }
+    return list
+}
+
+fun getCardTextColor(
+    isDark: Boolean,
+): Color {
+    if (isDark) {
+        return Color(0xffffffff)
+    }
+    return Color(0xff000000)
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SecureHalfCardDisplay(
@@ -55,13 +95,19 @@ fun SecureHalfCardDisplay(
     onCardItemClicked: (Card) -> Unit,
     onCardItemLongClicked: (Card) -> Unit,
 ) {
-    Box  (
+    val cardShades = getCardColorShades(isSystemInDarkTheme())
+    val cardBkgColor = cardShades[0]
+    val arc1Color = cardShades[1]
+    val arc2Color = cardShades[2]
+
+
+    Box(
         modifier = Modifier
             .fillMaxSize(1f)
             .padding(5.dp)
-            .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+//            .background(MaterialTheme.colorScheme.primary)
+//            .background(cardBkgColor)
             .combinedClickable(
                 onClick = {
                     onCardItemClicked(card)
@@ -72,10 +118,48 @@ fun SecureHalfCardDisplay(
             )
             .padding(10.dp),
     ) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
 
-        Column(horizontalAlignment = Alignment.Start,
+            val canvasWidth = size.width + 20.dp.toPx()
+            val canvasHeight = size.height + 20.dp.toPx()
+
+            drawRoundRect(
+                color = cardBkgColor,
+                topLeft = Offset(-10.dp.toPx(), -10.dp.toPx()),
+                size = Size(canvasWidth, canvasHeight),
+                cornerRadius = CornerRadius(x = 10f, y = 10f)
+            )
+
+            drawArc(
+                color = arc1Color,
+                startAngle = 180f,
+                sweepAngle = 180f,
+                useCenter = true,
+                topLeft = Offset(-5.dp.toPx(), canvasHeight * 0.5f + 10.dp.toPx()),
+                size = Size(canvasWidth - 60.dp.toPx(), canvasHeight - 40.dp.toPx()),
+            )
+
+            drawArc(
+                color = arc2Color,
+                startAngle = 90f,
+                sweepAngle = 180f,
+                useCenter = true,
+                topLeft = Offset(canvasWidth-120.dp.toPx(), -40.dp.toPx()),
+                size = Size(canvasWidth + 60.dp.toPx(), canvasHeight *2f),
+            )
+        }
+
+
+
+
+        Column(
+            horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxSize()) {
+            modifier = Modifier.fillMaxSize()
+        ) {
             space(4)
 
             Image(
@@ -99,7 +183,8 @@ fun SecureHalfCardDisplay(
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
-                        )
+                        ),
+                        color = getCardTextColor(isSystemInDarkTheme())
                     )
 
                     space(width = 15)
@@ -117,7 +202,8 @@ fun SecureHalfCardDisplay(
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
-                    )
+                    ),
+                    color = getCardTextColor(isSystemInDarkTheme())
                 )
 
             }
@@ -133,7 +219,8 @@ fun SecureHalfCardDisplay(
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
-                    )
+                    ),
+                    color = getCardTextColor(isSystemInDarkTheme())
                 )
 
                 println("$TAG Card:: $card")
@@ -277,14 +364,15 @@ fun DisplayCardNumber(
         val repeater = min(division, 4)
         repeat(repeater) {
             Text(
-                text = cardNumber.subSequence(start, min(start + max(4, division), length)).toString(),
+                text = cardNumber.subSequence(start, min(start + max(4, division), length))
+                    .toString(),
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = textColor
                 )
             )
-            start +=  max(4, division)
+            start += max(4, division)
         }
     }
 }
