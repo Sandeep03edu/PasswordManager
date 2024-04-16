@@ -47,38 +47,15 @@ import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypeLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCredentialUploadImage
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
+import com.sandeep03edu.passwordmanager.ui.theme.getCardColorShades
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
 import dev.icerock.moko.resources.ImageResource
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
 
-fun getCardColorShades(
-    isDark: Boolean,
-): List<Color> {
-    val list = mutableListOf<Color>()
 
-    if (!isDark) {
-        Color(0xff000000)
-        list.add(Color(0xff131c1f))
-        list.add(Color(0x51000000))
-        list.add(Color(0x86000000))
-    } else {
-        list.add(Color(0xffefefef))
-        list.add(Color(0x41d5fdf7))
-        list.add(Color(0x34ddfcf7))
-    }
-    return list
-}
-
-fun getCardTextColor(
-    isDark: Boolean,
-): Color {
-    if (!isDark) {
-        return Color(0xffffffff)
-    }
-    return Color(0xff000000)
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -87,7 +64,7 @@ fun SecureHalfCardDisplay(
     onCardItemClicked: (Card) -> Unit,
     onCardItemLongClicked: (Card) -> Unit,
 ) {
-    val cardShades = getCardColorShades(isSystemInDarkTheme())
+    val cardShades = getCardColorShades()
     val cardBkgColor = cardShades[0]
     val arc1Color = cardShades[1]
     val arc2Color = cardShades[2]
@@ -176,7 +153,7 @@ fun SecureHalfCardDisplay(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
                         ),
-                        color = getCardTextColor(isSystemInDarkTheme())
+                        color = getTextColor()
                     )
 
                     space(width = 15)
@@ -195,7 +172,7 @@ fun SecureHalfCardDisplay(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     ),
-                    color = getCardTextColor(isSystemInDarkTheme())
+                    color = getTextColor()
                 )
 
             }
@@ -212,7 +189,7 @@ fun SecureHalfCardDisplay(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
                     ),
-                    color = getCardTextColor(isSystemInDarkTheme())
+                    color = getTextColor()
                 )
 
                 println("$TAG Card:: $card")
