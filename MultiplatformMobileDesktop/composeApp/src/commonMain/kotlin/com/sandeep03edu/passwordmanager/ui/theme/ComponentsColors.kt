@@ -123,3 +123,13 @@ fun getSettingOptionsBackground() : Color {
 
     return Color(0xffc6dfff)
 }
+
+@Composable
+fun getBottomBarBackground() : Color {
+    val isDark = isSystemInDarkTheme()
+    if (isDark) {
+        return Color(0xff0260bd)
+    }
+
+    return Color(0x713c9dff)
+}

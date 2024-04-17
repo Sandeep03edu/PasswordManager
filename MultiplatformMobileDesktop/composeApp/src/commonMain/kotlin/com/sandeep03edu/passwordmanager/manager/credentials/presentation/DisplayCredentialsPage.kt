@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -20,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
@@ -32,6 +34,11 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.tabs.DisplayCredentialTab
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.tabs.SettingTab
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
+import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getBottomBarBackground
+import com.sandeep03edu.passwordmanager.ui.theme.getFloatingActionButtonColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 import dev.materii.pullrefresh.PullRefreshIndicator
 import dev.materii.pullrefresh.pullRefresh
 import dev.materii.pullrefresh.rememberPullRefreshState
@@ -115,7 +122,8 @@ data class DisplayPageDisplayClass(
                     BottomAppBar(
                         modifier = Modifier.fillMaxWidth()
                             .padding(0.dp),
-                        contentPadding = PaddingValues(0.dp)
+                        contentPadding = PaddingValues(0.dp),
+                        containerColor = getBottomBarBackground(),
                     ) {
                         TabNavigationItems(displayCredentialTab)
                         TabNavigationItems(settingTab)
@@ -150,10 +158,20 @@ fun RowScope.TabNavigationItems(tab: Tab) {
             tabNavigator.current = tab
         },
         icon = {
-            Icon(tab.options.icon!!, contentDescription = tab.options.title)
+            Icon(
+                tab.options.icon!!,
+                contentDescription = tab.options.title,
+            )
         },
         label = {
             Text(text = tab.options.title)
         },
+        colors = NavigationBarItemDefaults.colors(
+            selectedIconColor = getTextColorInverse(),
+            selectedTextColor = getTextColor(),
+            unselectedIconColor = getTextColor(),
+            unselectedTextColor = getTextColor(),
+            indicatorColor = getFloatingActionButtonColor(),
+        )
     )
 }
