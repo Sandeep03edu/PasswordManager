@@ -57,8 +57,8 @@ fun getTextColor(
 
 
 /*
-    Black color in dark theme
-    White color in light theme
+    Dark blue color in dark theme
+    Light blue color in light theme
  */
 @Composable
 fun getBackgroundColor(
@@ -68,6 +68,19 @@ fun getBackgroundColor(
         return Color(0xffeaf3fd)
     }
     return Color(0xff012142)
+}
+/*
+    Dark blue color in light theme
+    Light blue color in dark theme
+ */
+@Composable
+fun getFloatingActionButtonColor(
+): Color {
+    val isDark = isSystemInDarkTheme()
+    if (isDark) {
+        return Color(0xffc6dfff)
+    }
+    return Color(0xff0260bd)
 }
 
 @Composable
@@ -93,6 +106,16 @@ fun getSelectedPasswordTagColor(): Color {
 
 @Composable
 fun getPasswordHalfDisplayBackground() : Color {
+    val isDark = isSystemInDarkTheme()
+    if (!isDark) {
+        return Color(0xff0260bd)
+    }
+
+    return Color(0xffc6dfff)
+}
+
+@Composable
+fun getSettingOptionsBackground() : Color {
     val isDark = isSystemInDarkTheme()
     if (!isDark) {
         return Color(0xff0260bd)

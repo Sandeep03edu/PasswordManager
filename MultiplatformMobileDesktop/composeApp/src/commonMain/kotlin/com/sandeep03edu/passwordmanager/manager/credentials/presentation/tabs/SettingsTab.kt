@@ -28,6 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.TextStyle
@@ -45,6 +48,11 @@ import com.sandeep03edu.passwordmanager.manager.utils.presentation.AlertDialogBo
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
+import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getPasswordHalfDisplayBackground
+import com.sandeep03edu.passwordmanager.ui.theme.getSettingOptionsBackground
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -57,22 +65,6 @@ class SettingTab(
     @Composable
     override fun Content() {
         val windowSizeClass = calculateWindowSizeClass()
-
-/*
-        when (windowSizeClass.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> {
-                SettingPageCompactDisplay(appModule, onLogoutUser, onEditProfile)
-            }
-
-            WindowWidthSizeClass.Medium -> {
-                SettingPageMediumExpandedDisplay(appModule, onLogoutUser, onEditProfile)
-            }
-
-            WindowWidthSizeClass.Expanded -> {
-                SettingPageMediumExpandedDisplay(appModule, onLogoutUser, onEditProfile)
-            }
-        }
-*/
 
         when(windowSizeClass.heightSizeClass){
             WindowHeightSizeClass.Compact->{
@@ -112,7 +104,7 @@ fun SettingPageCompactDisplay(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(getBackgroundColor())
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -133,7 +125,8 @@ fun SettingPageCompactDisplay(
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold
-                )
+                ),
+                color = getTextColor()
             )
             space(4)
         }
@@ -143,7 +136,8 @@ fun SettingPageCompactDisplay(
                 text = getLoggedInUserEmail(),
                 style = TextStyle(
                     fontSize = 18.sp,
-                )
+                ),
+                color = getTextColor()
             )
             space(16)
         }
@@ -305,16 +299,14 @@ fun SettingOptions(
 
     Card(
         modifier = Modifier.fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 10.dp, vertical = 5.dp)
-            .background(MaterialTheme.colorScheme.secondary)
+            .clip(RoundedCornerShape(10.dp))
             .clickable {
                 onClick()
             },
-        shape = RoundedCornerShape(0),
         elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = getSettingOptionsBackground(),
         ),
     ) {
         Row(
@@ -326,7 +318,8 @@ fun SettingOptions(
         ) {
             Image(
                 imageVector = icon,
-                contentDescription = null
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(getTextColorInverse())
             )
 
             space(width = 8)
@@ -335,7 +328,8 @@ fun SettingOptions(
                 text = label,
                 style = TextStyle(
                     fontSize = 16.sp
-                )
+                ),
+                color = getTextColorInverse()
             )
         }
     }

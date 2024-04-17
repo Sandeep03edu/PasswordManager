@@ -82,6 +82,7 @@ import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTagsWithIc
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.bottomDialogModifier
 import com.sandeep03edu.passwordmanager.space
 import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getFloatingActionButtonColor
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
@@ -263,10 +264,13 @@ fun DisplayPageDisplay(
                         )
                     },
                     shape = RoundedCornerShape(20.dp),
+                    containerColor = getFloatingActionButtonColor(),
+
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.AddCircle,
                         contentDescription = "Add contact",
+                        tint = getTextColorInverse()
                     )
                 }
             }
