@@ -74,16 +74,8 @@ fun getBackgroundColor(
 fun getPasswordTagColor(): Color {
     val isDark = isSystemInDarkTheme()
 
-//    val list = getPasswordTags()
-//    if (tag == list.get(0)) return Color(0xffff9900)
-//    if (tag == list.get(1)) return Color(0xff29a329)
-//    if (tag == list.get(2)) return Color(0xff3333cc)
-//    if (tag == list.get(3)) return Color(0xffc6538c)
-//    if (tag == list.get(4)) return Color(0xff29a329)
-//    if (tag == list.get(5)) return Color(0xff3333cc)
-
     if (isDark) {
-        return Color(0xffb4d3f8)
+        return Color(0xffdcf9ff)
     }
     return Color(0xff012142)
 }
@@ -96,4 +88,15 @@ fun getSelectedPasswordTagColor(): Color {
     }
 
     return Color(0xff0260bd)
+}
+
+
+@Composable
+fun getPasswordHalfDisplayBackground() : Color {
+    val isDark = isSystemInDarkTheme()
+    if (!isDark) {
+        return Color(0xff0260bd)
+    }
+
+    return Color(0xffc6dfff)
 }

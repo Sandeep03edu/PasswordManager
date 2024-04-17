@@ -30,7 +30,9 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCredentialUploadImage
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
+import com.sandeep03edu.passwordmanager.ui.theme.getPasswordHalfDisplayBackground
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 import io.kamel.core.getOrNull
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -60,7 +62,7 @@ fun PasswordSecureHalfDisplay(
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = getPasswordHalfDisplayBackground()
         )
     ) {
 
@@ -103,7 +105,7 @@ fun PasswordSecureHalfDisplay(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
                         ),
-                        color = getTextColor()
+                        color = getTextColorInverse()
                     )
 
                     space(4)
@@ -113,7 +115,8 @@ fun PasswordSecureHalfDisplay(
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
-                        )
+                        ),
+                        color = getTextColorInverse()
                     )
                 }
             }

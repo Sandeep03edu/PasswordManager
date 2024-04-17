@@ -51,7 +51,7 @@ fun PasswordTagCard(
             .clickable {
                 onClick()
             }
-            .padding(horizontal = 20.dp, vertical = 25.dp)
+            .padding(horizontal = 15.dp, vertical = 15.dp)
     ) {
         Text(
             text = tag,

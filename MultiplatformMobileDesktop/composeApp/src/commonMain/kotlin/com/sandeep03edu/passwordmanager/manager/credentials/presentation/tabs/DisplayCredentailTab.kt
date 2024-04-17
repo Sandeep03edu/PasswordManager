@@ -29,7 +29,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -92,6 +91,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 var cardWidth = 280.dp
+var numberOfPasswords = 3
+var isRowView = false
 
 class DisplayCredentialTab(
     val appModule: AppModule,
@@ -103,17 +104,58 @@ class DisplayCredentialTab(
     override fun Content() {
 
         val windowSizeClass = calculateWindowSizeClass()
+//        when (windowSizeClass.widthSizeClass) {
+//            WindowWidthSizeClass.Compact -> {
+//                cardWidth = 280.dp
+//                numberOfPasswords = 1
+//            }
+//
+//            WindowWidthSizeClass.Medium -> {
+//                cardWidth = 300.dp
+//                numberOfPasswords = 2
+//            }
+//
+//            WindowWidthSizeClass.Expanded -> {
+//                cardWidth = 320.dp
+//                numberOfPasswords = 3
+//            }
+//        }
         when (windowSizeClass.widthSizeClass) {
             WindowWidthSizeClass.Compact -> {
+                // For all height it is same
+                numberOfPasswords = 1
                 cardWidth = 280.dp
+                isRowView = false
             }
 
             WindowWidthSizeClass.Medium -> {
                 cardWidth = 300.dp
+                when (windowSizeClass.heightSizeClass) {
+                    WindowHeightSizeClass.Compact -> {
+                        isRowView = true
+                        numberOfPasswords = 1
+                    }
+
+                    WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded -> {
+                        numberOfPasswords = 2
+                        isRowView = false
+                    }
+                }
             }
 
             WindowWidthSizeClass.Expanded -> {
                 cardWidth = 320.dp
+                when (windowSizeClass.heightSizeClass) {
+                    WindowHeightSizeClass.Compact -> {
+                        isRowView = true
+                        numberOfPasswords = 2
+                    }
+
+                    WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded -> {
+                        isRowView = false
+                        numberOfPasswords = 3
+                    }
+                }
             }
         }
 
@@ -278,8 +320,6 @@ fun DisplayPageDisplay(
             }
         }
 
-        val windowSizeClass = calculateWindowSizeClass()
-
         Column(
             modifier = Modifier.fillMaxSize()
                 .background(getBackgroundColor()),
@@ -288,86 +328,69 @@ fun DisplayPageDisplay(
 
             ) {
 
-
-/*
-            when (windowSizeClass.widthSizeClass) {
-                WindowWidthSizeClass.Compact -> {
-                    DisplayCompactColumnView(
-                        state,
-                        scope,
-                        onCardItemClicked,
-                        onSelectedCardChange,
-                        onSelectedPasswordChange,
-                        onBottomSheetVisibleChange,
-                        onEvent,
-                        selectedPasswordTag,
-                        onSelectedPasswordTagChanged,
-                        onPasswordItemClicked
-                    )
-                }
-
-                WindowWidthSizeClass.Medium -> {
-                    DisplayMediumColumnView(
-                        state,
-                        scope,
-                        onCardItemClicked,
-                        onSelectedCardChange,
-                        onSelectedPasswordChange,
-                        onBottomSheetVisibleChange,
-                        onEvent,
-                        selectedPasswordTag,
-                        onSelectedPasswordTagChanged,
-                        onPasswordItemClicked
-                    )
-                }
-
-                WindowWidthSizeClass.Expanded -> {
-                    DisplayExpandedColumnView(
-                        state,
-                        scope,
-                        onCardItemClicked,
-                        onSelectedCardChange,
-                        onSelectedPasswordChange,
-                        onBottomSheetVisibleChange,
-                        onEvent,
-                        selectedPasswordTag,
-                        onSelectedPasswordTagChanged,
-                        onPasswordItemClicked
-                    )
-                }
+            if (isRowView) {
+                // Row View
+                DisplayRowView(
+                    state,
+                    scope,
+                    onCardItemClicked,
+                    onSelectedCardChange,
+                    onSelectedPasswordChange,
+                    onBottomSheetVisibleChange,
+                    onEvent,
+                    selectedPasswordTag,
+                    onSelectedPasswordTagChanged,
+                    onPasswordItemClicked
+                )
+            } else {
+                // Column View
+                DisplayColumnView(
+                    state,
+                    scope,
+                    onCardItemClicked,
+                    onSelectedCardChange,
+                    onSelectedPasswordChange,
+                    onBottomSheetVisibleChange,
+                    onEvent,
+                    selectedPasswordTag,
+                    onSelectedPasswordTagChanged,
+                    onPasswordItemClicked
+                )
             }
-*/
-            when (windowSizeClass.heightSizeClass) {
-                WindowHeightSizeClass.Compact -> {
-                    DisplayMediumColumnView(
-                        state,
-                        scope,
-                        onCardItemClicked,
-                        onSelectedCardChange,
-                        onSelectedPasswordChange,
-                        onBottomSheetVisibleChange,
-                        onEvent,
-                        selectedPasswordTag,
-                        onSelectedPasswordTagChanged,
-                        onPasswordItemClicked
-                    )
-                }
 
-                WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded -> {
-                    DisplayCompactColumnView(
-                        state,
-                        scope,
-                        onCardItemClicked,
-                        onSelectedCardChange,
-                        onSelectedPasswordChange,
-                        onBottomSheetVisibleChange,
-                        onEvent,
-                        selectedPasswordTag,
-                        onSelectedPasswordTagChanged,
-                        onPasswordItemClicked
-                    )
-                }
-            }
+            /*
+                        when (windowSizeClass.heightSizeClass) {
+                            WindowHeightSizeClass.Compact -> {
+                                DisplayMediumColumnView(
+                                    state,
+                                    scope,
+                                    onCardItemClicked,
+                                    onSelectedCardChange,
+                                    onSelectedPasswordChange,
+                                    onBottomSheetVisibleChange,
+                                    onEvent,
+                                    selectedPasswordTag,
+                                    onSelectedPasswordTagChanged,
+                                    onPasswordItemClicked
+                                )
+                            }
+
+                            WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded -> {
+                                DisplayCompactColumnView(
+                                    state,
+                                    scope,
+                                    onCardItemClicked,
+                                    onSelectedCardChange,
+                                    onSelectedPasswordChange,
+                                    onBottomSheetVisibleChange,
+                                    onEvent,
+                                    selectedPasswordTag,
+                                    onSelectedPasswordTagChanged,
+                                    onPasswordItemClicked
+                                )
+                            }
+                        }
+            */
 
 
         }
@@ -383,7 +406,7 @@ fun DisplayPageDisplay(
 }
 
 @Composable
-private fun DisplayCompactColumnView(
+private fun DisplayColumnView(
     state: CredentialState,
     scope: CoroutineScope,
     onCardItemClicked: (Card) -> Unit,
@@ -395,18 +418,20 @@ private fun DisplayCompactColumnView(
     onSelectedPasswordTagChanged: (String?) -> Unit,
     onPasswordItemClicked: (Password) -> Unit,
 ) {
-    LazyColumn(
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(numberOfPasswords),
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = 10.dp, vertical = 5.dp)
     ) {
-        item {
+
+        item(span = { GridItemSpan(numberOfPasswords) }) {
             Header()
         }
-        item {
+        item(span = { GridItemSpan(numberOfPasswords) }) {
             CardHeader()
         }
 
-        item {
+        item(span = { GridItemSpan(numberOfPasswords) }) {
             if (state.cards.isNotEmpty()) {
                 // Display all cards
                 DisplayRowCards(
@@ -425,11 +450,11 @@ private fun DisplayCompactColumnView(
         }
 
 
-        item {
+        item(span = { GridItemSpan(numberOfPasswords) }) {
             ManagePasswordHeader()
         }
 
-        item {
+        item(span = { GridItemSpan(numberOfPasswords) }) {
             DisplayRowPasswordTags(
                 selectedPasswordTag,
                 onEvent,
@@ -437,7 +462,7 @@ private fun DisplayCompactColumnView(
             )
         }
 
-        item {
+        item(span = { GridItemSpan(numberOfPasswords) }) {
             FilterPasswordDisplayHeader(selectedPasswordTag)
         }
 
@@ -447,10 +472,11 @@ private fun DisplayCompactColumnView(
         }
 
         if (state.passwords.isNotEmpty()) {
-            items(list) {
+            items(list.size) {
+                val password = list.get(it)
                 // Password -> it
                 PasswordItemDisplay(
-                    it,
+                    password,
                     onPasswordItemClicked,
                     scope,
                     onSelectedPasswordChange,
@@ -468,7 +494,7 @@ private fun DisplayCompactColumnView(
 }
 
 @Composable
-private fun DisplayMediumColumnView(
+private fun DisplayRowView(
     state: CredentialState,
     scope: CoroutineScope,
     onCardItemClicked: (Card) -> Unit,
@@ -488,20 +514,23 @@ private fun DisplayMediumColumnView(
         Row(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
                 modifier = Modifier
-                    .weight(1f)
+                    .width(cardWidth + 10.dp)
             ) {
                 item {
                     CardHeader()
                 }
 
                 if (state.cards.isNotEmpty()) {
-                    // Display all cards
+                    // Display all cards in column view
                     items(state.cards) {
                         Box(
                             modifier = Modifier
-                                .fillParentMaxWidth(1f)
+                                .width(cardWidth)
+                                .aspectRatio(1.75f)
+                                .wrapContentSize()
                         ) {
                             SecureHalfCardDisplay(it,
+
                                 onCardItemClicked = { card ->
                                     onCardItemClicked(card)
                                 },
@@ -528,14 +557,15 @@ private fun DisplayMediumColumnView(
 
             }
 
-            LazyColumn(
-                modifier = Modifier.weight(1f)
+            LazyVerticalGrid(
+                modifier = Modifier.weight(numberOfPasswords.toFloat()),
+                columns = GridCells.Fixed(numberOfPasswords)
             ) {
-                item {
+                item (span = { GridItemSpan(numberOfPasswords) }){
                     ManagePasswordHeader()
                 }
 
-                item {
+                item (span = { GridItemSpan(numberOfPasswords) }){
                     DisplayRowPasswordTags(
                         selectedPasswordTag,
                         onEvent,
@@ -543,7 +573,7 @@ private fun DisplayMediumColumnView(
                     )
                 }
 
-                item {
+                item (span = { GridItemSpan(numberOfPasswords) }){
                     FilterPasswordDisplayHeader(selectedPasswordTag)
                 }
 
@@ -552,10 +582,11 @@ private fun DisplayMediumColumnView(
                     list = state.filteredPasswords
                 }
                 if (state.passwords.isNotEmpty()) {
-                    items(list) {
+                    items(list.size) {
+                        val password = list[it]
                         // Password -> it
                         PasswordItemDisplay(
-                            it,
+                            password,
                             onPasswordItemClicked,
                             scope,
                             onSelectedPasswordChange,
@@ -830,17 +861,7 @@ private fun DisplayRowCards(
     }
 }
 
-@Composable
-private fun DisplayColumnCards(
-    state: CredentialState,
-    scope: CoroutineScope,
-    onCardItemClicked: (Card) -> Unit,
-    onSelectedCardChange: (Card?) -> Unit,
-    onSelectedPasswordChange: (Password?) -> Unit,
-    onBottomSheetVisibleChange: (Boolean) -> Unit,
-) {
 
-}
 
 @Composable
 private fun AddNewPasswordDisplay(onEvent: (event: CredentialEvent) -> Unit) {
