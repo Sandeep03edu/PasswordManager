@@ -1,11 +1,13 @@
 package com.sandeep03edu.passwordmanager.manager.utils.data
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
-fun getPasswordTagsWithIcons(): List<Pair<String, ImageVector>> {
+fun getPasswordTagsWithIcons(): MutableList<Pair<String, ImageVector>> {
     val mutableList: MutableList<Pair<String, ImageVector>> = mutableListOf()
     mutableList.add(Pair("Personal", Icons.Default.Person))
     mutableList.add(Pair("Browser", Icons.Default.Person))
@@ -16,17 +18,7 @@ fun getPasswordTagsWithIcons(): List<Pair<String, ImageVector>> {
     return mutableList
 }
 
-fun getPasswordTagColor(tag: String): Color {
-    val list = getPasswordTags()
-    if (tag == list.get(0)) return Color(0xffff9900)
-    if (tag == list.get(1)) return Color(0xff29a329)
-    if (tag == list.get(2)) return Color(0xff3333cc)
-    if (tag == list.get(3)) return Color(0xffc6538c)
-    if (tag == list.get(4)) return Color(0xff29a329)
-    if (tag == list.get(5)) return Color(0xff3333cc)
 
-    return Color(0xffff9900)
-}
 
 fun getPasswordTags(): List<String> {
     val list = mutableListOf<String>()

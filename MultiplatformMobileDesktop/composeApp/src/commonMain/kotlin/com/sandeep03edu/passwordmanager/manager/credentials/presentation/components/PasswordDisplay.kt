@@ -30,6 +30,7 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCredentialUploadImage
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
 import io.kamel.core.getOrNull
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -101,7 +102,8 @@ fun PasswordSecureHalfDisplay(
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
-                        )
+                        ),
+                        color = getTextColor()
                     )
 
                     space(4)

@@ -185,10 +185,10 @@ fun SecureHalfCardDisplay(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
                     ),
-                    color = getTextColorInverse()
                 )
 
                 println("$TAG Card:: $card")
+
                 Image(
                     painter = paintResource(getCredentialUploadImage(card.isSynced)),
                     contentDescription = null,

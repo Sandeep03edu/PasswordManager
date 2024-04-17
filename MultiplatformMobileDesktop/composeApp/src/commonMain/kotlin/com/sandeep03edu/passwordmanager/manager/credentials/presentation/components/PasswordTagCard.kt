@@ -3,6 +3,7 @@ package com.sandeep03edu.passwordmanager.manager.credentials.presentation.compon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,8 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sandeep03edu.passwordmanager.manager.utils.data.generateRandomDarkColor
-import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTagColor
+import com.sandeep03edu.passwordmanager.ui.theme.getPasswordTagColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverseNonCompose
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorNonCompose
 
 @Composable
 fun PasswordTagCard(
@@ -29,11 +32,14 @@ fun PasswordTagCard(
     selectedPasswordTag: String?,
     onClick: () -> Unit,
 ) {
+    val isDark = isSystemInDarkTheme()
+
     val tag = tagPair.first
-    var containerColor = getPasswordTagColor(tag)
-    val textColor = MaterialTheme.colorScheme.surface
+    var containerColor = remember { getPasswordTagColor(isDark) }
+    var textColor = remember { getTextColorInverseNonCompose(isDark)}
     if (selectedPasswordTag != null && selectedPasswordTag == tag) {
         containerColor = MaterialTheme.colorScheme.onSurface
+        textColor = remember { getTextColorNonCompose(isDark)}
     }
 
     Box(
@@ -56,10 +62,10 @@ fun PasswordTagCard(
                 .wrapContentHeight(align = Alignment.CenterVertically)
                 .align(Alignment.Center),
             style = TextStyle(
-                color = textColor,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 15.sp,
-            )
+            ),
+            color = textColor
         )
     }
 }

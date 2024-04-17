@@ -7,8 +7,8 @@ import java.util.Properties
 
 actual class DatabaseDriverFactory {
     actual fun create(): SqlDriver {
-//        val driver: SqlDriver = JdbcSqliteDriver(url = "jdbc:sqlite:CredentialDatabase.db")
-        val driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+        val driver: SqlDriver = JdbcSqliteDriver(url = "jdbc:sqlite:CredentialDatabase.db")
+//        val driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
 //        CredentialDatabase.Schema.create(driver)
         return driver
     }

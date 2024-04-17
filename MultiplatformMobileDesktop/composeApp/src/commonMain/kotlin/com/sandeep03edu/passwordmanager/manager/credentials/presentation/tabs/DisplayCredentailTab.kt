@@ -761,12 +761,15 @@ private fun DisplayRowPasswordTags(
     onSelectedPasswordTagChanged: (String?) -> Unit,
 ) {
     val passwordTags = getPasswordTagsWithIcons()
+
     LazyRow(
         modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(align = Alignment.CenterStart)
     ) {
-        items(passwordTags) {
+        items(passwordTags, key = {
+            it.first
+        }) {
             Box(
                 modifier = Modifier
                     .aspectRatio(1f)
