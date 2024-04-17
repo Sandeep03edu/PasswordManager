@@ -23,8 +23,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.ui.theme.getPasswordTagColor
-import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverseNonCompose
-import com.sandeep03edu.passwordmanager.ui.theme.getTextColorNonCompose
+import com.sandeep03edu.passwordmanager.ui.theme.getSelectedPasswordTagColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 
 @Composable
 fun PasswordTagCard(
@@ -32,14 +33,12 @@ fun PasswordTagCard(
     selectedPasswordTag: String?,
     onClick: () -> Unit,
 ) {
-    val isDark = isSystemInDarkTheme()
-
     val tag = tagPair.first
-    var containerColor = remember { getPasswordTagColor(isDark) }
-    var textColor = remember { getTextColorInverseNonCompose(isDark)}
+    var containerColor = getPasswordTagColor()
+    var textColor =  getTextColorInverse()
     if (selectedPasswordTag != null && selectedPasswordTag == tag) {
-        containerColor = MaterialTheme.colorScheme.onSurface
-        textColor = remember { getTextColorNonCompose(isDark)}
+        containerColor = getSelectedPasswordTagColor()
+        textColor =  getTextColor()
     }
 
     Box(

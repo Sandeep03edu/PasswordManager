@@ -182,9 +182,10 @@ fun SecureHalfCardDisplay(
                 Text(
                     text = card.cardHolderName,
                     style = TextStyle(
-                        fontSize = 15.sp,
+                        fontSize = 17.sp,
                         fontWeight = FontWeight.SemiBold
                     ),
+                    color = getTextColorInverse()
                 )
 
                 println("$TAG Card:: $card")
