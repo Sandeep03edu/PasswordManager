@@ -18,10 +18,18 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -29,8 +37,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -43,7 +56,12 @@ import com.sandeep03edu.passwordmanager.manager.credentials.presentation.compone
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.UpperHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.BuildDesignedTitle
+import com.sandeep03edu.passwordmanager.manager.utils.presentation.DisplaySnackbarToast
+import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconLabeledTextField
+import com.sandeep03edu.passwordmanager.space
 import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 
 
@@ -62,7 +80,21 @@ data class DetailedCardDisplayPageClass(
             card = appModule.credentialDataSource.getCardById(card.appId).first()
         }
 
-        DetailedCardDisplayPage(viewModel, state, onEvent, card)
+        val coroutineScope = rememberCoroutineScope()
+        val snackbarHostState = remember { SnackbarHostState() }
+
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+        ) {
+            DetailedCardDisplayPage(
+                viewModel,
+                state,
+                onEvent,
+                card,
+                coroutineScope,
+                snackbarHostState
+            )
+        }
     }
 }
 
@@ -73,6 +105,8 @@ fun DetailedCardDisplayPage(
     state: CredentialState,
     onEvent: (event: CredentialEvent) -> Unit,
     card: Card,
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
 ) {
     Scaffold(
         floatingActionButton = {
@@ -141,16 +175,21 @@ fun DetailedCardDisplayPage(
 
             if (isSwipeable) {
                 // Display one half of card
-//                swipeableCardDisplay(
-//                    card,
-//                    numOfRows,
-//                )
+                swipeableCardDisplay(
+                    card,
+                    numOfRows,
+                    cardSize,
+                    coroutineScope,
+                    snackbarHostState
+                )
             } else {
                 // Display one half of card
                 detailedCardDisplay(
                     card,
                     numOfRows,
-                    cardSize
+                    cardSize,
+                    coroutineScope,
+                    snackbarHostState
                 )
             }
 
@@ -167,7 +206,15 @@ fun DetailedCardDisplayPage(
 }
 
 @Composable
-fun detailedCardDisplay(card: Card, numOfRows: Int, cardSize: CardSize) {
+fun detailedCardDisplay(
+    card: Card,
+    numOfRows: Int,
+    cardSize: CardSize,
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+) {
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+
     LazyVerticalGrid(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxWidth()
@@ -181,7 +228,6 @@ fun detailedCardDisplay(card: Card, numOfRows: Int, cardSize: CardSize) {
             ) {
                 Box(
                     modifier = Modifier
-//                        .weight(6f)
                         .width(cardSize.cardWidth)
                         .aspectRatio(1.75f)
                         .wrapContentSize()
@@ -196,7 +242,6 @@ fun detailedCardDisplay(card: Card, numOfRows: Int, cardSize: CardSize) {
 
                 Box(
                     modifier = Modifier
-//                        .weight(6f)
                         .width(cardSize.cardWidth)
                         .aspectRatio(1.75f)
                         .wrapContentSize()
@@ -210,20 +255,419 @@ fun detailedCardDisplay(card: Card, numOfRows: Int, cardSize: CardSize) {
 
             }
         }
-    }
-}
 
-@Composable
-fun swipeableCardDisplay(card: Card, cardWidth: Dp, noOfRows: Int, fontSize: TextUnit) {
-    LazyColumn(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-            .fillMaxHeight(1f)
-    ) {
+        item(span = { GridItemSpan(numOfRows) }) { space(8) }
+
+        item(span = { GridItemSpan(numOfRows) }) {
+            Text(
+                text = "Customer Details",
+                fontSize = (((cardSize.fontSize).value + 4).sp),
+                color = getTextColor(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            )
+        }
+
         item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Person,
+                text = card.cardHolderName,
+                label = "Customer Name",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Person,
+                text = card.issuerName,
+                label = "Issuer Name",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Person,
+                text = card.cardNumber,
+                label = "Card Number",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Person,
+                text = card.cardType,
+                label = "Card Type",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
 
+        item(span = { GridItemSpan(numOfRows) }) { space(8) }
+
+        item(span = { GridItemSpan(numOfRows) }) {
+            Text(
+                text = "Issue and Expiry Dates",
+                fontSize = (((cardSize.fontSize).value + 4).sp),
+                color = getTextColor(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            )
+        }
+
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.CalendarMonth,
+                text = card.issueDate,
+                label = "Issue Date",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.CalendarMonth,
+                text = card.expiryDate,
+                label = "Expiry Date",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+
+        item(span = { GridItemSpan(numOfRows) }) { space(8) }
+
+        item(span = { GridItemSpan(numOfRows) }) {
+            Text(
+                text = "Security Keys",
+                fontSize = (((cardSize.fontSize).value + 4).sp),
+                color = getTextColor(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            )
+        }
+
+
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Password,
+                text = card.cvv,
+                label = "CVV",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Pin,
+                text = card.pin,
+                label = "Pin",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
         }
     }
 }
 
+
+
+@Composable
+fun swipeableCardDisplay(
+    card: Card,
+    numOfRows: Int,
+    cardSize: CardSize,
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+) {
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+
+    LazyVerticalGrid(
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier.fillMaxWidth()
+            .fillMaxHeight(1f),
+        columns = GridCells.Fixed(numOfRows)
+    ) {
+        item(span = { GridItemSpan(numOfRows) }) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(cardSize.cardWidth)
+                        .aspectRatio(1.75f)
+                        .wrapContentSize()
+                        .padding(vertical = 5.dp, horizontal = 10.dp)
+                ) {
+                    UpperHalfCardDisplay(
+                        card = card,
+                        cardSize = cardSize
+                    )
+                }
+
+
+//                Box(
+//                    modifier = Modifier
+//                        .width(cardSize.cardWidth)
+//                        .aspectRatio(1.75f)
+//                        .wrapContentSize()
+//                        .padding(vertical = 5.dp, horizontal = 10.dp)
+//                ) {
+//                    BottomHalfCardDisplay(
+//                        card = card,
+//                        cardSize = cardSize
+//                    )
+//                }
+
+            }
+        }
+
+        item(span = { GridItemSpan(numOfRows) }) { space(8) }
+
+        item(span = { GridItemSpan(numOfRows) }) {
+            Text(
+                text = "Customer Details",
+                fontSize = (((cardSize.fontSize).value + 4).sp),
+                color = getTextColor(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            )
+        }
+
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Person,
+                text = card.cardHolderName,
+                label = "Customer Name",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Person,
+                text = card.issuerName,
+                label = "Issuer Name",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Person,
+                text = card.cardNumber,
+                label = "Card Number",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Person,
+                text = card.cardType,
+                label = "Card Type",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+
+        item(span = { GridItemSpan(numOfRows) }) { space(8) }
+
+        item(span = { GridItemSpan(numOfRows) }) {
+            Text(
+                text = "Issue and Expiry Dates",
+                fontSize = (((cardSize.fontSize).value + 4).sp),
+                color = getTextColor(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            )
+        }
+
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.CalendarMonth,
+                text = card.issueDate,
+                label = "Issue Date",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.CalendarMonth,
+                text = card.expiryDate,
+                label = "Expiry Date",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+
+        item(span = { GridItemSpan(numOfRows) }) { space(8) }
+
+        item(span = { GridItemSpan(numOfRows) }) {
+            Text(
+                text = "Security Keys",
+                fontSize = (((cardSize.fontSize).value + 4).sp),
+                color = getTextColor(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            )
+        }
+
+
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Password,
+                text = card.cvv,
+                label = "CVV",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+        item {
+            IconLabeledTextField(
+                leadingIcon = Icons.Default.Pin,
+                text = card.pin,
+                label = "Pin",
+                trailingIcon = Icons.Default.ContentCopy,
+                onClick = {
+                    onCopyClick(
+                        text = card.cardHolderName,
+                        clipboardManager = clipboardManager,
+                        coroutineScope = coroutineScope,
+                        snackbarHostState = snackbarHostState
+                    )
+                }
+            )
+        }
+    }
+}
+
+fun onCopyClick(
+    text: String,
+    clipboardManager: ClipboardManager,
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+) {
+    clipboardManager.setText(AnnotatedString(text))
+
+    DisplaySnackbarToast(
+        snackbarHostState = snackbarHostState,
+        coroutineScope = coroutineScope,
+        message = "Copied to clipboard!!"
+    )
+}

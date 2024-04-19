@@ -144,3 +144,12 @@ fun getDetailedHeaderColor() : Pair<Color, Color> {
     return Pair(Color.Yellow, Color.Green)
 }
 
+@Composable
+fun getTextEditFieldBackground() : Color {
+    val isDark = isSystemInDarkTheme()
+    if (!isDark) {
+        return Color(0xff0260bd)
+    }
+
+    return Color(0xffdfebff)
+}
