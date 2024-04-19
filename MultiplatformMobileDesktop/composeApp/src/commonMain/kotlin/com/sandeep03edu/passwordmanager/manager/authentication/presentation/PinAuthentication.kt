@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.paintResource
+import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
 
 
 val TAG = "PinAuthenticationTag"
@@ -264,10 +265,32 @@ private fun ColumnPinAuthentication(
         list.add(-1)
     }
 
-    println("$TAG List:: ${list}")
+    println("$TAG List:: $list")
+
+    currentIndex = 0
+
+// TODO : Remove auto verification
+//**********************************************************************//
+        repeat(pinLength){
+            values.set(currentIndex, it + 1)
+            currentIndex++
+            println("$TAG It:: $it")
+        }
+        var ans = ""
+        var i = 0
+        repeat(pinLength) {
+            ans += values[i].toString()
+            values[i] = -1;
+            i++;
+        }
+        currentIndex = 0
+        onComplete(ans)
+//**********************************************************************//
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+            .background(getBackgroundColor())
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 

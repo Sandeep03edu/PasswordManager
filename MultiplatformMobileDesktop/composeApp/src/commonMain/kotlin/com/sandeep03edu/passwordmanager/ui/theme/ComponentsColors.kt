@@ -16,9 +16,6 @@ fun getCardColorShades(
         list.add(Color(0x41e3faf6))
         list.add(Color(0x2ce8ffff))
     } else {
-//        list.add(Color(0xffdedddd))
-//        list.add(Color(0x41e3faf6))
-//        list.add(Color(0x2ce8ffff))
 
         list.add(Color(0xffafd3ff))
         list.add(Color(0x41e3faf6))
@@ -133,3 +130,17 @@ fun getBottomBarBackground() : Color {
 
     return Color(0x713c9dff)
 }
+
+/*
+Pair of UpperHalf and BottomHalf header color
+ */
+@Composable
+fun getDetailedHeaderColor() : Pair<Color, Color> {
+    val isDark = isSystemInDarkTheme()
+    if (isDark) {
+        return Pair(Color(0xff1030a2), Color(0xff0085ff))
+    }
+
+    return Pair(Color.Yellow, Color.Green)
+}
+

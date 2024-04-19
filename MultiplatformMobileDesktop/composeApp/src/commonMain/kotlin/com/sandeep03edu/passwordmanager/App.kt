@@ -10,10 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,18 +18,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
-import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
-import cafe.adriel.voyager.core.lifecycle.LocalNavigatorScreenLifecycleProvider
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sandeep03edu.passwordmanager.core.presentation.AppTheme
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
-import com.sandeep03edu.passwordmanager.manager.authentication.data.restartApiCall
 import com.sandeep03edu.passwordmanager.manager.authentication.data.updateServerCards
 import com.sandeep03edu.passwordmanager.manager.authentication.data.updateServerPasswords
 import com.sandeep03edu.passwordmanager.manager.authentication.presentation.UserAuthentication
@@ -168,45 +160,36 @@ data class AppHomeLayout(
                             }
                         }
                     } else {
-                        // TODO : Remove verification skip
-                        if(1==1) {
-                            navigator.replace(
-                                launchLoggedUserDisplayPage(
-                                    navigator,
-                                    appModule
-                                )
-                            )
-                        }
-                        else {
-                            // Move to display page for logged in user
-                            navigator.push(
-                                PinAuthenticationDisplayClass(
-                                    label = "Login pin",
-                                    pinLength = 4,
-                                    onComplete = { it, snackbarHostState, coroutineScope ->
 
-                                        if (checkLoginPin(it)) {
-                                            navigator.replace(
-                                                launchLoggedUserDisplayPage(
-                                                    navigator,
-                                                    appModule
-                                                )
+
+                        // Move to display page for logged in user
+                        navigator.push(
+                            PinAuthenticationDisplayClass(
+                                label = "Login pin",
+                                pinLength = 4,
+                                onComplete = { it, snackbarHostState, coroutineScope ->
+
+                                    if (checkLoginPin(it)) {
+                                        navigator.replace(
+                                            launchLoggedUserDisplayPage(
+                                                navigator,
+                                                appModule
                                             )
+                                        )
 
 
-                                        } else {
-                                            println("$TAG Wrong Login Pin!!")
-                                            DisplaySnackbarToast(
-                                                snackbarHostState,
-                                                coroutineScope,
-                                                "Wrong Login Pin!!"
-                                            )
-                                        }
-
+                                    } else {
+                                        println("$TAG Wrong Login Pin!!")
+                                        DisplaySnackbarToast(
+                                            snackbarHostState,
+                                            coroutineScope,
+                                            "Wrong Login Pin!!"
+                                        )
                                     }
-                                )
+
+                                }
                             )
-                        }
+                        )
                     }
                 }
             }

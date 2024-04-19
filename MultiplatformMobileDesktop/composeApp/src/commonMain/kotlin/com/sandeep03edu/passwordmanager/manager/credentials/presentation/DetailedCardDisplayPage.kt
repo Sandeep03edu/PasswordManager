@@ -1,14 +1,21 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
@@ -16,28 +23,29 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
+import com.sandeep03edu.passwordmanager.manager.credentials.domain.CardSize
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.BottomHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.UpperHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
-import com.sandeep03edu.passwordmanager.manager.utils.data.getRandomDarkCardBackground
-import com.sandeep03edu.passwordmanager.manager.utils.presentation.BuildDesignedHeader
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.BuildDesignedTitle
-import com.sandeep03edu.passwordmanager.space
+import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
 import kotlinx.coroutines.flow.first
+
 
 data class DetailedCardDisplayPageClass(
     val appModule: AppModule,
@@ -88,56 +96,62 @@ fun DetailedCardDisplayPage(
 
         Column(
             modifier = Modifier.fillMaxSize()
+                .background(getBackgroundColor())
                 .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Top
         ) {
-//            Text(
-//                buildAnnotatedString
-//                {
-//                    withStyle(
-//                        style = SpanStyle(
-//                            fontWeight = FontWeight.ExtraBold,
-//                            color = MaterialTheme.colorScheme.primary,
-//                            fontSize = 40.sp
-//                        )
-//                    ) {
-//                        append("Ca")
-//                    }
-//                    withStyle(
-//                        style = SpanStyle(
-//                            fontSize = 36.sp,
-//                            fontWeight = FontWeight.Bold,
-//                        )
-//                    ) {
-//                        append("rd")
-//                    }
-//                }
-//            )
+
 
             BuildDesignedTitle(
                 list = mutableListOf("Ca", "rd"),
             )
 
-/*
+
+            var numOfRows = 1
+            var isSwipeable = true
+            val cardSize = CardSize()
+
             when (windowSizeClass.widthSizeClass) {
                 WindowWidthSizeClass.Compact -> {
-                    CompactColumnView(card)
+                    numOfRows = 1
+                    isSwipeable = true
                 }
 
-                WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
-                    MediumExpandedRowView(card)
+                WindowWidthSizeClass.Medium -> {
+                    numOfRows = 2
+                    isSwipeable = false
+                    cardSize.cardWidth = 280.dp
+                    cardSize.fontSize = 16.sp
+                    cardSize.iconSize = 16.dp
+                    cardSize.logoHeight = 30.dp
+                    cardSize.headerFontSize = 20.sp
+                }
+
+                WindowWidthSizeClass.Expanded -> {
+                    numOfRows = 3
+                    isSwipeable = false
+                    cardSize.cardWidth = 400.dp
+                    cardSize.fontSize = 20.sp
+                    cardSize.iconSize = 20.dp
+                    cardSize.logoHeight = 40.dp
+                    cardSize.headerFontSize = 28.sp
                 }
             }
-*/
 
-            when(windowSizeClass.heightSizeClass){
-                WindowHeightSizeClass.Compact->{
-                    MediumExpandedRowView(card)
-                }
-                WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded->{
-                    CompactColumnView(card)
-                }
+            if (isSwipeable) {
+                // Display one half of card
+//                swipeableCardDisplay(
+//                    card,
+//                    numOfRows,
+//                )
+            } else {
+                // Display one half of card
+                detailedCardDisplay(
+                    card,
+                    numOfRows,
+                    cardSize
+                )
             }
 
         }
@@ -153,7 +167,54 @@ fun DetailedCardDisplayPage(
 }
 
 @Composable
-private fun CompactColumnView(card: Card) {
+fun detailedCardDisplay(card: Card, numOfRows: Int, cardSize: CardSize) {
+    LazyVerticalGrid(
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier.fillMaxWidth()
+            .fillMaxHeight(1f),
+        columns = GridCells.Fixed(numOfRows)
+    ) {
+        item(span = { GridItemSpan(numOfRows) }) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+//                        .weight(6f)
+                        .width(cardSize.cardWidth)
+                        .aspectRatio(1.75f)
+                        .wrapContentSize()
+                        .padding(vertical = 5.dp, horizontal = 10.dp)
+                ) {
+                    UpperHalfCardDisplay(
+                        card = card,
+                        cardSize = cardSize
+                    )
+                }
+
+
+                Box(
+                    modifier = Modifier
+//                        .weight(6f)
+                        .width(cardSize.cardWidth)
+                        .aspectRatio(1.75f)
+                        .wrapContentSize()
+                        .padding(vertical = 5.dp, horizontal = 10.dp)
+                ) {
+                    BottomHalfCardDisplay(
+                        card = card,
+                        cardSize = cardSize
+                    )
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
+fun swipeableCardDisplay(card: Card, cardWidth: Dp, noOfRows: Int, fontSize: TextUnit) {
     LazyColumn(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -161,60 +222,8 @@ private fun CompactColumnView(card: Card) {
             .fillMaxHeight(1f)
     ) {
         item {
-            val cardBackground = remember { getRandomDarkCardBackground() }
 
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                UpperHalfCardDisplay(
-                    card,
-                    cardBackground
-                )
-            }
-
-            space(8)
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                BottomHalfCardDisplay(
-                    card,
-                    cardBackground
-                )
-            }
-            space(16)
         }
     }
 }
 
-@Composable
-private fun MediumExpandedRowView(card: Card) {
-    LazyRow(
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-
-        modifier = Modifier.fillMaxWidth()
-            .fillMaxHeight(1f),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        item {
-            val cardBackground = remember { getRandomDarkCardBackground() }
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                UpperHalfCardDisplay(
-                    card,
-                    cardBackground
-                )
-            }
-
-            space(0, 8)
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                BottomHalfCardDisplay(
-                    card,
-                    cardBackground
-                )
-            }
-
-        }
-
-    }
-}

@@ -3,6 +3,7 @@ package com.sandeep03edu.passwordmanager.manager.credentials.presentation.compon
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,14 +17,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -33,24 +39,25 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
+import com.sandeep03edu.passwordmanager.manager.credentials.domain.CardSize
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.TAG
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardIssuerLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCardTypeLogo
 import com.sandeep03edu.passwordmanager.manager.utils.data.getCredentialUploadImage
+import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconText
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
 import com.sandeep03edu.passwordmanager.ui.theme.getCardColorShades
+import com.sandeep03edu.passwordmanager.ui.theme.getDetailedHeaderColor
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
-import dev.icerock.moko.resources.ImageResource
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
-
-
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -67,10 +74,7 @@ fun SecureHalfCardDisplay(
 
 
     Box(
-        modifier = Modifier
-            .fillMaxSize(1f)
-            .padding(5.dp)
-            .clip(RoundedCornerShape(10.dp))
+        modifier = Modifier.fillMaxSize(1f).padding(5.dp).clip(RoundedCornerShape(10.dp))
 //            .background(MaterialTheme.colorScheme.primary)
 //            .background(cardBkgColor)
             .combinedClickable(
@@ -80,12 +84,10 @@ fun SecureHalfCardDisplay(
                 onLongClick = {
                     onCardItemLongClicked(card)
                 },
-            )
-            .padding(10.dp),
+            ).padding(10.dp),
     ) {
         Canvas(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
 
             val canvasWidth = size.width + 20.dp.toPx()
@@ -112,8 +114,8 @@ fun SecureHalfCardDisplay(
                 startAngle = 90f,
                 sweepAngle = 180f,
                 useCenter = true,
-                topLeft = Offset(canvasWidth-120.dp.toPx(), -40.dp.toPx()),
-                size = Size(canvasWidth + 60.dp.toPx(), canvasHeight *2f),
+                topLeft = Offset(canvasWidth - 120.dp.toPx(), -40.dp.toPx()),
+                size = Size(canvasWidth + 60.dp.toPx(), canvasHeight * 2f),
             )
         }
 
@@ -130,8 +132,7 @@ fun SecureHalfCardDisplay(
             Image(
                 painter = paintResource(getCardTypeLogo(card.cardType)),
                 null,
-                modifier = Modifier.width(100.dp)
-                    .height(55.dp)
+                modifier = Modifier.width(100.dp).height(55.dp)
                     .padding(vertical = 5.dp, horizontal = 0.dp)
             )
 
@@ -139,17 +140,13 @@ fun SecureHalfCardDisplay(
 
             val cardNumber = card.cardNumber
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+                horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
             ) {
                 repeat(3) {
                     Text(
-                        text = "****",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = getTextColorInverse()
+                        text = "****", style = TextStyle(
+                            fontSize = 16.sp, fontWeight = FontWeight.Medium
+                        ), color = getTextColorInverse()
                     )
 
                     space(width = 15)
@@ -157,18 +154,14 @@ fun SecureHalfCardDisplay(
 
                 val securedCardNumber = cardNumber.substring(
                     range = IntRange(
-                        cardNumber.length - 4,
-                        cardNumber.length - 1
+                        cardNumber.length - 4, cardNumber.length - 1
                     )
                 )
 
                 Text(
-                    text = securedCardNumber,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    ),
-                    color = getTextColorInverse()
+                    text = securedCardNumber, style = TextStyle(
+                        fontSize = 16.sp, fontWeight = FontWeight.Medium
+                    ), color = getTextColorInverse()
                 )
 
             }
@@ -176,16 +169,12 @@ fun SecureHalfCardDisplay(
             space(4)
 
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+                horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = card.cardHolderName,
-                    style = TextStyle(
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    color = getTextColorInverse()
+                    text = card.cardHolderName, style = TextStyle(
+                        fontSize = 17.sp, fontWeight = FontWeight.SemiBold
+                    ), color = getTextColorInverse()
                 )
 
                 println("$TAG Card:: $card")
@@ -206,24 +195,72 @@ fun SecureHalfCardDisplay(
 @Composable
 fun UpperHalfCardDisplay(
     card: Card,
-    background: ImageResource,
-    textColor: Color = Color.White,
-    textHeaderColor: Color = Color.Yellow,
+    cardSize: CardSize = CardSize(),
+    textColor: Color = getTextColorInverse(),
+    textHeaderColor: Color = getDetailedHeaderColor().first,
 ) {
+
+
     Box(
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .aspectRatio(1.5f)
+        modifier = Modifier.fillMaxWidth().aspectRatio(1.75f).wrapContentSize()
             .padding(vertical = 5.dp, horizontal = 10.dp)
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
-            .paint(
-                paintResource(background),
-                contentScale = ContentScale.Fit
-            )
-//            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(Color.Transparent)
             .padding(vertical = 15.dp, horizontal = 15.dp)
     ) {
+        val cardShades = getCardColorShades()
+        val cardBkgColor = cardShades[0]
+        val arc1Color = cardShades[1]
+        val arc2Color = cardShades[2]
+        val cardNumber = card.cardNumber
+        val cardHolderName = card.cardHolderName.uppercase()
+        var firstName = ""
+        var lastName = ""
+
+        if (cardHolderName.contains(' ')) {
+            val pos = cardHolderName.indexOf(' ')
+            firstName = cardHolderName.subSequence(0, pos).toString()
+            lastName = cardHolderName.subSequence(pos, cardHolderName.length).toString()
+        } else {
+            val pos = cardHolderName.length / 2
+            firstName = cardHolderName.subSequence(0, pos).toString()
+            lastName = cardHolderName.subSequence(pos, cardHolderName.length).toString()
+        }
+
+        Canvas(
+            modifier = Modifier.fillMaxSize()
+        ) {
+
+            val canvasWidth = size.width + 20.dp.toPx()
+            val canvasHeight = size.height + 20.dp.toPx()
+
+            drawRoundRect(
+                color = cardBkgColor,
+                topLeft = Offset(-10.dp.toPx(), -10.dp.toPx()),
+                size = Size(canvasWidth, canvasHeight),
+                cornerRadius = CornerRadius(x = 10f, y = 10f)
+            )
+
+            drawArc(
+                color = arc1Color,
+                startAngle = 180f,
+                sweepAngle = 180f,
+                useCenter = true,
+                topLeft = Offset(-5.dp.toPx(), canvasHeight * 0.5f + 10.dp.toPx()),
+                size = Size(canvasWidth - 60.dp.toPx(), canvasHeight - 40.dp.toPx()),
+            )
+
+            drawArc(
+                color = arc2Color,
+                startAngle = 90f,
+                sweepAngle = 180f,
+                useCenter = true,
+                topLeft = Offset(canvasWidth - 120.dp.toPx(), -40.dp.toPx()),
+                size = Size(canvasWidth + 60.dp.toPx(), canvasHeight * 2f),
+            )
+        }
+
         Column(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.SpaceBetween,
@@ -231,84 +268,71 @@ fun UpperHalfCardDisplay(
         ) {
             space(4)
 
-            Text(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                text = buildAnnotatedString
-                {
+            Text(modifier = Modifier.align(Alignment.CenterHorizontally),
+                text = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.ExtraBold,
                             color = textHeaderColor,
-                            fontSize = 24.sp
+                            fontSize = cardSize.headerFontSize
                         )
                     ) {
                         append(
-                            "${
-                                card.cardHolderName.uppercase()
-                                    .subSequence(0, card.cardHolderName.length / 2)
-                            }"
+                            firstName
                         )
                     }
                     withStyle(
                         style = SpanStyle(
-                            fontSize = 24.sp,
+                            fontSize = cardSize.headerFontSize,
                             fontWeight = FontWeight.Bold,
                             color = textColor
                         )
                     ) {
                         append(
-                            "${
-                                card.cardHolderName.uppercase().subSequence(
-                                    card.cardHolderName.length / 2,
-                                    card.cardHolderName.length
-                                )
-                            }"
+                            lastName
                         )
                     }
-                }
-            )
+                })
 
-            space(16)
+            space(8)
 
-            val cardNumber = card.cardNumber
 
-            DisplayCardNumber(cardNumber, textColor)
+            DisplayCardNumber(cardNumber, getTextColorInverse(), cardSize)
 
-            space(16)
+            space(8)
 
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-//                Text(
-//                    text = card.cardType.toString(),
-//                    style = TextStyle(
-//                        fontSize = 15.sp,
-//                        fontWeight = FontWeight.SemiBold
-//                    )
-//                )
 
                 Image(
                     painter = paintResource(getCardIssuerLogo(card.issuerName)),
                     null,
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier
+                        .height(cardSize.logoHeight)
+                        .wrapContentWidth(),
                     alignment = Alignment.CenterStart,
-//                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Fit
                 )
 
+                space(0, 1)
+
                 Image(
-                    painter = paintResource(getCardTypeLogo(card.cardType!!)),
+                    painter = paintResource(getCardTypeLogo(card.cardType)),
                     null,
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier
+                        .height(cardSize.logoHeight)
+                        .wrapContentWidth(),
                     alignment = Alignment.CenterEnd,
-//                    contentScale = ContentScale.FillWidth
+                    contentScale = ContentScale.Fit
                 )
             }
 
         }
+        space(8)
 
     }
 }
@@ -317,6 +341,7 @@ fun UpperHalfCardDisplay(
 fun DisplayCardNumber(
     cardNumber: String,
     textColor: Color,
+    cardSize: CardSize,
 ) {
     val length = cardNumber.length
     Row(
@@ -333,7 +358,7 @@ fun DisplayCardNumber(
                 text = cardNumber.subSequence(start, min(start + max(4, division), length))
                     .toString(),
                 style = TextStyle(
-                    fontSize = 18.sp,
+                    fontSize = cardSize.fontSize,
                     fontWeight = FontWeight.Medium,
                     color = textColor
                 )
@@ -346,172 +371,170 @@ fun DisplayCardNumber(
 @Composable
 fun BottomHalfCardDisplay(
     card: Card,
-    background: ImageResource,
-    textColor: Color = Color.White,
-    textHeaderColor: Color = Color.Green,
+    cardSize: CardSize = CardSize(),
+    textColor: Color = getTextColorInverse(),
+    textHeaderColor: Color = getDetailedHeaderColor().second,
 ) {
     Box(
         modifier = Modifier
-            .fillMaxWidth(1f)
-            .aspectRatio(1.5f)
+            .fillMaxWidth()
+            .aspectRatio(1.75f)
+            .wrapContentSize()
             .padding(vertical = 5.dp, horizontal = 10.dp)
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
-            .paint(
-                paintResource(background),
-                contentScale = ContentScale.Fit
-            )
-//            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(Color.Transparent)
             .padding(vertical = 15.dp, horizontal = 15.dp)
     ) {
+        val cardShades = getCardColorShades()
+        val cardBkgColor = cardShades[0]
+        val arc1Color = cardShades[1]
+        val arc2Color = cardShades[2]
+
+        var issuerName = card.issuerName.uppercase()
+        var firstName = ""
+        var lastName = ""
+
+        if (issuerName.contains(' ')) {
+            val pos = issuerName.indexOf(' ')
+            firstName = issuerName.subSequence(0, pos).toString()
+            lastName = issuerName.subSequence(pos, issuerName.length).toString()
+        } else {
+            val pos = issuerName.length / 2
+            firstName = issuerName.subSequence(0, pos).toString()
+            lastName = issuerName.subSequence(pos, issuerName.length).toString()
+        }
+
+
+        Canvas(
+            modifier = Modifier.fillMaxSize()
+        ) {
+
+            val canvasWidth = size.width + 20.dp.toPx()
+            val canvasHeight = size.height + 20.dp.toPx()
+
+            drawRoundRect(
+                color = cardBkgColor,
+                topLeft = Offset(-10.dp.toPx(), -10.dp.toPx()),
+                size = Size(canvasWidth, canvasHeight),
+                cornerRadius = CornerRadius(x = 10f, y = 10f)
+            )
+
+            drawArc(
+                color = arc1Color,
+                startAngle = 180f,
+                sweepAngle = 180f,
+                useCenter = true,
+                topLeft = Offset(-5.dp.toPx(), canvasHeight * 0.5f + 10.dp.toPx()),
+                size = Size(canvasWidth - 60.dp.toPx(), canvasHeight - 40.dp.toPx()),
+            )
+
+            drawArc(
+                color = arc2Color,
+                startAngle = 90f,
+                sweepAngle = 180f,
+                useCenter = true,
+                topLeft = Offset(canvasWidth - 120.dp.toPx(), -40.dp.toPx()),
+                size = Size(canvasWidth + 60.dp.toPx(), canvasHeight * 2f),
+            )
+        }
+
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxSize()
         ) {
+
             space(4)
 
             Text(modifier = Modifier
                 .align(Alignment.CenterHorizontally),
-                text = buildAnnotatedString
-                {
+                text = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.ExtraBold,
                             color = textHeaderColor,
-                            fontSize = 24.sp
+                            fontSize = cardSize.headerFontSize
                         )
                     ) {
                         append(
-                            "${
-                                card.issuerName.uppercase()
-                                    .subSequence(0, card.issuerName.length / 2)
-                            }"
+                            firstName
                         )
                     }
                     withStyle(
                         style = SpanStyle(
-                            fontSize = 24.sp,
+                            fontSize = cardSize.headerFontSize,
                             fontWeight = FontWeight.Bold,
                             color = textColor
                         )
                     ) {
                         append(
-                            "${
-                                card.issuerName.uppercase().subSequence(
-                                    card.issuerName.length / 2,
-                                    card.issuerName.length
-                                )
-                            }"
+                            lastName
                         )
                     }
-                }
-            )
+                })
 
 
             space(8)
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.weight(1f)
+
                 ) {
-                    Text(
-                        text = "Issue",
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textColor
-                        )
+
+                    IconText(
+                        icon = Icons.Default.CalendarMonth,
+                        text = card.issueDate,
+                        modifier = Modifier.weight(1f),
+                        fontSize = cardSize.fontSize,
+                        iconSize = cardSize.iconSize
+
                     )
-
-                    space(1)
-
-                    Text(
-                        text = card.issueDate.toString(),
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textColor
-                        )
-                    )
-
 
                     space(8)
 
-                    Text(
-                        text = "Expiry",
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textColor
-                        )
+                    IconText(
+                        icon = Icons.Default.CalendarMonth,
+                        text = card.expiryDate,
+                        modifier = Modifier.weight(1f),
+                        fontSize = cardSize.fontSize,
+                        iconSize = cardSize.iconSize
+
                     )
-
-                    space(1)
-
-                    Text(
-                        text = card.expiryDate.toString(),
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textColor
-                        )
-                    )
-
                 }
 
                 space(width = 8)
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text(
-                        text = "CVV",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textColor
-                        )
-                    )
 
-                    space(1)
 
-                    Text(
+                    IconText(
+                        icon = Icons.Default.Password,
                         text = card.cvv,
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textColor
+                        modifier = Modifier.weight(1f),
+                        fontSize = cardSize.fontSize,
+                        iconSize = cardSize.iconSize
 
-                        )
                     )
 
                     space(8)
 
-                    Text(
-                        text = "Pin",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textColor
-
-                        )
-                    )
-
-                    space(1)
-
-                    Text(
+                    IconText(
+                        icon = Icons.Default.Pin,
                         text = card.pin,
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textColor
-
-                        )
+                        modifier = Modifier.weight(1f),
+                        fontSize = cardSize.fontSize,
+                        iconSize = cardSize.iconSize
                     )
+
                 }
 
             }
