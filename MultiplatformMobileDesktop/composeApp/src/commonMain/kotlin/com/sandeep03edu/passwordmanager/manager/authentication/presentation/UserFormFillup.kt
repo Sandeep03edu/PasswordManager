@@ -13,11 +13,9 @@ import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,12 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.authentication.data.getAuthResult
@@ -43,8 +36,9 @@ import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditNumberField
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditTextField
 import com.sandeep03edu.passwordmanager.paintResource
+import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getCardSubmitButtonBackground
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 data class UserFormFillUpClass(
     var url: String,
@@ -53,6 +47,7 @@ data class UserFormFillUpClass(
     var userState: UserState,
     var onRegister: (AuthResponse, SnackbarHostState, CoroutineScope) -> Unit,
 ) : Screen {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Composable
     override fun Content() {
         val coroutineScope = rememberCoroutineScope()
@@ -85,7 +80,7 @@ fun UserFormFillUp(
 
     Box(
         modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(getBackgroundColor())
             .padding(8.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -193,7 +188,7 @@ fun UserFormFillUp(
 
             item {
                 CardButton(
-                    backgroundColor = MaterialTheme.colorScheme.primary,
+                    backgroundColor = getCardSubmitButtonBackground(),
                     text = buttonLabel,
                     clickEnabled = !isLoading,
                     onClick = {

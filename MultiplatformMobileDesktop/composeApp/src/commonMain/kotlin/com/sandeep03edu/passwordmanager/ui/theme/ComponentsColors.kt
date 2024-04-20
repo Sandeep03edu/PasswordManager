@@ -157,7 +157,7 @@ fun getTextEditFieldBackground() : Color {
 }
 
 @Composable
-fun getTextEditFieldSubmitButtonBackground() : Color {
+fun getCardSubmitButtonBackground() : Color {
     val isDark = isSystemInDarkTheme()
     if (!isDark) {
 //        return Color(0xff0260bd)
@@ -165,7 +165,7 @@ fun getTextEditFieldSubmitButtonBackground() : Color {
     }
 
 //    return Color(0xffdfebff)
-    return Color(0xffdfebff)
+    return Color(0xffb4cfff)
 }
 @Composable
 fun getErrorTint() : Color {

@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
@@ -57,7 +56,7 @@ import com.sandeep03edu.passwordmanager.space
 import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
 import com.sandeep03edu.passwordmanager.ui.theme.getErrorTint
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
-import com.sandeep03edu.passwordmanager.ui.theme.getTextEditFieldSubmitButtonBackground
+import com.sandeep03edu.passwordmanager.ui.theme.getCardSubmitButtonBackground
 
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -302,7 +301,7 @@ private fun SubmitButton(
     onEvent: (event: CredentialEvent) -> Unit,
 ) {
     CardButton(
-        backgroundColor = getTextEditFieldSubmitButtonBackground(),
+        backgroundColor = getCardSubmitButtonBackground(),
         text = "Submit",
         onClick = {
             if (isCardUpdate == true) {
