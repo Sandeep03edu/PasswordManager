@@ -170,10 +170,10 @@ android {
 //    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "com.sandeep03edu.passwordmanager"
+        applicationId = "com.sandeep03edu.passwordmanager.android"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 3
+        versionCode = 4
         versionName = "1.02"
     }
     buildFeatures {
