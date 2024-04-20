@@ -1,6 +1,10 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,14 +13,16 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ContentCopy
@@ -24,6 +30,8 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material.swipeable
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -34,18 +42,21 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -62,7 +73,10 @@ import com.sandeep03edu.passwordmanager.space
 import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 
 data class DetailedCardDisplayPageClass(
@@ -150,6 +164,11 @@ fun DetailedCardDisplayPage(
                 WindowWidthSizeClass.Compact -> {
                     numOfRows = 1
                     isSwipeable = true
+                    cardSize.cardWidth = 300.dp
+                    cardSize.fontSize = 16.sp
+                    cardSize.iconSize = 16.dp
+                    cardSize.logoHeight = 25.dp
+                    cardSize.headerFontSize = 20.sp
                 }
 
                 WindowWidthSizeClass.Medium -> {
@@ -431,7 +450,7 @@ fun detailedCardDisplay(
 }
 
 
-
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun swipeableCardDisplay(
     card: Card,
@@ -441,6 +460,9 @@ fun swipeableCardDisplay(
     snackbarHostState: SnackbarHostState,
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    val swipeableState = rememberSwipeableState(initialValue = 0)
+    var isUpperCardVisible by remember { mutableStateOf(true) }
+    var isBottomCardVisible by remember { mutableStateOf(false) }
 
     LazyVerticalGrid(
         verticalArrangement = Arrangement.Top,
@@ -451,35 +473,130 @@ fun swipeableCardDisplay(
         item(span = { GridItemSpan(numOfRows) }) {
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                Box(
-                    modifier = Modifier
-                        .width(cardSize.cardWidth)
-                        .aspectRatio(1.75f)
-                        .wrapContentSize()
-                        .padding(vertical = 5.dp, horizontal = 10.dp)
-                ) {
-                    UpperHalfCardDisplay(
-                        card = card,
-                        cardSize = cardSize
-                    )
+
+                if (swipeableState.isAnimationRunning) {
+                    DisposableEffect(Unit) {
+                        onDispose {
+                            if (swipeableState.currentValue == 1 || swipeableState.currentValue == -1) {
+                                // Swiped off to right side at 1 and left side at -1
+
+                                if (isUpperCardVisible) {
+                                    isUpperCardVisible = false
+
+                                    coroutineScope.launch {
+                                        delay(300)
+                                        isBottomCardVisible = true
+                                    }
+                                } else if (isBottomCardVisible) {
+                                    isBottomCardVisible = false
+
+                                    coroutineScope.launch {
+                                        delay(300)
+                                        isUpperCardVisible = true
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
-
-//                Box(
-//                    modifier = Modifier
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
 //                        .width(cardSize.cardWidth)
-//                        .aspectRatio(1.75f)
+                        .aspectRatio(1.75f)
 //                        .wrapContentSize()
-//                        .padding(vertical = 5.dp, horizontal = 10.dp)
-//                ) {
-//                    BottomHalfCardDisplay(
-//                        card = card,
-//                        cardSize = cardSize
-//                    )
-//                }
+                        .swipeable(
+                            state = swipeableState,
+                            anchors = mapOf(
+                                0f to 0,
+                                2f to 1,
+                                -2f to -1
+                            ),
+                            thresholds = { _, _ -> FractionalThreshold(0.9f) },
+                            orientation = Orientation.Horizontal
+                        )
+                        .offset {
+                            IntOffset(swipeableState.offset.value.roundToInt(), 0)
+                        }
+                ) {
 
+                    this@Row.AnimatedVisibility(
+                        visible = isUpperCardVisible,
+                        enter = slideInHorizontally(
+                            initialOffsetX = {
+//                                it / 2 -> Right side
+//                                -it / 2 -> Left side
+                                // Enter from opposite side of Exit
+                                if(swipeableState.currentValue==-1) it else -it
+                            },
+                        ),
+                        exit = slideOutHorizontally(
+                            targetOffsetX = {
+//                                it / 2 -> Right side
+//                                -it / 2 -> Left side
+                                if(swipeableState.currentValue==-1) -it else it
+                            },
+                        ),
+
+                        label = "Upper Card Animation",
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .width(cardSize.cardWidth)
+                                .aspectRatio(1.75f)
+//                                .wrapContentSize()
+                                .padding(vertical = 5.dp, horizontal = 10.dp)
+
+                        ) {
+                            UpperHalfCardDisplay(
+                                card = card,
+                                cardSize = cardSize
+                            )
+                        }
+
+                    }
+
+                    this@Row.AnimatedVisibility(
+                        visible = isBottomCardVisible,
+                        enter = slideInHorizontally(
+                            initialOffsetX = {
+//                                it / 2 -> Right side
+//                                -it / 2 -> Left side
+                                // Enter from opposite side of Exit
+                                if(swipeableState.currentValue==-1) it else -it
+                            },
+                        ),
+                        exit = slideOutHorizontally(
+                            targetOffsetX = {
+//                                it / 2 -> Right side
+//                                -it / 2 -> Left side
+                                if(swipeableState.currentValue==-1) -it else it
+                            },
+                        ),
+                        label = "Bottom Card Animation",
+                        modifier = Modifier.fillMaxWidth()
+
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .width(cardSize.cardWidth)
+                                .aspectRatio(1.75f)
+//                                .wrapContentSize()
+                                .padding(vertical = 5.dp, horizontal = 10.dp)
+                        ) {
+                            BottomHalfCardDisplay(
+                                card = card,
+                                cardSize = cardSize
+                            )
+                        }
+                    }
+                }
             }
         }
 
