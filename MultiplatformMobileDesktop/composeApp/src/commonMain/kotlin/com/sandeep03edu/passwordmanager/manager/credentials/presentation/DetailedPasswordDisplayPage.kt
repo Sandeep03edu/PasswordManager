@@ -177,9 +177,6 @@ fun DetailedPasswordDisplayPage(
 
             }
 
-            item(span = { GridItemSpan(numOfRows) }) {
-                space(4)
-            }
 
 
             item {
@@ -217,9 +214,7 @@ fun DetailedPasswordDisplayPage(
                     }
                 )
             }
-            item(span = { GridItemSpan(numOfRows) }) {
-                space(8)
-            }
+            item(span = { GridItemSpan(numOfRows) }) { space(8) }
 
             item(span = { GridItemSpan(numOfRows) }) {
 
@@ -232,9 +227,7 @@ fun DetailedPasswordDisplayPage(
                 )
             }
 
-            item(span = { GridItemSpan(numOfRows) }) {
-                space(4)
-            }
+
 
             item {
 
@@ -273,7 +266,7 @@ fun DetailedPasswordDisplayPage(
             }
 
             item(span = { GridItemSpan(numOfRows) }) {
-                space(16)
+                space(8)
             }
 
 
@@ -287,9 +280,7 @@ fun DetailedPasswordDisplayPage(
                 )
             }
 
-            item(span = { GridItemSpan(numOfRows) }) {
-                space(4)
-            }
+
             item {
 
                 IconLabeledTextField(
@@ -326,7 +317,7 @@ fun DetailedPasswordDisplayPage(
             }
 
             item(span = { GridItemSpan(numOfRows) }) {
-                space(16)
+                space(8)
             }
 
             item(span = { GridItemSpan(numOfRows) }) {
@@ -335,11 +326,9 @@ fun DetailedPasswordDisplayPage(
                     text = "Tags",
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = 4.dp)
+                        .padding(horizontal = 4.dp),
+                    fontSize = passwordSize.fontHeaderSize
                 )
-            }
-            item(span = { GridItemSpan(numOfRows) }) {
-                space(4)
             }
 
             item(span = { GridItemSpan(numOfRows) }) {
