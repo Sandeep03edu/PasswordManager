@@ -446,6 +446,9 @@ fun detailedCardDisplay(
                 }
             )
         }
+        item(span = { GridItemSpan(numOfRows) }){
+            space(50)
+        }
     }
 }
 
@@ -770,6 +773,10 @@ fun swipeableCardDisplay(
                     )
                 }
             )
+        }
+
+        item(span = { GridItemSpan(numOfRows) }){
+            space(50)
         }
     }
 }
