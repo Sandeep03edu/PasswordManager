@@ -83,7 +83,8 @@ fun IconLabeledTextField(
                     ),
                     value = text,
                     prefix = {
-                        Text(text = prefix,
+                        Text(
+                            text = prefix,
                             color = getTextColorInverse(),
                             modifier = Modifier
                                 .background(Color.Transparent)
@@ -100,7 +101,14 @@ fun IconLabeledTextField(
                         disabledLabelColor = getTextColorInverse(),
                     ),
 
-                    label = { Text(label) },
+                    label = {
+                        Text(
+                            label,
+                            color = getTextColorInverse(),
+                            modifier = Modifier
+                                .background(Color.Transparent)
+                        )
+                    },
                     leadingIcon = {
                         if (leadingIcon != null) {
                             Icon(

@@ -1,6 +1,7 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,9 +31,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
@@ -52,6 +54,10 @@ import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconEditTextF
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.MonthPicker
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.space
+import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getErrorTint
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextEditFieldSubmitButtonBackground
 
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -65,10 +71,12 @@ fun AddDataSheet(
     BottomSheetDemo(
         // TODO : Update this after implementation
         visible = state.isAddNewCredentialSheetOpen,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
+                .background(getBackgroundColor())
                 .padding(8.dp),
             contentAlignment = Alignment.Center,
         ) {
@@ -78,10 +86,9 @@ fun AddDataSheet(
 
             val windowSizeClass = calculateWindowSizeClass()
 
-/*
-            when (windowSizeClass.widthSizeClass) {
-                WindowWidthSizeClass.Compact -> {
-                    DisplayCompactColumnView(
+            when (windowSizeClass.heightSizeClass) {
+                WindowHeightSizeClass.Compact -> {
+                    DisplayColumnGridView(
                         onEvent,
                         newCard,
                         newPassword,
@@ -98,46 +105,8 @@ fun AddDataSheet(
                     )
                 }
 
-                WindowWidthSizeClass.Medium , WindowWidthSizeClass.Expanded-> {
-                    DisplayMediumGridView(
-                        onEvent,
-                        newCard,
-                        newPassword,
-                        selectedDropDownItem,
-                        dropDownItems,
-                        isCardUpdate,
-                        state,
-                        onSelectedDropDownItemChange = {
-                            selectedDropDownItem = it
-                        },
-                        onCardUpdateChange = {
-                            isCardUpdate = it
-                        }
-                    )
-                }
-            }
-*/
-
-            when(windowSizeClass.heightSizeClass){
-                WindowHeightSizeClass.Compact->{
-                    DisplayMediumGridView(
-                        onEvent,
-                        newCard,
-                        newPassword,
-                        selectedDropDownItem,
-                        dropDownItems,
-                        isCardUpdate,
-                        state,
-                        onSelectedDropDownItemChange = {
-                            selectedDropDownItem = it
-                        },
-                        onCardUpdateChange = {
-                            isCardUpdate = it
-                        }
-                    )
-                }
-                WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded->{
-                    DisplayCompactColumnView(
+                WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded -> {
+                    DisplayRowGridView(
                         onEvent,
                         newCard,
                         newPassword,
@@ -160,7 +129,7 @@ fun AddDataSheet(
 }
 
 @Composable
-private fun DisplayCompactColumnView(
+private fun DisplayRowGridView(
     onEvent: (event: CredentialEvent) -> Unit,
     newCard: Card?,
     newPassword: Password?,
@@ -234,7 +203,7 @@ private fun DisplayCompactColumnView(
 }
 
 @Composable
-private fun DisplayMediumGridView(
+private fun DisplayColumnGridView(
     onEvent: (event: CredentialEvent) -> Unit,
     newCard: Card?,
     newPassword: Password?,
@@ -333,7 +302,7 @@ private fun SubmitButton(
     onEvent: (event: CredentialEvent) -> Unit,
 ) {
     CardButton(
-        backgroundColor = MaterialTheme.colorScheme.secondary,
+        backgroundColor = getTextEditFieldSubmitButtonBackground(),
         text = "Submit",
         onClick = {
             if (isCardUpdate == true) {
@@ -396,7 +365,9 @@ fun DisplayAddCardForm(
         text = "Customer Details",
         textAlign = TextAlign.Start,
         modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 4.dp),
+        color = getTextColor(),
+        fontSize = 20.sp
     )
 
     space(4)
@@ -458,8 +429,9 @@ fun DisplayAddCardForm(
         text = "Issue and Expiry Date",
         textAlign = TextAlign.Start,
         modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 4.dp)
-
+            .padding(horizontal = 4.dp),
+        color = getTextColor(),
+        fontSize = 20.sp
     )
 
     space(4)
@@ -503,7 +475,9 @@ fun DisplayAddCardForm(
         text = "Security Keys",
         textAlign = TextAlign.Start,
         modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 4.dp),
+        color = getTextColor(),
+        fontSize = 20.sp
     )
 
     space(4)
@@ -568,7 +542,9 @@ fun DisplayAddPasswordForm(
         text = "Password Details",
         textAlign = TextAlign.Start,
         modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 4.dp),
+        color = getTextColor(),
+        fontSize = 20.sp
     )
 
     space(4)
@@ -602,7 +578,9 @@ fun DisplayAddPasswordForm(
         text = "User Details",
         textAlign = TextAlign.Start,
         modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 4.dp),
+        color = getTextColor(),
+        fontSize = 20.sp
     )
 
     space(4)
@@ -635,7 +613,9 @@ fun DisplayAddPasswordForm(
         text = "Security Keys",
         textAlign = TextAlign.Start,
         modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 4.dp),
+        color = getTextColor(),
+        fontSize = 20.sp
     )
 
     space(4)
@@ -668,7 +648,9 @@ fun DisplayAddPasswordForm(
         text = "Tags",
         textAlign = TextAlign.Start,
         modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 4.dp),
+        color = getTextColor(),
+        fontSize = 20.sp
     )
 
     space(4)
@@ -698,8 +680,8 @@ fun DisplayAddPasswordForm(
         Text(
             text = state.passwordTagsError,
             style = TextStyle(
-                color = MaterialTheme.colorScheme.error,
-                background = MaterialTheme.colorScheme.onError
+                color = getErrorTint(),
+                background = Color.Transparent
             ),
             modifier = Modifier.padding(start = 8.dp, top = 0.dp, end = 8.dp, bottom = 4.dp)
         )

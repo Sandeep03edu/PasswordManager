@@ -249,7 +249,6 @@ fun DisplayPageDisplay(
                 snackbarHostState,
                 modifier = Modifier
                     .bottomDialogModifier()
-                    .background(Color.Red)
             )
         },
         floatingActionButton = {
@@ -346,7 +345,8 @@ fun DisplayPageDisplay(
                     onSelectedPasswordTagChanged,
                     onPasswordItemClicked
                 )
-            } else {
+            }
+            else {
                 // Column View
                 DisplayColumnView(
                     state,
@@ -361,40 +361,6 @@ fun DisplayPageDisplay(
                     onPasswordItemClicked
                 )
             }
-
-            /*
-                        when (windowSizeClass.heightSizeClass) {
-                            WindowHeightSizeClass.Compact -> {
-                                DisplayMediumColumnView(
-                                    state,
-                                    scope,
-                                    onCardItemClicked,
-                                    onSelectedCardChange,
-                                    onSelectedPasswordChange,
-                                    onBottomSheetVisibleChange,
-                                    onEvent,
-                                    selectedPasswordTag,
-                                    onSelectedPasswordTagChanged,
-                                    onPasswordItemClicked
-                                )
-                            }
-
-                            WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded -> {
-                                DisplayCompactColumnView(
-                                    state,
-                                    scope,
-                                    onCardItemClicked,
-                                    onSelectedCardChange,
-                                    onSelectedPasswordChange,
-                                    onBottomSheetVisibleChange,
-                                    onEvent,
-                                    selectedPasswordTag,
-                                    onSelectedPasswordTagChanged,
-                                    onPasswordItemClicked
-                                )
-                            }
-                        }
-            */
 
 
         }

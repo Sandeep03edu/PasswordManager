@@ -48,7 +48,7 @@ fun BottomSheetDemo(
                     )
                 )
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(16.dp)
+//                .padding(16.dp)
 //                .verticalScroll(rememberScrollState()) // So that we can scroll if content get's too large on screen
         ) {
             content()

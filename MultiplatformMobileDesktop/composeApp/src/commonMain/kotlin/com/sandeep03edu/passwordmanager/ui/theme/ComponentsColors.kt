@@ -148,8 +148,41 @@ fun getDetailedHeaderColor() : Pair<Color, Color> {
 fun getTextEditFieldBackground() : Color {
     val isDark = isSystemInDarkTheme()
     if (!isDark) {
-        return Color(0xff0260bd)
+//        return Color(0xff0260bd)
+        return Color(0xff1158a2)
     }
 
+//    return Color(0xffdfebff)
     return Color(0xffdfebff)
+}
+
+@Composable
+fun getTextEditFieldSubmitButtonBackground() : Color {
+    val isDark = isSystemInDarkTheme()
+    if (!isDark) {
+//        return Color(0xff0260bd)
+        return Color(0xff003a7a)
+    }
+
+//    return Color(0xffdfebff)
+    return Color(0xffdfebff)
+}
+@Composable
+fun getErrorTint() : Color {
+    val isDark = isSystemInDarkTheme()
+    if (!isDark) {
+        return Color(0xffee2d2d)
+    }
+
+    return Color(0xffbd0000)
+}
+
+@Composable
+fun getErrorTextColor() : Color {
+    val isDark = isSystemInDarkTheme()
+    if (isDark) {
+        return Color(0xffff3535)
+    }
+
+    return Color(0xffbd0000)
 }

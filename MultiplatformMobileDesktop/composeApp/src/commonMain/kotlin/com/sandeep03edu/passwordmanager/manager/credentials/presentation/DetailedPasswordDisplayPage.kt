@@ -124,7 +124,7 @@ fun DetailedPasswordDisplayPage(
                     )
                 }
             }
-        }
+        },
     ) {
         val clipboardManager: ClipboardManager = LocalClipboardManager.current
 

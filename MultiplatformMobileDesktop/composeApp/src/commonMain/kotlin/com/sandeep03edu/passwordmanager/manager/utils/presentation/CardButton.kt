@@ -16,6 +16,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 
 @Composable
 fun CardButton(
@@ -41,7 +42,8 @@ fun CardButton(
         Text(
             text = text,
             style = TextStyle(
-                fontSize = 16.sp, color = MaterialTheme.colorScheme.background
+                fontSize = 16.sp,
+                color = getTextColorInverse()
             ),
             modifier = Modifier.fillMaxWidth()
                 .background(backgroundColor)
