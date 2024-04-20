@@ -132,6 +132,8 @@ private fun RowPinAuthentication(
 
     Row(
         modifier = Modifier.fillMaxSize()
+            .background(getBackgroundColor())
+
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

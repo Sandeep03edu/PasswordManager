@@ -167,6 +167,30 @@ fun getCardSubmitButtonBackground() : Color {
 //    return Color(0xffdfebff)
     return Color(0xffb4cfff)
 }
+
+@Composable
+fun getDisabledButtonBackground() : Color {
+    val isDark = isSystemInDarkTheme()
+    if (!isDark) {
+//        return Color(0xff0260bd)
+        return Color(0x860c0c0c)
+    }
+
+//    return Color(0xffdfebff)
+    return Color(0x2f0c0c0c)
+}
+
+@Composable
+fun getLinkBackground() : Color {
+    val isDark = isSystemInDarkTheme()
+    if (!isDark) {
+//        return Color(0xff0260bd)
+        return Color(0xff025eaf)
+    }
+
+//    return Color(0xffdfebff)
+    return Color(0xff70bbff)
+}
 @Composable
 fun getErrorTint() : Color {
     val isDark = isSystemInDarkTheme()

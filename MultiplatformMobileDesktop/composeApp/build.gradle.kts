@@ -173,8 +173,8 @@ android {
         applicationId = "com.sandeep03edu.passwordmanager"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
-        versionName = "1.01"
+        versionCode = 3
+        versionName = "1.02"
     }
     buildFeatures {
         compose = true
