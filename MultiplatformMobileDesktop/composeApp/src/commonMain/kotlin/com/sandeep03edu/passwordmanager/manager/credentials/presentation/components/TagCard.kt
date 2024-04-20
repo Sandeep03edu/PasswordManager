@@ -12,36 +12,47 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.sandeep03edu.passwordmanager.manager.utils.data.generateRandomLightColor
+import com.sandeep03edu.passwordmanager.ui.theme.getPasswordTagColor
+import com.sandeep03edu.passwordmanager.ui.theme.getSelectedPasswordTagColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 import kotlinx.datetime.Clock
 import kotlin.random.Random
-
-
 
 
 @Composable
 fun TagCard(
     text: String,
     isSelected: Boolean,
-    onClick : () -> Unit
+    onClick: () -> Unit,
 ) {
 
-    val backgroundColor = if(isSelected) Color.DarkGray else generateRandomLightColor()
-    val textColor = if(isSelected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface
+    val backgroundColor = if (isSelected) getSelectedPasswordTagColor() else getPasswordTagColor()
+    val textColor = if (isSelected) getTextColor() else getTextColorInverse()
 
     Box(
         modifier = Modifier
-            .padding(4.dp)
+            .padding(5.dp)
             .border(1.dp, Color.Black, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
             .background(backgroundColor)
-            .padding(horizontal = 6.dp, vertical = 2.dp)
+            .padding(horizontal = 15.dp, vertical = 5.dp)
             .clickable {
                 onClick()
             }
     ) {
-        Text(text = text,
-            color = textColor)
+        Text(
+            text = text,
+            color = textColor,
+            style = TextStyle(
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+            ),
+        )
     }
 }

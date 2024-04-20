@@ -66,6 +66,7 @@ import com.sandeep03edu.passwordmanager.manager.credentials.domain.CardSize
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.BottomHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.UpperHalfCardDisplay
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
+import com.sandeep03edu.passwordmanager.manager.utils.domain.onCopyClick
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.BuildDesignedTitle
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.DisplaySnackbarToast
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconLabeledTextField
@@ -779,19 +780,4 @@ fun swipeableCardDisplay(
             space(50)
         }
     }
-}
-
-fun onCopyClick(
-    text: String,
-    clipboardManager: ClipboardManager,
-    coroutineScope: CoroutineScope,
-    snackbarHostState: SnackbarHostState,
-) {
-    clipboardManager.setText(AnnotatedString(text))
-
-    DisplaySnackbarToast(
-        snackbarHostState = snackbarHostState,
-        coroutineScope = coroutineScope,
-        message = "Copied to clipboard!!"
-    )
 }

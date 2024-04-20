@@ -73,11 +73,9 @@ fun IconLabeledTextField(
                     .padding(4.dp)
                     .border(2.dp, borderColor, RoundedCornerShape(8.dp))
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color.Green)
             ) {
                 TextField(
-                    modifier = Modifier.fillMaxWidth()
-                        .background(Color.Red),
+                    modifier = Modifier.fillMaxWidth(),
                     onValueChange = {},
                     enabled = false,
                     textStyle = TextStyle(
@@ -85,7 +83,11 @@ fun IconLabeledTextField(
                     ),
                     value = text,
                     prefix = {
-                        Text(text = prefix)
+                        Text(text = prefix,
+                            color = getTextColorInverse(),
+                            modifier = Modifier
+                                .background(Color.Transparent)
+                        )
                     },
                     colors = TextFieldDefaults.colors(
                         // Removing Indicator

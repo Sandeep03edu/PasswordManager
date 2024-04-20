@@ -6,22 +6,34 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -32,28 +44,49 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
+import com.sandeep03edu.passwordmanager.manager.credentials.domain.PasswordSize
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.components.TagCard
 import com.sandeep03edu.passwordmanager.manager.di.AppModule
+import com.sandeep03edu.passwordmanager.manager.utils.domain.onCopyClick
+import com.sandeep03edu.passwordmanager.manager.utils.presentation.DisplaySnackbarToast
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconLabeledTextField
 import com.sandeep03edu.passwordmanager.space
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 
 
 data class DetailedPasswordDisplayPageClass(
     val appModule: AppModule,
-    var password: Password
-) : Screen{
+    var password: Password,
+) : Screen {
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { CredentialViewModel(appModule.credentialDataSource) }
         val state by viewModel.state.collectAsState()
         val onEvent = viewModel::onEvent
 
-        LaunchedEffect(state.isAddNewCredentialSheetOpen){
+        LaunchedEffect(state.isAddNewCredentialSheetOpen) {
             password = appModule.credentialDataSource.getPasswordById(password.appId).first()
         }
-        DetailedPasswordDisplayPage(viewModel, state, onEvent, password)
+
+        val windowSizeClass = calculateWindowSizeClass()
+        var numOfRows = 1
+        val passwordSize = PasswordSize()
+        when (windowSizeClass.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> {
+                numOfRows = 1
+                passwordSize.fontHeaderSize = 20.sp
+            }
+
+            WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
+                numOfRows = 2
+                passwordSize.fontHeaderSize = 24.sp
+            }
+        }
+
+        DetailedPasswordDisplayPage(viewModel, state, onEvent, password, numOfRows, passwordSize)
     }
 
 }
@@ -64,10 +97,15 @@ fun DetailedPasswordDisplayPage(
     viewModel: CredentialViewModel,
     state: CredentialState,
     onEvent: (event: CredentialEvent) -> Unit,
-    password: Password
+    password: Password,
+    numOfRows: Int,
+    passwordSize: PasswordSize,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             if (!state.isAddNewCredentialSheetOpen) {
                 FloatingActionButton(
@@ -83,17 +121,20 @@ fun DetailedPasswordDisplayPage(
                 }
             }
         }
-    ){
+    ) {
+        val clipboardManager: ClipboardManager = LocalClipboardManager.current
 
-        LazyColumn(
+        LazyVerticalGrid(
             modifier = Modifier.fillMaxSize()
                 .padding(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        )  {
-            item {
+            verticalArrangement = Arrangement.Top,
+            columns = GridCells.Fixed(numOfRows)
+        ) {
+            item(span = { GridItemSpan(numOfRows) }) {
                 Text(
-                    buildAnnotatedString
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = buildAnnotatedString
                     {
                         withStyle(
                             style = SpanStyle(
@@ -115,105 +156,199 @@ fun DetailedPasswordDisplayPage(
                     }
                 )
 
+            }
+
+            item(span = { GridItemSpan(numOfRows) }) {
                 space(16)
             }
-            
-           item{
-               Text(
-                   text = "Password Details",
-                   textAlign = TextAlign.Start,
-                   modifier = Modifier.fillMaxWidth()
-                       .padding(horizontal = 4.dp)
-               )
 
-               space(4)
+            item(span = { GridItemSpan(numOfRows) }) {
+                Text(
+                    text = "Password Details",
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 4.dp),
+                    fontSize = passwordSize.fontHeaderSize
+                )
 
-               IconLabeledTextField(
-                   leadingIcon = Icons.Rounded.Person,
-                   label = "Title",
-                   text = password.title ?: "",
-               )
+            }
 
-               space(4)
+            item(span = { GridItemSpan(numOfRows) }) {
+                space(4)
+            }
 
-               IconLabeledTextField(
-                   leadingIcon = Icons.Rounded.Person,
-                   label = "Url",
-                   text = password.url ?: "",
-                   prefix = "https://",
-               )
 
-               space(16)
+            item {
 
-               Text(
-                   text = "User Details",
-                   textAlign = TextAlign.Start,
-                   modifier = Modifier.fillMaxWidth()
-                       .padding(horizontal = 4.dp)
-               )
+                IconLabeledTextField(
+                    leadingIcon = Icons.Rounded.Person,
+                    label = "Title",
+                    text = password.title ?: "",
+                    trailingIcon = Icons.Default.ContentCopy,
+                    onClick = {
+                        onCopyClick(
+                            text = password.title,
+                            clipboardManager = clipboardManager,
+                            coroutineScope = coroutineScope,
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+                )
+            }
 
-               space(4)
+            item {
+                IconLabeledTextField(
+                    leadingIcon = Icons.Rounded.Person,
+                    label = "Url",
+                    text = password.url ?: "",
+                    prefix = "https://",
+                    trailingIcon = Icons.Default.ContentCopy,
+                    onClick = {
+                        onCopyClick(
+                            text = password.url,
+                            clipboardManager = clipboardManager,
+                            coroutineScope = coroutineScope,
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+                )
+            }
+            item(span = { GridItemSpan(numOfRows) }) {
+                space(8)
+            }
 
-               IconLabeledTextField(
-                   leadingIcon = Icons.Rounded.Person,
-                   label = "Username",
-                   text = password.username ?: "",
-               )
+            item(span = { GridItemSpan(numOfRows) }) {
 
-               space(4)
+                Text(
+                    text = "User Details",
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 4.dp),
+                    fontSize = passwordSize.fontHeaderSize
+                )
+            }
 
-               IconLabeledTextField(
-                   leadingIcon = Icons.Rounded.Person,
-                   label = "EmailId",
-                   text = password.email ?: "",
-               )
+            item(span = { GridItemSpan(numOfRows) }) {
+                space(4)
+            }
 
-               space(16)
+            item {
 
-               Text(
-                   text = "Security Keys",
-                   textAlign = TextAlign.Start,
-                   modifier = Modifier.fillMaxWidth()
-                       .padding(horizontal = 4.dp)
-               )
+                IconLabeledTextField(
+                    leadingIcon = Icons.Rounded.Person,
+                    label = "Username",
+                    text = password.username ?: "",
+                    trailingIcon = Icons.Default.ContentCopy,
+                    onClick = {
+                        onCopyClick(
+                            text = password.username,
+                            clipboardManager = clipboardManager,
+                            coroutineScope = coroutineScope,
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+                )
+            }
 
-               space(4)
+            item {
 
-               IconLabeledTextField(
-                   leadingIcon = Icons.Rounded.Person,
-                   label = "Password",
-                   text = password.password ?: "",
-               )
+                IconLabeledTextField(
+                    leadingIcon = Icons.Rounded.Person,
+                    label = "EmailId",
+                    text = password.email ?: "",
+                    trailingIcon = Icons.Default.ContentCopy,
+                    onClick = {
+                        onCopyClick(
+                            text = password.email,
+                            clipboardManager = clipboardManager,
+                            coroutineScope = coroutineScope,
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+                )
+            }
 
-               space(4)
+            item(span = { GridItemSpan(numOfRows) }) {
+                space(16)
+            }
 
-               IconLabeledTextField(
-                   leadingIcon = Icons.Rounded.Person,
-                   label = "Pin",
-                   text = password.pin ?: "",
-               )
 
-               space(16)
+            item(span = { GridItemSpan(numOfRows) }) {
+                Text(
+                    text = "Security Keys",
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 4.dp),
+                    fontSize = passwordSize.fontHeaderSize
+                )
+            }
 
-               Text(
-                   text = "Tags",
-                   textAlign = TextAlign.Start,
-                   modifier = Modifier.fillMaxWidth()
-                       .padding(horizontal = 4.dp)
-               )
+            item(span = { GridItemSpan(numOfRows) }) {
+                space(4)
+            }
+            item {
 
-               space(4)
+                IconLabeledTextField(
+                    leadingIcon = Icons.Rounded.Person,
+                    label = "Password",
+                    text = password.password ?: "",
+                    trailingIcon = Icons.Default.ContentCopy,
+                    onClick = {
+                        onCopyClick(
+                            text = password.password,
+                            clipboardManager = clipboardManager,
+                            coroutineScope = coroutineScope,
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+                )
+            }
 
-               FlowRow(
-               ) {
-                   password.tags.forEach {
-                       TagCard(it, false) {}
-                   }
-               }
+            item {
+                IconLabeledTextField(
+                    leadingIcon = Icons.Rounded.Person,
+                    label = "Pin",
+                    text = password.pin ?: "",
+                    trailingIcon = Icons.Default.ContentCopy,
+                    onClick = {
+                        onCopyClick(
+                            text = password.pin,
+                            clipboardManager = clipboardManager,
+                            coroutineScope = coroutineScope,
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+                )
+            }
 
-               space(4)
+            item(span = { GridItemSpan(numOfRows) }) {
+                space(16)
+            }
 
-           }
+            item(span = { GridItemSpan(numOfRows) }) {
+
+                Text(
+                    text = "Tags",
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 4.dp)
+                )
+            }
+            item(span = { GridItemSpan(numOfRows) }) {
+                space(4)
+            }
+
+            item(span = { GridItemSpan(numOfRows) }) {
+                FlowRow(
+                ) {
+                    password.tags.forEach {
+                        TagCard(it, false) {}
+                    }
+                }
+
+                space(4)
+
+            }
         }
     }
 
