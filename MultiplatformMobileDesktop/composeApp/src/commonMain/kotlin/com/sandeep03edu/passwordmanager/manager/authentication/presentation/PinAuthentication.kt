@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +52,7 @@ import com.sandeep03edu.passwordmanager.SharedRes
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.CircularImage
 import com.sandeep03edu.passwordmanager.paintResource
 import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
 
 
 val TAG = "PinAuthenticationTag"
@@ -68,29 +70,30 @@ fun PinAuthentication(
     ) {
         val windowSizeClass = calculateWindowSizeClass()
 
-/*
-        when (windowSizeClass.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> {
-                ColumnPinAuthentication(label, pinLength, onComplete = {
-                    onComplete(it)
-                })
-            }
+        /*
+                when (windowSizeClass.widthSizeClass) {
+                    WindowWidthSizeClass.Compact -> {
+                        ColumnPinAuthentication(label, pinLength, onComplete = {
+                            onComplete(it)
+                        })
+                    }
 
-            WindowWidthSizeClass.Medium , WindowWidthSizeClass.Expanded-> {
+                    WindowWidthSizeClass.Medium , WindowWidthSizeClass.Expanded-> {
+                        RowPinAuthentication(label, pinLength, onComplete = {
+                            onComplete(it)
+                        })
+                    }
+                }
+        */
+
+        when (windowSizeClass.heightSizeClass) {
+            WindowHeightSizeClass.Compact -> {
                 RowPinAuthentication(label, pinLength, onComplete = {
                     onComplete(it)
                 })
             }
-        }
-*/
 
-        when(windowSizeClass.heightSizeClass){
-            WindowHeightSizeClass.Compact->{
-                RowPinAuthentication(label, pinLength, onComplete = {
-                    onComplete(it)
-                })
-            }
-            WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded->{
+            WindowHeightSizeClass.Medium, WindowHeightSizeClass.Expanded -> {
                 ColumnPinAuthentication(label, pinLength, onComplete = {
                     onComplete(it)
                 })
@@ -103,6 +106,7 @@ fun generateShuffledList(): MutableList<Int> {
     val list: MutableList<Int> = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
     return list.shuffled().toMutableList()
 }
+
 @Composable
 private fun RowPinAuthentication(
     label: String,
@@ -158,7 +162,8 @@ private fun RowPinAuthentication(
                     style = TextStyle(
                         fontSize = 22.sp,
                         fontFamily = FontFamily.SansSerif,
-                    )
+                    ),
+                    color = getTextColor()
                 )
             }
 
@@ -259,7 +264,7 @@ private fun ColumnPinAuthentication(
 
     val lastElem = list.get(9)
 
-    if(list.size<12) {
+    if (list.size < 12) {
         list[9] = -2
         list.add(lastElem)
         list.add(-1)
@@ -267,24 +272,24 @@ private fun ColumnPinAuthentication(
 
     println("$TAG List:: $list")
 
-    currentIndex = 0
 
 // TODO : Remove auto verification
 //**********************************************************************//
-        repeat(pinLength){
-            values.set(currentIndex, it + 1)
-            currentIndex++
-            println("$TAG It:: $it")
-        }
-        var ans = ""
-        var i = 0
-        repeat(pinLength) {
-            ans += values[i].toString()
-            values[i] = -1;
-            i++;
-        }
-        currentIndex = 0
-        onComplete(ans)
+//        currentIndex = 0
+//        repeat(pinLength){
+//            values.set(currentIndex, it + 1)
+//            currentIndex++
+//            println("$TAG It:: $it")
+//        }
+//        var ans = ""
+//        var i = 0
+//        repeat(pinLength) {
+//            ans += values[i].toString()
+//            values[i] = -1;
+//            i++;
+//        }
+//        currentIndex = 0
+//        onComplete(ans)
 //**********************************************************************//
 
     Column(
@@ -316,7 +321,9 @@ private fun ColumnPinAuthentication(
                 style = TextStyle(
                     fontSize = 22.sp,
                     fontFamily = FontFamily.SansSerif,
-                )
+                ),
+                color = getTextColor()
+
             )
         }
 
@@ -345,34 +352,39 @@ private fun ColumnPinAuthentication(
             columns = GridCells.Fixed(3),
             content = {
                 items(list.size) {
-                    println("$TAG OnClick Pin: $it && list:: $list")
                     CircularNumber(list.get(it), onClick = {
                         if (values.size != 0) {
+
                             if (it == -1) {
                                 if (currentIndex != 0) {
                                     currentIndex--;
-                                    values.set(currentIndex, -1)
+                                    values[currentIndex] = -1
                                 }
                             } else if (currentIndex < pinLength) {
-                                values.set(currentIndex, it)
+                                values[currentIndex] = it
                                 currentIndex++
                             }
 
-                            println("$TAG Values:: ${values.toList()}")
+                            println("$TAG Values:: ${values.toList()} +++ CurrentIdx: ${currentIndex}")
+
 
                             if (currentIndex == pinLength) {
                                 var ans = ""
                                 var i = 0
+
+                                println("$TAG Complete Values:: ${values.toList()} || Curr:: $currentIndex || pinLength:: $pinLength")
+
                                 repeat(pinLength) {
                                     ans += values[i].toString()
                                     values[i] = -1;
                                     i++;
                                 }
+
 //                                    values.clear()
+
                                 currentIndex = 0
 
                                 onComplete(ans)
-
 
                             }
                         }
@@ -417,8 +429,9 @@ fun CircularNumber(
                     style = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Normal,
+                    ),
+
                     )
-                )
             }
         } else {
             Box(
@@ -427,16 +440,18 @@ fun CircularNumber(
                     .padding(5.dp)
                     .aspectRatio(1f)
                     .align(Alignment.Center)
-                    .background(MaterialTheme.colorScheme.background)
-                    .clickable {
-                        onClick(value)
-                    }
+                    .background(Color.Transparent)
+
             ) {
                 Image(
                     imageVector = Icons.Default.Backspace,
                     "Error",
                     modifier = Modifier
                         .align(Alignment.Center)
+                        .clickable {
+                            onClick(value)
+                        },
+                    colorFilter = ColorFilter.tint(getTextColor())
                 )
             }
         }
