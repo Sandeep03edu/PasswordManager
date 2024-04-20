@@ -51,6 +51,8 @@ import com.sandeep03edu.passwordmanager.manager.utils.domain.onCopyClick
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.DisplaySnackbarToast
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconLabeledTextField
 import com.sandeep03edu.passwordmanager.space
+import com.sandeep03edu.passwordmanager.ui.theme.getFloatingActionButtonColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 
@@ -113,10 +115,12 @@ fun DetailedPasswordDisplayPage(
                         onEvent(CredentialEvent.OnDisplayAddEditNewDataClick(password, null))
                     },
                     shape = RoundedCornerShape(20.dp),
+                    containerColor = getFloatingActionButtonColor(),
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Edit,
                         contentDescription = "Edit Password",
+                        tint = getTextColorInverse()
                     )
                 }
             }
@@ -345,9 +349,10 @@ fun DetailedPasswordDisplayPage(
                         TagCard(it, false) {}
                     }
                 }
+            }
 
-                space(4)
-
+            item(span = { GridItemSpan(numOfRows) }) {
+                space(50)
             }
         }
     }

@@ -72,7 +72,9 @@ import com.sandeep03edu.passwordmanager.manager.utils.presentation.DisplaySnackb
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.IconLabeledTextField
 import com.sandeep03edu.passwordmanager.space
 import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getFloatingActionButtonColor
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
+import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -131,10 +133,12 @@ fun DetailedCardDisplayPage(
                         onEvent(CredentialEvent.OnDisplayAddEditNewDataClick(null, card))
                     },
                     shape = RoundedCornerShape(20.dp),
+                    containerColor = getFloatingActionButtonColor(),
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Edit,
                         contentDescription = "Edit Card",
+                        tint = getTextColorInverse()
                     )
                 }
             }
