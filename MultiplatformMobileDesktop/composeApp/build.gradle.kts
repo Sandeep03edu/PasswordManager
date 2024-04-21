@@ -161,6 +161,9 @@ kotlin {
     }
 }
 
+val releasePackageVersion = "1.02"
+val releaseDesktopPackageVersion = "1.0.2"
+
 android {
     namespace = "com.sandeep03edu.passwordmanager"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -174,7 +177,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 4
-        versionName = "1.02"
+        versionName = releasePackageVersion
     }
     buildFeatures {
         compose = true
@@ -202,13 +205,28 @@ android {
 }
 
 compose.desktop {
+
     application {
         mainClass = "MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.sandeep03edu.passwordmanager"
-            packageVersion = "1.0.0"
+            packageName = "com.sandeep03edu.passwordmanager.desktop"
+            packageVersion = releaseDesktopPackageVersion
+            windows {
+                // Package for all windows distribution
+                packageVersion = releaseDesktopPackageVersion
+
+                // Package for only msi package
+                msiPackageVersion = releaseDesktopPackageVersion
+
+                // Package for only exe package
+                exePackageVersion = releaseDesktopPackageVersion
+
+                // App icon
+                // MultiplatformMobileDesktop\composeApp\src\desktopMain\resources\mipmap\ic_launcher.png
+                iconFile.set(project.file("ic_launcher.png"))
+            }
         }
     }
 }
