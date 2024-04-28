@@ -230,7 +230,7 @@ compose.desktop {
 
                 // App icon
                 // MultiplatformMobileDesktop\composeApp\src\desktopMain\resources\mipmap\ic_launcher.png
-//                iconFile.set(project.file("ic_launcher.png"))
+                iconFile.set(project.file("ic_launcher.png"))
             }
 
         }
