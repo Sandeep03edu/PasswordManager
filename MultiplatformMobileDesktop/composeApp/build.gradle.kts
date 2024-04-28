@@ -25,6 +25,7 @@ kotlin {
 
     jvm("desktop")
 
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -78,7 +79,6 @@ kotlin {
 
             // Sql Delight Native dependencies
             implementation("app.cash.sqldelight:sqlite-driver:2.0.0-rc01")
-
         }
         iosMain.dependencies {
             // Network Calling
@@ -211,6 +211,11 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+
+            // https://github.com/JetBrains/compose-multiplatform/issues/2668#issuecomment-1419178642
+            modules("java.sql")
+
+
             packageName = "com.sandeep03edu.passwordmanager.desktop"
             packageVersion = releaseDesktopPackageVersion
             windows {
@@ -225,8 +230,9 @@ compose.desktop {
 
                 // App icon
                 // MultiplatformMobileDesktop\composeApp\src\desktopMain\resources\mipmap\ic_launcher.png
-                iconFile.set(project.file("ic_launcher.png"))
+//                iconFile.set(project.file("ic_launcher.png"))
             }
+
         }
     }
 }

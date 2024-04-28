@@ -11,7 +11,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Password Manager",
-        icon = BitmapPainter(useResource("ic_launcher.png", ::loadImageBitmap)),
+//        icon = BitmapPainter(useResource("ic_launcher.png", ::loadImageBitmap)),
         ) {
         App(
             darkTheme = isSystemInDarkTheme(),
