@@ -216,7 +216,8 @@ compose.desktop {
             modules("java.sql")
 
 
-            packageName = "com.sandeep03edu.passwordmanager.desktop"
+//            packageName = "com.sandeep03edu.passwordmanager.desktop"
+            packageName = "SecurePass"
             packageVersion = releaseDesktopPackageVersion
             windows {
                 // Package for all windows distribution
