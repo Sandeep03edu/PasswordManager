@@ -217,7 +217,7 @@ compose.desktop {
 
 
 //            packageName = "com.sandeep03edu.passwordmanager.desktop"
-            packageName = "SecurePass"
+            packageName = "Shield Pass"
             packageVersion = releaseDesktopPackageVersion
             windows {
                 // Package for all windows distribution
