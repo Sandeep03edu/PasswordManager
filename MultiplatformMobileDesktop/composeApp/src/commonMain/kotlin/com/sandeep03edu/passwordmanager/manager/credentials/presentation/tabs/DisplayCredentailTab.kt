@@ -7,10 +7,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -63,6 +65,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontSynthesis
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,6 +73,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sandeep03edu.passwordmanager.manager.credentials.data.cardPromotionList
+import com.sandeep03edu.passwordmanager.manager.credentials.data.passwordPromotionList
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.AddDataSheet
@@ -89,6 +93,7 @@ import com.sandeep03edu.passwordmanager.space
 import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
 import com.sandeep03edu.passwordmanager.ui.theme.getCardColorShades
 import com.sandeep03edu.passwordmanager.ui.theme.getFloatingActionButtonColor
+import com.sandeep03edu.passwordmanager.ui.theme.getPasswordHalfDisplayBackground
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
 import com.skydoves.flexible.bottomsheet.material3.FlexibleBottomSheet
@@ -445,9 +450,12 @@ private fun DisplayColumnView(
                 )
             }
         } else {
-            item {
+            items(passwordPromotionList.size) {
                 // Display Add new password option
-                AddNewPasswordDisplay(onEvent)
+                AddNewPasswordDisplay(
+                    onEvent = onEvent,
+                    passwordPromotion = passwordPromotionList[it],
+                )
             }
         }
     }
@@ -506,11 +514,11 @@ private fun DisplayRowView(
 
                 } else {
                     // Display Add card option
-/*
-                    item {
-                        AddNewCard(onEvent)
-                    }
-*/
+                    /*
+                                        item {
+                                            AddNewCard(onEvent)
+                                        }
+                    */
                     items(cardPromotionList.size) {
                         Box(
                             modifier = Modifier
@@ -545,8 +553,14 @@ private fun DisplayRowView(
                                     startAngle = 180f,
                                     sweepAngle = 180f,
                                     useCenter = true,
-                                    topLeft = Offset(-5.dp.toPx(), canvasHeight * 0.5f + 10.dp.toPx()),
-                                    size = Size(canvasWidth - 60.dp.toPx(), canvasHeight - 40.dp.toPx()),
+                                    topLeft = Offset(
+                                        -5.dp.toPx(),
+                                        canvasHeight * 0.5f + 10.dp.toPx()
+                                    ),
+                                    size = Size(
+                                        canvasWidth - 60.dp.toPx(),
+                                        canvasHeight - 40.dp.toPx()
+                                    ),
                                 )
 
                                 drawArc(
@@ -586,7 +600,9 @@ private fun DisplayRowView(
                                         fontSize = 22.sp,
                                         fontWeight = FontWeight.SemiBold
                                     ),
-                                    color = getTextColorInverse()
+                                    color = getTextColorInverse(),
+                                    textAlign = TextAlign.Center
+
                                 )
                             }
                         }
@@ -637,9 +653,12 @@ private fun DisplayRowView(
                         )
                     }
                 } else {
-                    item {
+                    items(passwordPromotionList.size) {
                         // Display Add new password option
-                        AddNewPasswordDisplay(onEvent)
+                        AddNewPasswordDisplay(
+                            onEvent = onEvent,
+                            passwordPromotion = passwordPromotionList[it],
+                        )
                     }
                 }
 
@@ -753,13 +772,16 @@ private fun DisplayRowCards(
 
 
 @Composable
-private fun AddNewPasswordDisplay(onEvent: (event: CredentialEvent) -> Unit) {
+private fun AddNewPasswordDisplay(
+    onEvent: (event: CredentialEvent) -> Unit,
+    passwordPromotion: String,
+) {
     Card(
-        modifier = Modifier.fillMaxWidth()
-            .aspectRatio(5.5f)
+        modifier = Modifier
+            .fillMaxWidth()
             .background(Color.Transparent)
             .padding(8.dp)
-            .dashedBorder(2.dp, Color.Red, 8.dp)
+//            .dashedBorder(2.dp, Color.Red, 8.dp)
             .clickable {
                 onEvent(
                     CredentialEvent.OnDisplayAddEditNewDataClick(
@@ -773,11 +795,12 @@ private fun AddNewPasswordDisplay(onEvent: (event: CredentialEvent) -> Unit) {
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = getTextColor()
+            containerColor = getPasswordHalfDisplayBackground()
         )
     ) {
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .padding(10.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -789,12 +812,12 @@ private fun AddNewPasswordDisplay(onEvent: (event: CredentialEvent) -> Unit) {
             space(width = 8)
 
             Text(
-                text = "Add your Password here!!",
+                text = passwordPromotion,
                 style = TextStyle(
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
                 ),
-                color = getTextColorInverse()
+                color = getTextColorInverse(),
             )
         }
     }
@@ -922,29 +945,13 @@ private fun AddNewCard(onEvent: (event: CredentialEvent) -> Unit) {
                             fontSize = 22.sp,
                             fontWeight = FontWeight.SemiBold
                         ),
-                        color = getTextColorInverse()
+                        color = getTextColorInverse(),
+                        textAlign = TextAlign.Center
                     )
                 }
             }
         }
     }
-    /*
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Card(
-                modifier = Modifier
-    //                .fillMaxWidth(0.7f)
-                    .width(cardWidth)
-                    .aspectRatio(1.75f)
-                    .padding(5.dp)
-                    .dashedBorder(2.dp, Color.Red, 8.dp),
-            ) {
-
-            }
-        }
-    */
 }
 
 @Composable
