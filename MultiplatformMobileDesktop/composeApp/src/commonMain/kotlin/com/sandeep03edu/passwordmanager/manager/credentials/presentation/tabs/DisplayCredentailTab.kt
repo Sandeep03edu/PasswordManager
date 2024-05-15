@@ -580,7 +580,7 @@ private fun DisplayRowView(
                                     .clickable {
                                         onEvent(
                                             CredentialEvent.OnDisplayAddEditNewDataClick(
-                                                null,
+                                                Password(),
                                                 Card()
                                             )
                                         )
@@ -786,7 +786,7 @@ private fun AddNewPasswordDisplay(
                 onEvent(
                     CredentialEvent.OnDisplayAddEditNewDataClick(
                         Password(),
-                        null
+                        Card()
                     )
                 )
             },
@@ -925,7 +925,7 @@ private fun AddNewCard(onEvent: (event: CredentialEvent) -> Unit) {
                         .clickable {
                             onEvent(
                                 CredentialEvent.OnDisplayAddEditNewDataClick(
-                                    null,
+                                    Password(),
                                     Card()
                                 )
                             )

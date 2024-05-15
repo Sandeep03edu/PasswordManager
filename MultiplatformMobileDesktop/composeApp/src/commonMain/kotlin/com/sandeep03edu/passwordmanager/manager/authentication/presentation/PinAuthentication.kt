@@ -277,21 +277,21 @@ private fun ColumnPinAuthentication(
 
 // TODO : Remove auto verification
 //**********************************************************************//
-//        currentIndex = 0
-//        repeat(pinLength){
-//            values.set(currentIndex, it + 1)
-//            currentIndex++
-//            println("$TAG It:: $it")
-//        }
-//        var ans = ""
-//        var i = 0
-//        repeat(pinLength) {
-//            ans += values[i].toString()
-//            values[i] = -1;
-//            i++;
-//        }
-//        currentIndex = 0
-//        onComplete(ans)
+        currentIndex = 0
+        repeat(pinLength){
+            values.set(currentIndex, it + 1)
+            currentIndex++
+            println("$TAG It:: $it")
+        }
+        var ans = ""
+        var i = 0
+        repeat(pinLength) {
+            ans += values[i].toString()
+            values[i] = -1;
+            i++;
+        }
+        currentIndex = 0
+        onComplete(ans)
 //**********************************************************************//
 
     Column(
