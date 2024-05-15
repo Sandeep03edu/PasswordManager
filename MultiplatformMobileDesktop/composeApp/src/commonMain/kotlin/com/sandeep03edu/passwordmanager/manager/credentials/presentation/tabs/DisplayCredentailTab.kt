@@ -1,5 +1,6 @@
 package com.sandeep03edu.passwordmanager.manager.credentials.presentation.tabs
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,8 +49,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -65,6 +69,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.sandeep03edu.passwordmanager.manager.credentials.data.cardPromotionList
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Card
 import com.sandeep03edu.passwordmanager.manager.credentials.domain.Password
 import com.sandeep03edu.passwordmanager.manager.credentials.presentation.AddDataSheet
@@ -82,6 +87,7 @@ import com.sandeep03edu.passwordmanager.manager.utils.data.getPasswordTagsWithIc
 import com.sandeep03edu.passwordmanager.manager.utils.presentation.bottomDialogModifier
 import com.sandeep03edu.passwordmanager.space
 import com.sandeep03edu.passwordmanager.ui.theme.getBackgroundColor
+import com.sandeep03edu.passwordmanager.ui.theme.getCardColorShades
 import com.sandeep03edu.passwordmanager.ui.theme.getFloatingActionButtonColor
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColor
 import com.sandeep03edu.passwordmanager.ui.theme.getTextColorInverse
@@ -105,22 +111,7 @@ class DisplayCredentialTab(
     override fun Content() {
 
         val windowSizeClass = calculateWindowSizeClass()
-//        when (windowSizeClass.widthSizeClass) {
-//            WindowWidthSizeClass.Compact -> {
-//                cardWidth = 280.dp
-//                numberOfPasswords = 1
-//            }
-//
-//            WindowWidthSizeClass.Medium -> {
-//                cardWidth = 300.dp
-//                numberOfPasswords = 2
-//            }
-//
-//            WindowWidthSizeClass.Expanded -> {
-//                cardWidth = 320.dp
-//                numberOfPasswords = 3
-//            }
-//        }
+
         when (windowSizeClass.widthSizeClass) {
             WindowWidthSizeClass.Compact -> {
                 // For all height it is same
@@ -265,7 +256,7 @@ fun DisplayPageDisplay(
                     shape = RoundedCornerShape(20.dp),
                     containerColor = getFloatingActionButtonColor(),
 
-                ) {
+                    ) {
                     Icon(
                         imageVector = Icons.Rounded.AddCircle,
                         contentDescription = "Add contact",
@@ -345,8 +336,7 @@ fun DisplayPageDisplay(
                     onSelectedPasswordTagChanged,
                     onPasswordItemClicked
                 )
-            }
-            else {
+            } else {
                 // Column View
                 DisplayColumnView(
                     state,
@@ -516,8 +506,90 @@ private fun DisplayRowView(
 
                 } else {
                     // Display Add card option
+/*
                     item {
                         AddNewCard(onEvent)
+                    }
+*/
+                    items(cardPromotionList.size) {
+                        Box(
+                            modifier = Modifier
+                                .width(cardWidth)
+                                .aspectRatio(1.75f)
+                                .wrapContentSize()
+                                .padding(5.dp)
+                                .clip(RoundedCornerShape(10.dp))
+
+                        ) {
+                            val cardShades = getCardColorShades()
+                            val cardBkgColor = cardShades[0]
+                            val arc1Color = cardShades[1]
+                            val arc2Color = cardShades[2]
+
+                            Canvas(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+
+                                val canvasWidth = size.width + 20.dp.toPx()
+                                val canvasHeight = size.height + 20.dp.toPx()
+
+                                drawRoundRect(
+                                    color = cardBkgColor,
+                                    topLeft = Offset(-10.dp.toPx(), -10.dp.toPx()),
+                                    size = Size(canvasWidth, canvasHeight),
+                                    cornerRadius = CornerRadius(x = 10f, y = 10f)
+                                )
+
+                                drawArc(
+                                    color = arc1Color,
+                                    startAngle = 180f,
+                                    sweepAngle = 180f,
+                                    useCenter = true,
+                                    topLeft = Offset(-5.dp.toPx(), canvasHeight * 0.5f + 10.dp.toPx()),
+                                    size = Size(canvasWidth - 60.dp.toPx(), canvasHeight - 40.dp.toPx()),
+                                )
+
+                                drawArc(
+                                    color = arc2Color,
+                                    startAngle = 90f,
+                                    sweepAngle = 180f,
+                                    useCenter = true,
+                                    topLeft = Offset(canvasWidth - 120.dp.toPx(), -40.dp.toPx()),
+                                    size = Size(canvasWidth + 60.dp.toPx(), canvasHeight * 2f),
+                                )
+                            }
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxSize()
+                                    .clickable {
+                                        onEvent(
+                                            CredentialEvent.OnDisplayAddEditNewDataClick(
+                                                null,
+                                                Card()
+                                            )
+                                        )
+                                    }
+                                    .padding(10.dp)
+                            ) {
+                                Image(
+                                    imageVector = Icons.Default.AddCircle,
+                                    contentDescription = null
+                                )
+
+                                space(8)
+
+                                Text(
+                                    text = cardPromotionList[it],
+                                    style = TextStyle(
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
+                                    color = getTextColorInverse()
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -531,11 +603,11 @@ private fun DisplayRowView(
                 modifier = Modifier.weight(numberOfPasswords.toFloat()),
                 columns = GridCells.Fixed(numberOfPasswords)
             ) {
-                item (span = { GridItemSpan(numberOfPasswords) }){
+                item(span = { GridItemSpan(numberOfPasswords) }) {
                     ManagePasswordHeader()
                 }
 
-                item (span = { GridItemSpan(numberOfPasswords) }){
+                item(span = { GridItemSpan(numberOfPasswords) }) {
                     DisplayRowPasswordTags(
                         selectedPasswordTag,
                         onEvent,
@@ -543,7 +615,7 @@ private fun DisplayRowView(
                     )
                 }
 
-                item (span = { GridItemSpan(numberOfPasswords) }){
+                item(span = { GridItemSpan(numberOfPasswords) }) {
                     FilterPasswordDisplayHeader(selectedPasswordTag)
                 }
 
@@ -680,7 +752,6 @@ private fun DisplayRowCards(
 }
 
 
-
 @Composable
 private fun AddNewPasswordDisplay(onEvent: (event: CredentialEvent) -> Unit) {
     Card(
@@ -769,49 +840,111 @@ private fun ManagePasswordHeader() {
 
 @Composable
 private fun AddNewCard(onEvent: (event: CredentialEvent) -> Unit) {
-    Box(
+
+    LazyRow(
         modifier = Modifier
             .fillMaxWidth()
+//            .aspectRatio(2f)
+//            .background(Color.Red)
     ) {
-        Card(
-            modifier = Modifier
-//                .fillMaxWidth(0.7f)
-                .width(cardWidth)
-                .aspectRatio(1.75f)
-                .padding(5.dp)
-                .dashedBorder(2.dp, Color.Red, 8.dp),
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxSize()
-                    .clickable {
-                        onEvent(
-                            CredentialEvent.OnDisplayAddEditNewDataClick(
-                                null,
-                                Card()
-                            )
-                        )
-                    }
+        items(cardPromotionList.size) {
+            Box(
+                modifier = Modifier
+                    .width(cardWidth)
+                    .aspectRatio(1.75f)
+                    .wrapContentSize()
+                    .padding(5.dp)
+                    .clip(RoundedCornerShape(10.dp))
+
             ) {
-                Image(
-                    imageVector = Icons.Default.AddCircle,
-                    contentDescription = null
-                )
+                val cardShades = getCardColorShades()
+                val cardBkgColor = cardShades[0]
+                val arc1Color = cardShades[1]
+                val arc2Color = cardShades[2]
 
-                space(8)
+                Canvas(
+                    modifier = Modifier.fillMaxSize()
+                ) {
 
-                Text(
-                    text = "Add your card here!!",
-                    style = TextStyle(
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    color = getTextColorInverse()
-                )
+                    val canvasWidth = size.width + 20.dp.toPx()
+                    val canvasHeight = size.height + 20.dp.toPx()
+
+                    drawRoundRect(
+                        color = cardBkgColor,
+                        topLeft = Offset(-10.dp.toPx(), -10.dp.toPx()),
+                        size = Size(canvasWidth, canvasHeight),
+                        cornerRadius = CornerRadius(x = 10f, y = 10f)
+                    )
+
+                    drawArc(
+                        color = arc1Color,
+                        startAngle = 180f,
+                        sweepAngle = 180f,
+                        useCenter = true,
+                        topLeft = Offset(-5.dp.toPx(), canvasHeight * 0.5f + 10.dp.toPx()),
+                        size = Size(canvasWidth - 60.dp.toPx(), canvasHeight - 40.dp.toPx()),
+                    )
+
+                    drawArc(
+                        color = arc2Color,
+                        startAngle = 90f,
+                        sweepAngle = 180f,
+                        useCenter = true,
+                        topLeft = Offset(canvasWidth - 120.dp.toPx(), -40.dp.toPx()),
+                        size = Size(canvasWidth + 60.dp.toPx(), canvasHeight * 2f),
+                    )
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize()
+                        .clickable {
+                            onEvent(
+                                CredentialEvent.OnDisplayAddEditNewDataClick(
+                                    null,
+                                    Card()
+                                )
+                            )
+                        }
+                        .padding(10.dp)
+                ) {
+                    Image(
+                        imageVector = Icons.Default.AddCircle,
+                        contentDescription = null
+                    )
+
+                    space(8)
+
+                    Text(
+                        text = cardPromotionList[it],
+                        style = TextStyle(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        color = getTextColorInverse()
+                    )
+                }
             }
         }
     }
+    /*
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Card(
+                modifier = Modifier
+    //                .fillMaxWidth(0.7f)
+                    .width(cardWidth)
+                    .aspectRatio(1.75f)
+                    .padding(5.dp)
+                    .dashedBorder(2.dp, Color.Red, 8.dp),
+            ) {
+
+            }
+        }
+    */
 }
 
 @Composable
