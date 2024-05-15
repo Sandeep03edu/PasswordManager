@@ -161,8 +161,8 @@ kotlin {
     }
 }
 
-val releasePackageVersion = "1.03"
-val releaseDesktopPackageVersion = "1.0.3"
+val releasePackageVersion = "1.04"
+val releaseDesktopPackageVersion = "1.0.4"
 
 android {
     namespace = "com.sandeep03edu.passwordmanager"
@@ -176,7 +176,7 @@ android {
         applicationId = "com.sandeep03edu.passwordmanager.android"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 5
+        versionCode = 6
         versionName = releasePackageVersion
     }
     buildFeatures {
