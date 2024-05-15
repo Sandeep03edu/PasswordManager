@@ -1,0 +1,17 @@
+Adobe After Effects v23.2.1 Windows 64 render log for project “Mobile App Promo Auto Xquad.aep”
+
+Rendering started on 15-05-2024 at 16:11:52
+
+  15-05-2024 16:11:53: Starting composition “HomeScreen”.
+
+  Output To: S:\Projects\PasswordManager\App Promo Video\HomeScreen.mp4    15-05-2024 16:12:07: Finished composition “HomeScreen”.
+
+
+  15-05-2024 16:12:08: Starting composition “Preview”.
+
+  Output To: S:\Projects\PasswordManager\App Promo Video\Preview.mp4    15-05-2024 16:14:43: Finished composition “Preview”.
+
+
+  Total Time Elapsed: 2 Min, 49 Sec
+Log closed on 15-05-2024 at 16:14:43
+
