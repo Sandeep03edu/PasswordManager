@@ -176,7 +176,7 @@ android {
         applicationId = "com.sandeep03edu.passwordmanager.android"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 6
+        versionCode = 7
         versionName = releasePackageVersion
     }
     buildFeatures {
